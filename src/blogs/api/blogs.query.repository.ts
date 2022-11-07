@@ -13,8 +13,9 @@ export class BlogsQueryRepository {
     @Inject('BLOG_MODEL') private readonly blogModel: Model<BlogDBType>,
   ) {}
 
-  async findBlogById(blogId: string): Promise<ViewBlogType> {
+  async findBlogById(blogId: string): Promise<ViewBlogType | null> {
     const blogDBType = await this.blogModel.findById(blogId);
+    if (!blogDBType) return null;
     const blog: ViewBlogType = mapBlog(blogDBType);
     return blog;
   }

@@ -22,4 +22,9 @@ export class PostsRepository {
     const result = await post.save();
     return result.modifiedCount > 0;
   }
+
+  async deletePostById(postId: string): Promise<boolean> {
+    const result = await this.postModel.deleteOne({ _id: postId });
+    return result.deletedCount > 0;
+  }
 }

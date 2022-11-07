@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Param,
@@ -27,6 +29,7 @@ export class PostsController {
     private readonly postsQueryRepository: PostsQueryRepository,
   ) {}
   @Post()
+  @HttpCode(201)
   async createPost(
     @Body() createPostDTO: CreatePostDto,
   ): Promise<ViewPostType> {
@@ -65,6 +68,7 @@ export class PostsController {
   }
 
   @Put(':postId')
+  @HttpCode(204)
   async updatePost(
     @Param() params: URIParamPostDto,
     @Body() inputModel: UpdatePostDto,
@@ -75,6 +79,14 @@ export class PostsController {
     );
     if (!updatePost)
       throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
-    return HttpStatus.NO_CONTENT;
+    return;
+  }
+  @Delete(':postId')
+  @HttpCode(204)
+  async deletePostById(@Param() params: URIParamPostDto): Promise<HttpStatus> {
+    const result = await this.postsService.deletePostById(params.postId);
+    if (!result)
+      throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
+    return;
   }
 }

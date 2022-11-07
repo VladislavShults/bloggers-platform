@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpException,
   HttpStatus,
   Param,
   Post,
@@ -29,6 +31,7 @@ export class BlogsController {
   ) {}
 
   @Post()
+  @HttpCode(201)
   async createBlog(
     @Body() createBlogsDTO: CreateBlogDto,
   ): Promise<ViewBlogType> {
@@ -44,10 +47,12 @@ export class BlogsController {
   @Get(':blogId')
   async findBlogById(@Param() params: URIParamBlogDto): Promise<ViewBlogType> {
     const blog = await this.blogsQueryRepository.findBlogById(params.blogId);
+    if (!blog) throw new HttpException('BLOG NOT FOUND', HttpStatus.NOT_FOUND);
     return blog;
   }
 
   @Put(':blogId')
+  @HttpCode(204)
   async updateBlog(
     @Param() params: URIParamBlogDto,
     @Body() updateBlogDTO: UpdateBlogDto,
@@ -63,11 +68,13 @@ export class BlogsController {
   }
 
   @Delete(':blogId')
+  @HttpCode(204)
   async deleteBlogById(@Param() params: URIParamBlogDto): Promise<HttpStatus> {
     const deleteBlog = await this.blogsService.deleteBlogById(params.blogId);
-    if (deleteBlog) {
-      return HttpStatus.OK;
-    } else throw new BadRequestException('BLOG NOT FOUND');
+    if (!deleteBlog) {
+      throw new HttpException('BLOG NOT FOUND', HttpStatus.NOT_FOUND);
+    }
+    return;
   }
 
   @Get()

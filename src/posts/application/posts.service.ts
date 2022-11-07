@@ -44,4 +44,8 @@ export class PostsService {
     post.content = inputModel.content;
     return await this.postsRepository.updatePost(post);
   }
+
+  async deletePostById(postId: string): Promise<boolean> {
+    return await this.postsRepository.deletePostById(postId);
+  }
 }
