@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import {
   BlogDBType,
   ViewBlogType,
-  ViewBlogTypeWithPagination,
+  ViewBlogsTypeWithPagination,
 } from '../types/blogs.types';
 import { mapBlog } from '../helpers/mapBlogDBToViewModel';
 
@@ -25,7 +25,7 @@ export class BlogsQueryRepository {
     pageSize: number,
     sortBy: string,
     sortDirection: 'asc' | 'desc',
-  ): Promise<ViewBlogTypeWithPagination> {
+  ): Promise<ViewBlogsTypeWithPagination> {
     const itemsDBType: BlogDBType[] = await this.blogModel
       .find({ name: { $regex: searchNameTerm } })
       .skip((pageNumber - 1) * pageSize)

@@ -14,7 +14,7 @@ export type ViewBlogType = {
   createdAt: Date;
 };
 
-export type ViewBlogTypeWithPagination = {
+export type ViewBlogsTypeWithPagination = {
   pagesCount: number;
   page: number;
   pageSize: number;

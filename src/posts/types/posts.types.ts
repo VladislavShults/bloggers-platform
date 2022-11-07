@@ -35,3 +35,11 @@ export type ViewPostType = {
   createdAt: Date;
   extendedLikesInfo: ExtendedLikesInfoType;
 };
+
+export type ViewPostsTypeWithPagination = {
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: ViewPostType[];
+};

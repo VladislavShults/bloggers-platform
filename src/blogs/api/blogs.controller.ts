@@ -18,11 +18,13 @@ import { URIParamBlogDto } from './models/URIParam-blog.dto';
 import { ObjectId } from 'mongodb';
 import { UpdateBlogDto } from './models/update-blog.dto';
 import { QueryBlogDto } from './models/query-blog.dto';
+import { PostsService } from '../../posts/application/posts.service';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
-    private readonly blogsService: BlogsService, // private readonly postsService: PostsService,
+    private readonly blogsService: BlogsService,
+    private readonly postsService: PostsService,
     private readonly blogsQueryRepository: BlogsQueryRepository,
   ) {}
 

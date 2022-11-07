@@ -5,6 +5,7 @@ import { CreatePostDto } from '../api/models/create-post.dto';
 import { ObjectId } from 'mongodb';
 import { PostDBType } from '../types/posts.types';
 import { BlogsQueryRepository } from '../../blogs/api/blogs.query.repository';
+import { UpdatePostDto } from '../api/models/update-post.dto';
 
 @Injectable()
 export class PostsService {
@@ -30,5 +31,17 @@ export class PostsService {
     };
     await this.postsRepository.createPost(post);
     return post._id;
+  }
+
+  async updatePost(
+    postId: string,
+    inputModel: UpdatePostDto,
+  ): Promise<boolean> {
+    const post = await this.postsRepository.getPostById(postId);
+    if (!post) return false;
+    post.title = inputModel.title;
+    post.shortDescription = inputModel.shortDescription;
+    post.content = inputModel.content;
+    return await this.postsRepository.updatePost(post);
   }
 }
