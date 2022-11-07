@@ -46,4 +46,9 @@ export class BlogsQueryRepository {
       items,
     };
   }
+  async getLoginBloggerByBlogId(blogId: string): Promise<string> {
+    const blog = await this.blogModel.findById(blogId);
+    const login = blog.name;
+    return login;
+  }
 }

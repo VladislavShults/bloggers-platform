@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { BlogDBType } from '../types/blogs.types';
-import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class BlogsRepository {

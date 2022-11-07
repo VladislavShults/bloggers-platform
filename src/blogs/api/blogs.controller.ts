@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -56,7 +57,7 @@ export class BlogsController {
     );
     if (desiredBlogger) {
       return HttpStatus.OK;
-    } else HttpStatus.NOT_FOUND;
+    } else throw new BadRequestException('BLOG NOT FOUND');
   }
 
   @Delete(':blogId')
@@ -64,7 +65,7 @@ export class BlogsController {
     const deleteBlog = await this.blogsService.deleteBlogById(params.blogId);
     if (deleteBlog) {
       return HttpStatus.OK;
-    } else HttpStatus.NOT_FOUND;
+    } else throw new BadRequestException('BLOG NOT FOUND');
   }
 
   @Get()
