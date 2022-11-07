@@ -13,3 +13,11 @@ export type ViewBlogType = {
   youtubeUrl: string;
   createdAt: Date;
 };
+
+export type ViewBlogTypeWithPagination = {
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: ViewBlogType[];
+};

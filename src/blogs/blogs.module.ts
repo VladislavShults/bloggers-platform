@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../database/database.module';
-import { BlogsController } from './blogs.controller';
+import { BlogsController } from './api/blogs.controller';
 import { blogsProviders } from './blogs.providers';
-import { BlogsService } from './blogs.service';
-import { BlogsRepository } from './blogs.repository';
-import { BlogsQueryRepository } from './blogs.query.repository';
+import { BlogsService } from './application/blogs.service';
+import { BlogsRepository } from './infrastructure/blogs.repository';
+import { BlogsQueryRepository } from './api/blogs.query.repository';
 
 @Module({
   imports: [DatabaseModule],
