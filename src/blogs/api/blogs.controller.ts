@@ -21,12 +21,16 @@ import { ObjectId } from 'mongodb';
 import { UpdateBlogDto } from './models/update-blog.dto';
 import { QueryBlogDto } from './models/query-blog.dto';
 import { PostsService } from '../../posts/application/posts.service';
+import { ViewPostsTypeWithoutLikesWithPagination } from '../../posts/types/posts.types';
+import { PostsQueryRepository } from '../../posts/api/posts.query.repository';
+import { QueryGetPostsByBlogIdDto } from './models/query-getPostsByBlogId.dto';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
     private readonly blogsService: BlogsService,
     private readonly postsService: PostsService,
+    private readonly postsQueryRepository: PostsQueryRepository,
     private readonly blogsQueryRepository: BlogsQueryRepository,
   ) {}
 
@@ -93,5 +97,19 @@ export class BlogsController {
       sortDirection,
     );
     return blogs;
+  }
+
+  @Get(':blogId/posts')
+  async getAllPostsByBlogId(
+    @Param() params: URIParamBlogDto,
+    @Query() query: QueryGetPostsByBlogIdDto,
+  ): Promise<ViewPostsTypeWithoutLikesWithPagination> {
+    const posts = await this.postsQueryRepository.getPostsByBlogId(
+      params.blogId,
+      query,
+    );
+    if (!posts)
+      throw new HttpException('POSTS NOT FOUND', HttpStatus.NOT_FOUND);
+    return posts;
   }
 }
