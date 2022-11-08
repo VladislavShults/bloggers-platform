@@ -1,4 +1,4 @@
-export class QueryPostDto {
+export class QueryGetPostsByBlogIdDto {
   pageNumber: string;
   pageSize: string;
   sortBy: string;

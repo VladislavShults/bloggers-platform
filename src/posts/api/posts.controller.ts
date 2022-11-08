@@ -18,12 +18,15 @@ import { PostsService } from '../application/posts.service';
 import { PostsRepository } from '../infrastructure/posts.repository';
 import { PostsQueryRepository } from './posts.query.repository';
 import { URIParamPostDto } from './models/URIParam-post.dto';
-import { QueryBlogDto } from '../../blogs/api/models/query-blog.dto';
 import { UpdatePostDto } from './models/update-post.dto';
 import { CreateCommentDto } from '../../comments/api/models/create-comment.dto';
-import { ViewCommentType } from '../../comments/types/comments.types';
+import {
+  ViewCommentsTypeWithPagination,
+  ViewCommentType,
+} from '../../comments/types/comments.types';
 import { CommentsService } from '../../comments/application/comments.service';
 import { CommentsQueryRepository } from '../../comments/api/comments.query.repository';
+import { QueryPostDto } from './models/query-post.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -56,21 +59,19 @@ export class PostsController {
   }
 
   @Get()
-  async getPosts(@Query() query: QueryBlogDto) {
-    const searchNameTerm: string = query.searchNameTerm || '';
+  async getPosts(@Query() query: QueryPostDto) {
     const pageNumber: number = Number(query.pageNumber) || 1;
     const pageSize: number = Number(query.pageSize) || 10;
     const sortBy: string = query.sortBy || 'createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
 
-    const blogs = await this.postsQueryRepository.getPosts(
-      searchNameTerm,
+    const posts = await this.postsQueryRepository.getPosts(
       pageNumber,
       pageSize,
       sortBy,
       sortDirection,
     );
-    return blogs;
+    return posts;
   }
 
   @Put(':postId')
@@ -111,5 +112,19 @@ export class PostsController {
       commentObjectId.toString(),
     );
     return comment;
+  }
+
+  @Get(':postId/comments')
+  async getCommentsByPostId(
+    @Param() params: URIParamPostDto,
+    @Query() query: QueryPostDto,
+  ): Promise<ViewCommentsTypeWithPagination> {
+    const comments = await this.commentsQueryRepository.getCommentsByPostId(
+      params.postId,
+      query,
+    );
+    if (!comments)
+      throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
+    return comments;
   }
 }

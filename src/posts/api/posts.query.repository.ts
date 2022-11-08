@@ -25,14 +25,13 @@ export class PostsQueryRepository {
   }
 
   async getPosts(
-    searchNameTerm: string,
     pageNumber: number,
     pageSize: number,
     sortBy: string,
     sortDirection: 'asc' | 'desc',
   ): Promise<ViewPostsTypeWithPagination> {
     const itemsDBType = await this.postModel
-      .find({ name: { $regex: searchNameTerm } })
+      .find()
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .sort([[sortBy, sortDirection]])
@@ -41,15 +40,10 @@ export class PostsQueryRepository {
     const items = itemsDBType.map((i) => mapPost(i));
 
     return {
-      pagesCount: Math.ceil(
-        (await this.postModel.count({ name: { $regex: searchNameTerm } })) /
-          pageSize,
-      ),
+      pagesCount: Math.ceil((await this.postModel.count()) / pageSize),
       page: pageNumber,
       pageSize: pageSize,
-      totalCount: await this.postModel.count({
-        name: { $regex: searchNameTerm },
-      }),
+      totalCount: await this.postModel.count(),
       items,
     };
   }
