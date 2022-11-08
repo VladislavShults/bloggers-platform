@@ -118,6 +118,7 @@ export class BlogsController {
   }
 
   @Post(':blogId/posts')
+  @HttpCode(201)
   async createPostForSpecificBlog(
     @Param() params: URIParamBlogDto,
     @Body() inputModel: CreatePostBySpecificBlogDto,

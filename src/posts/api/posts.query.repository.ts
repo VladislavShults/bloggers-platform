@@ -7,7 +7,6 @@ import {
 } from '../types/posts.types';
 import { Model } from 'mongoose';
 import { mapPost } from '../helpers/mapPostDBToViewModel';
-import { QueryBlogDto } from '../../blogs/api/models/query-blog.dto';
 import { QueryGetPostsByBlogIdDto } from '../../blogs/api/models/query-getPostsByBlogId.dto';
 import { mapPostsDBToViewModelWithoutLikes } from '../helpers/mapPostsDBToViewModelWithoutLikes';
 

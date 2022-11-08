@@ -27,4 +27,10 @@ export class BlogsRepository {
     const result = await this.blogModel.deleteOne({ _id: blogId });
     return result.deletedCount > 0;
   }
+
+  async getLoginBloggerByBlogId(blogId: string): Promise<string> {
+    const blog = await this.blogModel.findById(blogId);
+    const login = blog.name;
+    return login;
+  }
 }

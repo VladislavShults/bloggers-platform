@@ -20,13 +20,19 @@ import { PostsQueryRepository } from './posts.query.repository';
 import { URIParamPostDto } from './models/URIParam-post.dto';
 import { QueryBlogDto } from '../../blogs/api/models/query-blog.dto';
 import { UpdatePostDto } from './models/update-post.dto';
+import { CreateCommentDto } from '../../comments/api/models/create-comment.dto';
+import { ViewCommentType } from '../../comments/types/comments.types';
+import { CommentsService } from '../../comments/application/comments.service';
+import { CommentsQueryRepository } from '../../comments/api/comments.query.repository';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,
+    private readonly commentsService: CommentsService,
     private readonly postsRepository: PostsRepository,
     private readonly postsQueryRepository: PostsQueryRepository,
+    private readonly commentsQueryRepository: CommentsQueryRepository,
   ) {}
   @Post()
   @HttpCode(201)
@@ -81,6 +87,7 @@ export class PostsController {
       throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
     return;
   }
+
   @Delete(':postId')
   @HttpCode(204)
   async deletePostById(@Param() params: URIParamPostDto): Promise<HttpStatus> {
@@ -88,5 +95,21 @@ export class PostsController {
     if (!result)
       throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
     return;
+  }
+
+  @Post('postId/comment')
+  @HttpCode(201)
+  async createCommentByPost(
+    @Param() params: URIParamPostDto,
+    @Body() inputModel: CreateCommentDto,
+  ): Promise<ViewCommentType> {
+    const commentObjectId = await this.commentsService.createCommentByPost(
+      params.postId,
+      inputModel,
+    );
+    const comment = await this.commentsQueryRepository.getCommentById(
+      commentObjectId.toString(),
+    );
+    return comment;
   }
 }

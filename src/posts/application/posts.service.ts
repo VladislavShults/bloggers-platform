@@ -4,15 +4,13 @@ import { BlogsRepository } from '../../blogs/infrastructure/blogs.repository';
 import { CreatePostDto } from '../api/models/create-post.dto';
 import { ObjectId } from 'mongodb';
 import { PostDBType } from '../types/posts.types';
-import { BlogsQueryRepository } from '../../blogs/api/blogs.query.repository';
 import { UpdatePostDto } from '../api/models/update-post.dto';
 
 @Injectable()
 export class PostsService {
   constructor(
     private readonly postsRepository: PostsRepository,
-    private readonly blogsRepository: BlogsRepository,
-    private readonly blogsQueryRepository: BlogsQueryRepository, // private readonly usersService: UsersService,
+    private readonly blogsRepository: BlogsRepository, // private readonly usersService: UsersService,
   ) {}
 
   async createPost(createPostDTO: CreatePostDto): Promise<ObjectId> {
@@ -22,7 +20,7 @@ export class PostsService {
       shortDescription: createPostDTO.shortDescription,
       content: createPostDTO.content,
       blogId: createPostDTO.blogId,
-      blogName: await this.blogsQueryRepository.getLoginBloggerByBlogId(
+      blogName: await this.blogsRepository.getLoginBloggerByBlogId(
         createPostDTO.blogId,
       ),
       createdAt: new Date(),

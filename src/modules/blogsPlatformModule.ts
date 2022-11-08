@@ -10,10 +10,15 @@ import { PostsService } from '../posts/application/posts.service';
 import { PostsRepository } from '../posts/infrastructure/posts.repository';
 import { PostsQueryRepository } from '../posts/api/posts.query.repository';
 import { postMongooseConnection } from '../posts/postMongooseConnection';
+import { commentsMongooseConnection } from '../comments/commentsMongooseConnection';
+import { CommentsService } from '../comments/application/comments.service';
+import { CommentsRepository } from '../comments/infrastructure/comments.repository';
+import { CommentsQueryRepository } from '../comments/api/comments.query.repository';
+import { CommentsController } from '../comments/api/comments.controller';
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [BlogsController, PostsController],
+  controllers: [BlogsController, PostsController, CommentsController],
   providers: [
     PostsService,
     PostsRepository,
@@ -21,8 +26,12 @@ import { postMongooseConnection } from '../posts/postMongooseConnection';
     BlogsService,
     BlogsRepository,
     BlogsQueryRepository,
+    CommentsService,
+    CommentsRepository,
+    CommentsQueryRepository,
     ...blogsMongooseConnection,
     ...postMongooseConnection,
+    ...commentsMongooseConnection,
   ],
 })
 export class BlogsPlatformModule {}
