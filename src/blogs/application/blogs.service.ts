@@ -4,6 +4,8 @@ import { Model } from 'mongoose';
 import { CreateBlogDto } from '../api/models/create-blog.dto';
 import { BlogsRepository } from '../infrastructure/blogs.repository';
 import { ObjectId } from 'mongodb';
+import { CreatePostBySpecificBlogDto } from '../api/models/create-postBySpecificBlog.dto';
+import { CreatePostDto } from '../../posts/api/models/create-post.dto';
 
 @Injectable()
 export class BlogsService {
@@ -35,5 +37,18 @@ export class BlogsService {
 
   async deleteBlogById(blogId: string): Promise<boolean> {
     return await this.blogsRepository.deleteBlogById(blogId);
+  }
+
+  createPostDTO(
+    blogId: string,
+    inputModel: CreatePostBySpecificBlogDto,
+  ): CreatePostDto {
+    const createPostDTO = {
+      title: inputModel.title,
+      shortDescription: inputModel.shortDescription,
+      content: inputModel.content,
+      blogId: blogId,
+    };
+    return createPostDTO;
   }
 }

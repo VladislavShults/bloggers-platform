@@ -21,9 +21,13 @@ import { ObjectId } from 'mongodb';
 import { UpdateBlogDto } from './models/update-blog.dto';
 import { QueryBlogDto } from './models/query-blog.dto';
 import { PostsService } from '../../posts/application/posts.service';
-import { ViewPostsTypeWithoutLikesWithPagination } from '../../posts/types/posts.types';
+import {
+  ViewPostsTypeWithoutLikesWithPagination,
+  ViewPostWithoutLikesType,
+} from '../../posts/types/posts.types';
 import { PostsQueryRepository } from '../../posts/api/posts.query.repository';
 import { QueryGetPostsByBlogIdDto } from './models/query-getPostsByBlogId.dto';
+import { CreatePostBySpecificBlogDto } from './models/create-postBySpecificBlog.dto';
 
 @Controller('blogs')
 export class BlogsController {
@@ -111,5 +115,27 @@ export class BlogsController {
     if (!posts)
       throw new HttpException('POSTS NOT FOUND', HttpStatus.NOT_FOUND);
     return posts;
+  }
+
+  @Post(':blogId/posts')
+  async createPostForSpecificBlog(
+    @Param() params: URIParamBlogDto,
+    @Body() inputModel: CreatePostBySpecificBlogDto,
+  ): Promise<ViewPostWithoutLikesType> {
+    const blog = await this.blogsQueryRepository.findBlogById(params.blogId);
+    if (!blog) throw new HttpException('BLOG NOT FOUND', HttpStatus.NOT_FOUND);
+
+    const createPostDTO = this.blogsService.createPostDTO(
+      params.blogId,
+      inputModel,
+    );
+
+    const postObjectId = await this.postsService.createPost(createPostDTO);
+
+    const post = await this.postsQueryRepository.getPostById(
+      postObjectId.toString(),
+    );
+
+    return post;
   }
 }
