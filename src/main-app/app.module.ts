@@ -9,3 +9,5 @@ import { BlogsPlatformModule } from '../modules/blogsPlatformModule';
   providers: [AppService],
 })
 export class AppModule {}
+
+//TODO make it better
