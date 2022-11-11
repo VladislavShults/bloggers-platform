@@ -46,7 +46,7 @@ export class UsersQueryRepository {
         .lean();
 
       totalCount = await this.userModel.count({});
-      pagesCount = totalCount / pageSize;
+      pagesCount = Math.ceil(totalCount / pageSize);
     }
 
     if (searchEmailTerm && !searchLoginTerm) {
@@ -60,7 +60,7 @@ export class UsersQueryRepository {
       totalCount = await this.userModel.count({
         'accountData.email': { $regex: searchEmailTerm },
       });
-      pagesCount = totalCount / pageSize;
+      pagesCount = Math.ceil(totalCount / pageSize);
     }
 
     if (!searchEmailTerm && searchLoginTerm) {
@@ -74,7 +74,7 @@ export class UsersQueryRepository {
       totalCount = await this.userModel.count({
         'accountData.userName': { $regex: searchLoginTerm },
       });
-      pagesCount = totalCount / pageSize;
+      pagesCount = Math.ceil(totalCount / pageSize);
     }
 
     if (searchEmailTerm && searchLoginTerm) {
@@ -92,7 +92,7 @@ export class UsersQueryRepository {
         'accountData.login': { $regex: searchLoginTerm },
         'accountData.email': { $regex: searchEmailTerm },
       });
-      pagesCount = totalCount / pageSize;
+      pagesCount = Math.ceil(totalCount / pageSize);
     }
 
     const items = itemsDBType.map((i) => mapUserDBTypeToViewType(i));
