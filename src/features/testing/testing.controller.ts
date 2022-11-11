@@ -1,11 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Inject,
+} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { PostDBType } from '../posts/types/posts.types';
 import { BlogDBType } from '../blogs/types/blogs.types';
 import { CommentDBType } from '../comments/types/comments.types';
 
-@Injectable()
-export class TestingService {
+@Controller('testing')
+export class TestingController {
   constructor(
     @Inject('POST_MODEL')
     private readonly postModel: Model<PostDBType>,
@@ -13,10 +19,12 @@ export class TestingService {
     @Inject('COMMENT_MODEL')
     private readonly commentModel: Model<CommentDBType>,
   ) {}
-  async clearAllData(): Promise<boolean> {
+  @Delete('all-data')
+  @HttpCode(204)
+  async clearAllData(): Promise<HttpStatus> {
     await this.blogModel.deleteMany({});
     await this.postModel.deleteMany({});
     await this.commentModel.deleteMany({});
-    return true;
+    return;
   }
 }
