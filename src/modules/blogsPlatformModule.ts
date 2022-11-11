@@ -17,6 +17,10 @@ import { CommentsQueryRepository } from '../features/comments/api/comments.query
 import { CommentsController } from '../features/comments/api/comments.controller';
 import { TestingController } from '../features/testing/testing.controller';
 import { usersMongooseConnection } from '../features/users/usersMongooseConnection';
+import { UsersService } from '../features/users/application/users.servive';
+import { UsersRepository } from '../features/users/infrastructure/users.repository';
+import { UsersQueryRepository } from '../features/users/api/users.query.repository';
+import { UsersController } from '../features/users/api/users.controller';
 
 @Module({
   imports: [DatabaseModule],
@@ -24,6 +28,7 @@ import { usersMongooseConnection } from '../features/users/usersMongooseConnecti
     BlogsController,
     PostsController,
     CommentsController,
+    UsersController,
     TestingController,
   ],
   providers: [
@@ -36,6 +41,9 @@ import { usersMongooseConnection } from '../features/users/usersMongooseConnecti
     CommentsService,
     CommentsRepository,
     CommentsQueryRepository,
+    UsersService,
+    UsersRepository,
+    UsersQueryRepository,
     ...blogsMongooseConnection,
     ...postMongooseConnection,
     ...commentsMongooseConnection,

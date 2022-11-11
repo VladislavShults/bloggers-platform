@@ -33,4 +33,8 @@ export class UsersService {
     await this.usersRepository.createUser(user);
     return user._id;
   }
+
+  async deleteUserById(userId: string): Promise<boolean> {
+    return await this.usersRepository.deleteUserById(userId);
+  }
 }

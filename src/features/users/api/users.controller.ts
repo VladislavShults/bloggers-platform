@@ -1,4 +1,15 @@
-import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CreateUserDto } from './models/create-user.dto';
 import {
   ViewUsersTypeWithPagination,
@@ -7,6 +18,7 @@ import {
 import { UsersService } from '../application/users.servive';
 import { UsersQueryRepository } from './users.query.repository';
 import { QueryUserDto } from './models/query-user.dto';
+import { URIParamUserDto } from './models/URIParam-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -30,5 +42,14 @@ export class UsersController {
   ): Promise<ViewUsersTypeWithPagination> {
     const users = await this.usersQueryRepository.getUsers(query);
     return users;
+  }
+
+  @Delete(':userId')
+  @HttpCode(204)
+  async deleteUserById(@Param() params: URIParamUserDto): Promise<HttpStatus> {
+    const deletedUser = await this.usersService.deleteUserById(params.userId);
+    if (!deletedUser)
+      throw new HttpException('USER NOT FOUND', HttpStatus.NOT_FOUND);
+    return;
   }
 }

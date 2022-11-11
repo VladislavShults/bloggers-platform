@@ -11,4 +11,9 @@ export class UsersRepository {
   async createUser(newUserTypeDb: UserDBType) {
     await this.userModel.create(newUserTypeDb);
   }
+
+  async deleteUserById(userId: string): Promise<boolean> {
+    const result = await this.userModel.deleteOne({ _id: userId });
+    return result.deletedCount > 0;
+  }
 }
