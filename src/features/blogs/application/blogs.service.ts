@@ -44,6 +44,7 @@ export class BlogsService {
       content: inputModel.content,
       blogId: blogId,
     };
+
     return createPostDTO;
   }
 }
