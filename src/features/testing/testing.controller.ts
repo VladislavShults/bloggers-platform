@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { PostDBType } from '../posts/types/posts.types';
 import { BlogDBType } from '../blogs/types/blogs.types';
 import { CommentDBType } from '../comments/types/comments.types';
+import { UserDBType } from '../users/types/users.types';
 
 @Controller('testing')
 export class TestingController {
@@ -18,6 +19,8 @@ export class TestingController {
     @Inject('BLOG_MODEL') private readonly blogModel: Model<BlogDBType>,
     @Inject('COMMENT_MODEL')
     private readonly commentModel: Model<CommentDBType>,
+    @Inject('USER_MODEL')
+    private readonly userModel: Model<UserDBType>,
   ) {}
   @Delete('all-data')
   @HttpCode(204)
@@ -25,6 +28,7 @@ export class TestingController {
     await this.blogModel.deleteMany({});
     await this.postModel.deleteMany({});
     await this.commentModel.deleteMany({});
+    await this.userModel.deleteMany({});
     return;
   }
 }

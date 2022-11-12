@@ -28,7 +28,6 @@ import {
 import { PostsQueryRepository } from '../../posts/api/posts.query.repository';
 import { QueryGetPostsByBlogIdDto } from './models/query-getPostsByBlogId.dto';
 import { CreatePostBySpecificBlogDto } from './models/create-postBySpecificBlog.dto';
-import { mapPostViewModelToModelWithoutLikes } from '../../posts/helpers/mapPostViewModelToModelWithoutLikes';
 
 @Controller('blogs')
 export class BlogsController {
@@ -85,7 +84,7 @@ export class BlogsController {
     if (!blog) throw new BadRequestException('BLOG NOT FOUND');
     const deleteBlog = await this.blogsService.deleteBlogById(params.blogId);
     if (!deleteBlog) {
-      throw new HttpException('BLOG NOT FOUND', HttpStatus.NOT_FOUND);
+      throw new BadRequestException('BLOG NOT FOUND');
     }
     return;
   }
@@ -141,8 +140,8 @@ export class BlogsController {
     const postDBType = await this.postsQueryRepository.getPostById(
       postObjectId.toString(),
     );
-    const post = mapPostViewModelToModelWithoutLikes(postDBType);
+    // const post = mapPostViewModelToModelWithoutLikes(postDBType);
 
-    return post;
+    return postDBType;
   }
 }

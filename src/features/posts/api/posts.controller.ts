@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { CreatePostDto } from './models/create-post.dto';
 import { ObjectId } from 'mongodb';
-import { ViewPostType } from '../types/posts.types';
+import { ViewPostWithoutLikesType } from '../types/posts.types';
 import { PostsService } from '../application/posts.service';
 import { PostsRepository } from '../infrastructure/posts.repository';
 import { PostsQueryRepository } from './posts.query.repository';
@@ -41,7 +41,7 @@ export class PostsController {
   @HttpCode(201)
   async createPost(
     @Body() createPostDTO: CreatePostDto,
-  ): Promise<ViewPostType> {
+  ): Promise<ViewPostWithoutLikesType> {
     const newPostObjectId: ObjectId = await this.postsService.createPost(
       createPostDTO,
     );
@@ -51,7 +51,9 @@ export class PostsController {
   }
 
   @Get(':postId')
-  async getPostById(@Param() params: URIParamPostDto): Promise<ViewPostType> {
+  async getPostById(
+    @Param() params: URIParamPostDto,
+  ): Promise<ViewPostWithoutLikesType> {
     const post = await this.postsQueryRepository.getPostById(params.postId);
     if (post) return post;
     else throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);

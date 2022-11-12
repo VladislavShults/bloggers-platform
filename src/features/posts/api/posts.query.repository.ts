@@ -4,11 +4,13 @@ import {
   ViewPostsTypeWithoutLikesWithPagination,
   ViewPostsTypeWithPagination,
   ViewPostType,
+  ViewPostWithoutLikesType,
 } from '../types/posts.types';
 import { Model } from 'mongoose';
 import { mapPost } from '../helpers/mapPostDBToViewModel';
 import { QueryGetPostsByBlogIdDto } from '../../blogs/api/models/query-getPostsByBlogId.dto';
 import { mapPostsDBToViewModelWithoutLikes } from '../helpers/mapPostsDBToViewModelWithoutLikes';
+import { mapPostViewModelToModelWithoutLikes } from '../helpers/mapPostViewModelToModelWithoutLikes';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -17,11 +19,13 @@ export class PostsQueryRepository {
     private readonly postModel: Model<PostDBType>,
   ) {}
 
-  async getPostById(postId: string): Promise<ViewPostType | null> {
+  async getPostById(postId: string): Promise<ViewPostWithoutLikesType | null> {
     const postDBType = await this.postModel.findById(postId);
     if (!postDBType) return null;
     const postViewType: ViewPostType = mapPost(postDBType);
-    return postViewType;
+    const postViewTypeWithoutLikes =
+      mapPostViewModelToModelWithoutLikes(postViewType);
+    return postViewTypeWithoutLikes;
   }
 
   async getPosts(
