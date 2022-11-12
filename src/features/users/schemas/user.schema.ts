@@ -5,17 +5,21 @@ import { ObjectId } from 'mongodb';
 export const UserSchema = new mongoose.Schema<UserDBType>(
   {
     _id: ObjectId,
-    accountData: {
-      userName: String,
-      email: String,
-      passwordHash: String,
-      createdAt: Date,
-    },
-    emailConfirmation: {
-      confirmationCode: String,
-      expirationDate: Date,
-      isConfirmed: Boolean,
-    },
+    login: String,
+    email: String,
+    createdAt: Date,
+    // _id: ObjectId,
+    // accountData: {
+    //   userName: String,
+    //   email: String,
+    //   passwordHash: String,
+    //   createdAt: Date,
+    // },
+    // emailConfirmation: {
+    //   confirmationCode: String,
+    //   expirationDate: Date,
+    //   isConfirmed: Boolean,
+    // },
   },
   {
     versionKey: false,

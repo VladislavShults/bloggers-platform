@@ -1,18 +1,25 @@
 import { ObjectId } from 'mongodb';
 
+// export type UserDBType = {
+//   _id: ObjectId;
+//   accountData: {
+//     userName: string;
+//     email: string;
+//     passwordHash: string;
+//     createdAt: Date;
+//   };
+//   emailConfirmation: {
+//     confirmationCode: string;
+//     expirationDate: Date;
+//     isConfirmed: boolean;
+//   };
+// };
+
 export type UserDBType = {
   _id: ObjectId;
-  accountData: {
-    userName: string;
-    email: string;
-    passwordHash: string;
-    createdAt: Date;
-  };
-  emailConfirmation: {
-    confirmationCode: string;
-    expirationDate: Date;
-    isConfirmed: boolean;
-  };
+  login: string;
+  email: string;
+  createdAt: Date;
 };
 
 export type ViewUserType = {

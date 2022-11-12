@@ -17,19 +17,22 @@ export class UsersService {
 
     const user: UserDBType = {
       _id: new ObjectId(),
-      accountData: {
-        userName: inputModel.login,
-        email: inputModel.email,
-        passwordHash: hash,
-        createdAt: new Date(),
-      },
-      emailConfirmation: {
-        confirmationCode: uuidv4(),
-        expirationDate: new Date(new Date().getHours() + 5),
-        isConfirmed: false,
-      },
+      login: inputModel.login,
+      email: inputModel.email,
+      createdAt: new Date(),
+      // _id: new ObjectId(),
+      // accountData: {
+      //   userName: inputModel.login,
+      //   email: inputModel.email,
+      //   passwordHash: hash,
+      //   createdAt: new Date(),
+      // },
+      // emailConfirmation: {
+      //   confirmationCode: uuidv4(),
+      //   expirationDate: new Date(new Date().getHours() + 5),
+      //   isConfirmed: false,
+      // },
     };
-    console.log(user.emailConfirmation.isConfirmed);
     await this.usersRepository.createUser(user);
     return user._id;
   }
