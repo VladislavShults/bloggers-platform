@@ -91,10 +91,12 @@ export class UsersQueryRepository {
     if (searchEmailTerm && searchLoginTerm) {
       itemsDBType = await this.userModel
         .find({
-          // // 'accountData.login': { $regex: searchLoginTerm, $option: 'i' },
-          login: { $regex: searchLoginTerm, $options: 'i' },
-          // // 'accountData.email': { $regex: searchEmailTerm, $option: 'i' },
-          email: { $regex: searchEmailTerm, $options: 'i' },
+          $or: [
+            // 'accountData.login': { $regex: searchLoginTerm, $option: 'i' },
+            { login: { $regex: searchLoginTerm, $options: 'i' } },
+            // 'accountData.email': { $regex: searchEmailTerm, $option: 'i' },
+            { email: { $regex: searchEmailTerm, $options: 'i' } },
+          ],
         })
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
@@ -104,10 +106,12 @@ export class UsersQueryRepository {
       console.log(itemsDBType);
 
       totalCount = await this.userModel.count({
-        // 'accountData.login': { $regex: searchLoginTerm, $option: 'i' },
-        login: { $regex: searchLoginTerm, $options: 'i' },
-        // 'accountData.email': { $regex: searchEmailTerm, $option: 'i' },
-        email: { $regex: searchEmailTerm, $options: 'i' },
+        $or: [
+          // 'accountData.login': { $regex: searchLoginTerm, $option: 'i' },
+          { login: { $regex: searchLoginTerm, $options: 'i' } },
+          // 'accountData.email': { $regex: searchEmailTerm, $option: 'i' },
+          { email: { $regex: searchEmailTerm, $options: 'i' } },
+        ],
       });
       pagesCount = Math.ceil(totalCount / pageSize);
     }
