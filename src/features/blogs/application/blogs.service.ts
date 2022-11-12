@@ -23,6 +23,7 @@ export class BlogsService {
 
   async updateBlogById(blogId: string, name: string, youtubeUrl: string) {
     const blog = await this.blogsRepository.getBlogById(blogId);
+    if (!blog) return false;
     blog.name = name;
     blog.youtubeUrl = youtubeUrl;
     const updateBlog = await this.blogsRepository.updateBlog(blog);
