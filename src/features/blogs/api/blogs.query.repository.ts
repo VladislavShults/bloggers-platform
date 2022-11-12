@@ -36,8 +36,9 @@ export class BlogsQueryRepository {
     const items: ViewBlogType[] = itemsDBType.map((i) => mapBlog(i));
     return {
       pagesCount: Math.ceil(
-        (await this.blogModel.count({ name: { $regex: searchNameTerm } })) /
-          pageSize,
+        (await this.blogModel.count({
+          name: { $regex: searchNameTerm, $options: 'i' },
+        })) / pageSize,
       ),
       page: pageNumber,
       pageSize: pageSize,
