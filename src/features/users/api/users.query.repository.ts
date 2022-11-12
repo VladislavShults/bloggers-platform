@@ -28,7 +28,7 @@ export class UsersQueryRepository {
   async getUsers(query: QueryUserDto): Promise<ViewUsersTypeWithPagination> {
     const pageNumber: number = Number(query.pageNumber) || 1;
     const pageSize: number = Number(query.pageSize) || 10;
-    const sortBy: string = query.sortBy || 'createdAt';
+    const sortBy: string = query.sortBy || 'accountData.createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
     const searchLoginTerm: string | null = query.searchLoginTerm || null;
     const searchEmailTerm: string | null = query.searchEmailTerm || null;
