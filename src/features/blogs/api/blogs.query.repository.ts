@@ -28,7 +28,7 @@ export class BlogsQueryRepository {
     sortDirection: 'asc' | 'desc',
   ): Promise<ViewBlogsTypeWithPagination> {
     const itemsDBType: BlogDBType[] = await this.blogModel
-      .find({ name: { $regex: /searchNameTerm/i } })
+      .find({ name: { $regex: searchNameTerm, $options: 'i' } })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .sort([[sortBy, sortDirection]])
