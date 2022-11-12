@@ -28,6 +28,7 @@ import {
 import { PostsQueryRepository } from '../../posts/api/posts.query.repository';
 import { QueryGetPostsByBlogIdDto } from './models/query-getPostsByBlogId.dto';
 import { CreatePostBySpecificBlogDto } from './models/create-postBySpecificBlog.dto';
+import { mapPostViewModelToModelWithoutLikes } from '../../posts/helpers/mapPostViewModelToModelWithoutLikes';
 
 @Controller('blogs')
 export class BlogsController {
@@ -133,9 +134,10 @@ export class BlogsController {
 
     const postObjectId = await this.postsService.createPost(createPostDTO);
 
-    const post = await this.postsQueryRepository.getPostById(
+    const postDBType = await this.postsQueryRepository.getPostById(
       postObjectId.toString(),
     );
+    const post = mapPostViewModelToModelWithoutLikes(postDBType);
 
     return post;
   }
