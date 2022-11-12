@@ -65,8 +65,6 @@ export class BlogsController {
     @Param() params: URIParamBlogDto,
     @Body() updateBlogDTO: UpdateBlogDto,
   ): Promise<HttpStatus> {
-    const blog = await this.blogsQueryRepository.findBlogById(params.blogId);
-    if (!blog) throw new BadRequestException('BLOG NOT FOUND');
     const desiredBlogger: boolean = await this.blogsService.updateBlogById(
       params.blogId,
       updateBlogDTO.name,
@@ -80,8 +78,6 @@ export class BlogsController {
   @Delete(':blogId')
   @HttpCode(204)
   async deleteBlogById(@Param() params: URIParamBlogDto): Promise<HttpStatus> {
-    const blog = await this.blogsQueryRepository.findBlogById(params.blogId);
-    if (!blog) throw new BadRequestException('BLOG NOT FOUND');
     const deleteBlog = await this.blogsService.deleteBlogById(params.blogId);
     if (!deleteBlog) {
       throw new BadRequestException('BLOG NOT FOUND');

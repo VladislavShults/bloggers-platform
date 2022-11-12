@@ -20,7 +20,7 @@ export class PostsRepository {
 
   async updatePost(post): Promise<boolean> {
     const result = await post.save();
-    return result.modifiedCount > 0;
+    return result.modifiedPaths.length > 0;
   }
 
   async deletePostById(postId: string): Promise<boolean> {

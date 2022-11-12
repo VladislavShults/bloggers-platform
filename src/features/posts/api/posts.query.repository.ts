@@ -33,7 +33,7 @@ export class PostsQueryRepository {
     pageSize: number,
     sortBy: string,
     sortDirection: 'asc' | 'desc',
-  ): Promise<ViewPostsTypeWithPagination> {
+  ): Promise<ViewPostsTypeWithoutLikesWithPagination> {
     const itemsDBType = await this.postModel
       .find()
       .skip((pageNumber - 1) * pageSize)
@@ -41,7 +41,7 @@ export class PostsQueryRepository {
       .sort([[sortBy, sortDirection]])
       .lean();
 
-    const items = itemsDBType.map((i) => mapPost(i));
+    const items = itemsDBType.map((i) => mapPostsDBToViewModelWithoutLikes(i));
 
     return {
       pagesCount: Math.ceil((await this.postModel.count()) / pageSize),
