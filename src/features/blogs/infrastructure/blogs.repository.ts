@@ -20,7 +20,7 @@ export class BlogsRepository {
 
   async updateBlog(blog): Promise<boolean> {
     const updateBlog = await blog.save();
-    return updateBlog.modifiedCount > 0;
+    return updateBlog.modifiedPaths.length > 0;
   }
 
   async deleteBlogById(blogId: string): Promise<boolean> {
