@@ -55,7 +55,7 @@ export class BlogsController {
   @Get(':blogId')
   async findBlogById(@Param() params: URIParamBlogDto): Promise<ViewBlogType> {
     const blog = await this.blogsQueryRepository.findBlogById(params.blogId);
-    if (!blog) throw new HttpException('BLOG NOT FOUND', HttpStatus.NOT_FOUND);
+    if (!blog) throw new HttpException('Blog not found', HttpStatus.NOT_FOUND);
     return blog;
   }
 
@@ -72,7 +72,7 @@ export class BlogsController {
     );
     if (desiredBlogger) {
       return;
-    } else throw new BadRequestException('BLOG NOT FOUND');
+    } else throw new HttpException('Blog not found', HttpStatus.NOT_FOUND);
   }
 
   @Delete(':blogId')
@@ -80,7 +80,7 @@ export class BlogsController {
   async deleteBlogById(@Param() params: URIParamBlogDto): Promise<HttpStatus> {
     const deleteBlog = await this.blogsService.deleteBlogById(params.blogId);
     if (!deleteBlog) {
-      throw new BadRequestException('BLOG NOT FOUND');
+      throw new HttpException('Blog not found', HttpStatus.NOT_FOUND);
     }
     return;
   }
