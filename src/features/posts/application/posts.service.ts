@@ -14,8 +14,7 @@ export class PostsService {
   ) {}
 
   async createPost(createPostDTO: CreatePostDto): Promise<ObjectId> {
-    const post: PostDBType = {
-      _id: new ObjectId(),
+    const post: Omit<PostDBType, '_id'> = {
       title: createPostDTO.title,
       shortDescription: createPostDTO.shortDescription,
       content: createPostDTO.content,
@@ -27,14 +26,14 @@ export class PostsService {
       likesCount: 0,
       dislikesCount: 0,
     };
-    await this.postsRepository.createPost(post);
-    return post._id;
+    return await this.postsRepository.createPost(post);
   }
 
   async updatePost(
     postId: string,
     inputModel: UpdatePostDto,
   ): Promise<boolean> {
+    return this.verifyPostId(postId);
     const post = await this.postsRepository.getPostById(postId);
     if (!post) return false;
     post.title = inputModel.title;
@@ -44,6 +43,12 @@ export class PostsService {
   }
 
   async deletePostById(postId: string): Promise<boolean> {
+    return this.verifyPostId(postId);
     return await this.postsRepository.deletePostById(postId);
   }
+
+  private verifyPostId = (postId: string): boolean => {
+    if (postId.length !== 24) return false;
+    return true;
+  };
 }

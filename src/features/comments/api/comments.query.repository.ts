@@ -15,8 +15,10 @@ export class CommentsQueryRepository {
     private readonly commentModel: Model<CommentDBType>,
   ) {}
 
-  async getCommentById(commentId: string): Promise<ViewCommentType> {
+  async getCommentById(commentId: string): Promise<ViewCommentType | null> {
+    if (commentId.length !== 24) return null;
     const commentDBType = await this.commentModel.findById(commentId);
+    if (!commentDBType) return null;
     return mapComment(commentDBType);
   }
 

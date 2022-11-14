@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PostDBType } from '../types/posts.types';
 import { Model } from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class PostsRepository {
@@ -8,14 +9,15 @@ export class PostsRepository {
     @Inject('POST_MODEL')
     private readonly postModel: Model<PostDBType>,
   ) {}
-  async createPost(post: PostDBType): Promise<void> {
-    await this.postModel.create(post);
+  async createPost(post: Omit<PostDBType, '_id'>): Promise<ObjectId> {
+    const newPost = await this.postModel.create(post);
+    return newPost._id;
   }
 
   async getPostById(postId: string) {
     const post = await this.postModel.findById(postId);
-    if (post) return post;
-    else return null;
+    if (!post) return null;
+    return post;
   }
 
   async updatePost(post): Promise<boolean> {

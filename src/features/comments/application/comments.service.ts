@@ -12,8 +12,7 @@ export class CommentsService {
     postId: string,
     inputModel: CreateCommentDto,
   ): Promise<ObjectId> {
-    const comment: CommentDBType = {
-      _id: new ObjectId(),
+    const comment: Omit<CommentDBType, '_id'> = {
       content: inputModel.content,
       userId: 'random',
       userLogin: 'random',
@@ -23,7 +22,19 @@ export class CommentsService {
       dislikesCount: 0,
     };
 
-    await this.commentsRepository.createComment(comment);
-    return comment._id;
+    return await this.commentsRepository.createComment(comment);
+  }
+
+  async deleteCommentById(commentId: string): Promise<boolean> {
+    return await this.commentsRepository.deleteCommentById(commentId);
+  }
+
+  async updateComment(commentId: string, content: string) {
+    const comment = await this.commentsRepository.getCommentById(commentId);
+    if (!comment) return null;
+    comment.content = content;
+    const updateComment = await this.commentsRepository.updateComment(comment);
+    if (!updateComment) return false;
+    return true;
   }
 }

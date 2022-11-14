@@ -19,13 +19,12 @@ export class PostsQueryRepository {
     private readonly postModel: Model<PostDBType>,
   ) {}
 
-  async getPostById(postId: string): Promise<ViewPostWithoutLikesType | null> {
+  async getPostById(postId: string): Promise<ViewPostType | null> {
+    if (postId.length !== 24) return null;
     const postDBType = await this.postModel.findById(postId);
     if (!postDBType) return null;
     const postViewType: ViewPostType = mapPost(postDBType);
-    const postViewTypeWithoutLikes =
-      mapPostViewModelToModelWithoutLikes(postViewType);
-    return postViewTypeWithoutLikes;
+    return postViewType;
   }
 
   async getPosts(
@@ -41,7 +40,7 @@ export class PostsQueryRepository {
       .sort([[sortBy, sortDirection]])
       .lean();
 
-    const items = itemsDBType.map((i) => mapPostsDBToViewModelWithoutLikes(i));
+    const items = itemsDBType.map((i) => mapPost(i));
 
     return {
       pagesCount: Math.ceil((await this.postModel.count()) / pageSize),

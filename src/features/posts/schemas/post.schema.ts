@@ -1,10 +1,8 @@
 import mongoose from 'mongoose';
-import { ObjectId } from 'mongodb';
 import { PostDBType } from '../types/posts.types';
 
-export const PostSchema = new mongoose.Schema<PostDBType>(
+export const PostSchema = new mongoose.Schema<Omit<PostDBType, '_id'>>(
   {
-    _id: ObjectId,
     title: String,
     shortDescription: String,
     content: String,
