@@ -26,7 +26,8 @@ export class CommentsRepository {
   }
 
   async updateComment(comment): Promise<boolean> {
-    const update = comment.save();
+    const update = await comment.save();
+    console.log(update);
     return update.modifiedPaths.length > 0;
   }
 }
