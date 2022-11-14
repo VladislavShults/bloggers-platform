@@ -15,26 +15,23 @@ export class UsersService {
   async createUser(inputModel: CreateUserDto): Promise<ObjectId> {
     const hash = inputModel.password + 'bad password';
 
-    const user: UserDBType = {
-      _id: new ObjectId(),
+    const user: Omit<UserDBType, '_id'> = {
       login: inputModel.login,
       email: inputModel.email,
       createdAt: new Date(),
-      // _id: new ObjectId(),
-      // accountData: {
-      //   userName: inputModel.login,
-      //   email: inputModel.email,
-      //   passwordHash: hash,
-      //   createdAt: new Date(),
-      // },
-      // emailConfirmation: {
-      //   confirmationCode: uuidv4(),
-      //   expirationDate: new Date(new Date().getHours() + 5),
-      //   isConfirmed: false,
-      // },
+      passwordHash: hash,
+      emailConfirmation: {
+        confirmationCode: uuidv4(),
+        expirationDate: new Date(new Date().getHours() + 5),
+        isConfirmed: false,
+      },
+      banInfo: {
+        isBanned: true,
+        banDate: new Date(),
+        banReason: 'new user',
+      },
     };
-    await this.usersRepository.createUser(user);
-    return user._id;
+    return await this.usersRepository.createUser(user);
   }
 
   async deleteUserById(userId: string): Promise<boolean> {

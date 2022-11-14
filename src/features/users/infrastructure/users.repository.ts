@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { UserDBType } from '../types/users.types';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersRepository {
@@ -8,8 +9,9 @@ export class UsersRepository {
     @Inject('USER_MODEL') private readonly userModel: Model<UserDBType>,
   ) {}
 
-  async createUser(newUserTypeDb: UserDBType) {
-    await this.userModel.create(newUserTypeDb);
+  async createUser(newUserTypeDb: Omit<UserDBType, '_id'>): Promise<ObjectId> {
+    const newUser = await this.userModel.create(newUserTypeDb);
+    return newUser._id;
   }
 
   async deleteUserById(userId: string): Promise<boolean> {

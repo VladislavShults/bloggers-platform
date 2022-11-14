@@ -136,7 +136,6 @@ export class BlogsController {
     const postDBType = await this.postsQueryRepository.getPostById(
       postObjectId.toString(),
     );
-    // const post = mapPostViewModelToModelWithoutLikes(postDBType);
 
     return postDBType;
   }

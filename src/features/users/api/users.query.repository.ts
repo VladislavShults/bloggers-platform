@@ -17,22 +17,12 @@ export class UsersQueryRepository {
   async getUserById(userId: string): Promise<ViewUserType | null> {
     const userDBType = await this.userModel.findById(userId);
     if (!userDBType) return null;
-    return {
-      id: userDBType._id.toString(),
-      login: userDBType.login,
-      email: userDBType.email,
-      createdAt: userDBType.createdAt,
-      // id: userDBType._id.toString(),
-      // login: userDBType.accountData.userName,
-      // email: userDBType.accountData.email,
-      // createdAt: userDBType.accountData.createdAt,
-    };
+    return mapUserDBTypeToViewType(userDBType);
   }
 
   async getUsers(query: QueryUserDto): Promise<ViewUsersTypeWithPagination> {
     const pageNumber: number = Number(query.pageNumber) || 1;
     const pageSize: number = Number(query.pageSize) || 10;
-    // const sortBy: string = query.sortBy || 'accountData.createdAt';
     const sortBy: string = query.sortBy || 'createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
     const searchLoginTerm: string | null = query.searchLoginTerm || null;
@@ -56,7 +46,6 @@ export class UsersQueryRepository {
 
     if (searchEmailTerm && !searchLoginTerm) {
       itemsDBType = await this.userModel
-        // .find({ 'accountData.email': { $regex: searchEmailTerm } })
         .find({ email: { $regex: searchEmailTerm, $options: 'i' } })
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
@@ -64,7 +53,6 @@ export class UsersQueryRepository {
         .lean();
 
       totalCount = await this.userModel.count({
-        // 'accountData.email': { $regex: searchEmailTerm, $option: 'i' },
         email: { $regex: searchEmailTerm, $options: 'i' },
       });
       pagesCount = Math.ceil(totalCount / pageSize);
@@ -73,7 +61,6 @@ export class UsersQueryRepository {
     if (!searchEmailTerm && searchLoginTerm) {
       itemsDBType = await this.userModel
         .find({
-          // 'accountData.userName': { $regex: searchLoginTerm, $option: 'i' },
           login: { $regex: searchLoginTerm, $options: 'i' },
         })
         .skip((pageNumber - 1) * pageSize)
@@ -82,7 +69,6 @@ export class UsersQueryRepository {
         .lean();
 
       totalCount = await this.userModel.count({
-        // 'accountData.userName': { $regex: searchLoginTerm, $option: 'i' },
         login: { $regex: searchLoginTerm, $options: 'i' },
       });
       pagesCount = Math.ceil(totalCount / pageSize);
@@ -92,9 +78,7 @@ export class UsersQueryRepository {
       itemsDBType = await this.userModel
         .find({
           $or: [
-            // 'accountData.login': { $regex: searchLoginTerm, $option: 'i' },
             { login: { $regex: searchLoginTerm, $options: 'i' } },
-            // 'accountData.email': { $regex: searchEmailTerm, $option: 'i' },
             { email: { $regex: searchEmailTerm, $options: 'i' } },
           ],
         })
@@ -103,13 +87,9 @@ export class UsersQueryRepository {
         .sort([[sortBy, sortDirection]])
         .lean();
 
-      console.log(itemsDBType);
-
       totalCount = await this.userModel.count({
         $or: [
-          // 'accountData.login': { $regex: searchLoginTerm, $option: 'i' },
           { login: { $regex: searchLoginTerm, $options: 'i' } },
-          // 'accountData.email': { $regex: searchEmailTerm, $option: 'i' },
           { email: { $regex: searchEmailTerm, $options: 'i' } },
         ],
       });

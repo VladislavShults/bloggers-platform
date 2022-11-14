@@ -1,4 +1,11 @@
+import { IsString, IsUrl, Length } from 'class-validator';
+
 export class CreateBlogDto {
-  readonly name: string;
-  readonly youtubeUrl: string;
+  @IsString()
+  @Length(0, 15)
+  name: string;
+
+  @IsUrl()
+  @Length(0, 100)
+  youtubeUrl: string;
 }

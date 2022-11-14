@@ -4,22 +4,20 @@ import { ObjectId } from 'mongodb';
 
 export const UserSchema = new mongoose.Schema<UserDBType>(
   {
-    _id: ObjectId,
     login: String,
     email: String,
     createdAt: Date,
-    // _id: ObjectId,
-    // accountData: {
-    //   userName: String,
-    //   email: String,
-    //   passwordHash: String,
-    //   createdAt: Date,
-    // },
-    // emailConfirmation: {
-    //   confirmationCode: String,
-    //   expirationDate: Date,
-    //   isConfirmed: Boolean,
-    // },
+    passwordHash: String,
+    emailConfirmation: {
+      confirmationCode: String,
+      expirationDate: Date,
+      isConfirmed: Boolean,
+    },
+    banInfo: {
+      isBanned: Boolean,
+      banDate: Date,
+      banReason: String,
+    },
   },
   {
     versionKey: false,

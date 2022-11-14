@@ -22,6 +22,7 @@ export class BlogsService {
   }
 
   async updateBlogById(blogId: string, name: string, youtubeUrl: string) {
+    if (blogId.length !== 24) return false;
     const blog = await this.blogsRepository.getBlogById(blogId);
     if (!blog) return false;
     blog.name = name;
@@ -32,6 +33,7 @@ export class BlogsService {
   }
 
   async deleteBlogById(blogId: string): Promise<boolean> {
+    if (blogId.length !== 24) return false;
     return await this.blogsRepository.deleteBlogById(blogId);
   }
 

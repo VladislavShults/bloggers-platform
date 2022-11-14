@@ -14,6 +14,7 @@ export class BlogsQueryRepository {
   ) {}
 
   async findBlogById(blogId: string): Promise<ViewBlogType | null> {
+    if (blogId.length !== 24) return null;
     const blogDBType = await this.blogModel.findById(blogId);
     if (!blogDBType) return null;
     const blog: ViewBlogType = mapBlog(blogDBType);

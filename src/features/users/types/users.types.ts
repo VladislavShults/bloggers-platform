@@ -20,6 +20,17 @@ export type UserDBType = {
   login: string;
   email: string;
   createdAt: Date;
+  passwordHash: string;
+  emailConfirmation: {
+    confirmationCode: string;
+    expirationDate: Date;
+    isConfirmed: boolean;
+  };
+  banInfo: {
+    isBanned: boolean;
+    banDate: Date | null;
+    banReason: string;
+  };
 };
 
 export type ViewUserType = {
@@ -27,6 +38,11 @@ export type ViewUserType = {
   login: string;
   email: string;
   createdAt: Date;
+  banInfo: {
+    isBanned: boolean;
+    banDate: Date;
+    banReason: string;
+  };
 };
 
 export type ViewUsersTypeWithPagination = {
