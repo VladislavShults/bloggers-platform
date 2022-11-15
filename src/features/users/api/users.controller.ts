@@ -5,7 +5,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpException,
   HttpStatus,
   Param,
   Post,
@@ -64,10 +63,7 @@ export class UsersController {
     @Param() params: URIParamUserDto,
     @Body() inputModel: BanUserDto,
   ): Promise<HttpStatus> {
-    const banAndUnban = await this.usersService.banAndUnbanUser(
-      params.userId,
-      inputModel,
-    );
+    await this.usersService.banAndUnbanUser(params.userId, inputModel);
     return;
   }
 }

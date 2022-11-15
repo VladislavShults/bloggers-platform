@@ -21,6 +21,7 @@ import { UsersService } from '../features/users/application/users.servive';
 import { UsersRepository } from '../features/users/infrastructure/users.repository';
 import { UsersQueryRepository } from '../features/users/api/users.query.repository';
 import { UsersController } from '../features/users/api/users.controller';
+import { likesMongooseConnection } from '../features/likes/likesMongooseConnection';
 
 @Module({
   imports: [DatabaseModule],
@@ -48,6 +49,7 @@ import { UsersController } from '../features/users/api/users.controller';
     ...postMongooseConnection,
     ...commentsMongooseConnection,
     ...usersMongooseConnection,
+    ...likesMongooseConnection,
   ],
 })
 export class BlogsPlatformModule {}
