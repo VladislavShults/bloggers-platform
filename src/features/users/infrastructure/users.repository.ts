@@ -18,4 +18,14 @@ export class UsersRepository {
     const result = await this.userModel.deleteOne({ _id: userId });
     return result.deletedCount > 0;
   }
+
+  async getUser(userId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) return null;
+    return user;
+  }
+
+  async updateUser(user) {
+    await user.save();
+  }
 }

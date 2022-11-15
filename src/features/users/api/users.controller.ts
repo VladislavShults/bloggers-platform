@@ -9,6 +9,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { CreateUserDto } from './models/create-user.dto';
@@ -20,6 +21,7 @@ import { UsersService } from '../application/users.servive';
 import { UsersQueryRepository } from './users.query.repository';
 import { QueryUserDto } from './models/query-user.dto';
 import { URIParamUserDto } from './models/URIParam-user.dto';
+import { BanUserDto } from './models/ban-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -53,6 +55,19 @@ export class UsersController {
       throw new BadRequestException([
         { message: 'Bad user id', field: 'userId' },
       ]);
+    return;
+  }
+
+  @Put(':userId/ban')
+  @HttpCode(204)
+  async banAndUnbanUser(
+    @Param() params: URIParamUserDto,
+    @Body() inputModel: BanUserDto,
+  ): Promise<HttpStatus> {
+    const banAndUnban = await this.usersService.banAndUnbanUser(
+      params.userId,
+      inputModel,
+    );
     return;
   }
 }
