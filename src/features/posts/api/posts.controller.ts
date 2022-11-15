@@ -10,6 +10,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreatePostDto } from './models/create-post.dto';
 import { ObjectId } from 'mongodb';
@@ -27,6 +28,8 @@ import {
 import { CommentsService } from '../../comments/application/comments.service';
 import { CommentsQueryRepository } from '../../comments/api/comments.query.repository';
 import { QueryPostDto } from './models/query-post.dto';
+import { LikeStatusPostDto } from './models/like-status.post.dto';
+import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -39,6 +42,7 @@ export class PostsController {
   ) {}
   @Post()
   @HttpCode(201)
+  @UseGuards(BasicAuthGuard)
   async createPost(
     @Body() createPostDTO: CreatePostDto,
   ): Promise<ViewPostWithoutLikesType> {
@@ -76,6 +80,7 @@ export class PostsController {
 
   @Put(':postId')
   @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
   async updatePost(
     @Param() params: URIParamPostDto,
     @Body() inputModel: UpdatePostDto,
@@ -91,6 +96,7 @@ export class PostsController {
 
   @Delete(':postId')
   @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
   async deletePostById(@Param() params: URIParamPostDto): Promise<HttpStatus> {
     const result = await this.postsService.deletePostById(params.postId);
     if (!result)
@@ -127,5 +133,18 @@ export class PostsController {
     if (!comments)
       throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
     return comments;
+  }
+  @Put(':postId/like-status')
+  @HttpCode(204)
+  async makeLikeOrUnlike(
+    @Param() params: URIParamPostDto,
+    @Body() inputModel: LikeStatusPostDto,
+  ) {
+    // const userId: ObjectId | null = await extractUserIdFromHeaders(req);
+    await this.postsService.makeLikeOrUnlike(
+      params.postId,
+      inputModel.likeStatus,
+    );
+    return;
   }
 }

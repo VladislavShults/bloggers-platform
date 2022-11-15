@@ -10,6 +10,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './models/create-user.dto';
 import {
@@ -21,6 +22,7 @@ import { UsersQueryRepository } from './users.query.repository';
 import { QueryUserDto } from './models/query-user.dto';
 import { URIParamUserDto } from './models/URIParam-user.dto';
 import { BanUserDto } from './models/ban-user.dto';
+import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -30,6 +32,7 @@ export class UsersController {
   ) {}
   @Post()
   @HttpCode(201)
+  @UseGuards(BasicAuthGuard)
   async createUser(@Body() inputModel: CreateUserDto): Promise<ViewUserType> {
     const userObjectId = await this.usersService.createUser(inputModel);
     const user = await this.usersQueryRepository.getUserById(
@@ -39,6 +42,7 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(BasicAuthGuard)
   async getUsers(
     @Query() query: QueryUserDto,
   ): Promise<ViewUsersTypeWithPagination> {
@@ -48,6 +52,7 @@ export class UsersController {
 
   @Delete(':userId')
   @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
   async deleteUserById(@Param() params: URIParamUserDto): Promise<HttpStatus> {
     const deletedUser = await this.usersService.deleteUserById(params.userId);
     if (!deletedUser)
@@ -59,6 +64,7 @@ export class UsersController {
 
   @Put(':userId/ban')
   @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
   async banAndUnbanUser(
     @Param() params: URIParamUserDto,
     @Body() inputModel: BanUserDto,

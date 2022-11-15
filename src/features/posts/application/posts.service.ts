@@ -51,4 +51,11 @@ export class PostsService {
     if (postId.length !== 24) return false;
     return true;
   };
+
+  async makeLikeOrUnlike(
+    postId: string,
+    likeStatus: 'Like' | 'Dislike' | 'None',
+  ) {
+    if (postId.length !== 24) return;
+  }
 }

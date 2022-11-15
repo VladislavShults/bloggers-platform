@@ -1,13 +1,14 @@
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 
-export const jwtUtility = {
+export class jwtUtility {
   async createJWT(userId: string, expiresTime: string) {
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
       expiresIn: expiresTime,
     });
     return token;
-  },
+  }
+
   async createRefreshJWT(
     userId: string,
     deviceId: string,
@@ -17,7 +18,8 @@ export const jwtUtility = {
       expiresIn: expiresTime,
     });
     return token;
-  },
+  }
+
   async extractUserIdFromToken(token: string): Promise<ObjectId | null> {
     try {
       const result: any = jwt.verify(token, process.env.JWT_SECRET);
@@ -25,5 +27,5 @@ export const jwtUtility = {
     } catch (error) {
       return null;
     }
-  },
-};
+  }
+}
