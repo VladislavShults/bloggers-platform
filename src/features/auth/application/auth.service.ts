@@ -1,5 +1,8 @@
 import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { Injectable } from '@nestjs/common';
+import { UserDBType } from '../../users/types/users.types';
+import { v4 as uuidv4 } from 'uuid';
+import add from 'date-fns/add';
 
 @Injectable()
 export class AuthService {
@@ -30,25 +33,36 @@ export class AuthService {
   //     expirationTime,
   //   );
   // }
-  //
-  // async refreshConfirmationCode(email: string): Promise<string | null> {
-  //   return await this.usersRepository.refreshConfirmationCode(email);
-  // }
-  //
-  // async findAccountByConfirmationCode(
-  //   code: string,
-  // ): Promise<UserDBType | null> {
-  //   return await this.usersRepository.findAccountByConfirmationCode(code);
-  // }
-  //
-  // async confirmAccount(accountId: string): Promise<boolean> {
-  //   return await this.usersRepository.confirmedAccount(accountId);
-  // }
-  //
-  // async accountIsConfirmed(email: string): Promise<boolean> {
-  //   return await this.usersRepository.accountIsConfirmed(email);
-  // }
-  //
+
+  async refreshConfirmationCode(email: string): Promise<string | null> {
+    const user = await this.usersRepository.getUserByEmail(email);
+    if (!user) return null;
+    user.emailConfirmation.confirmationCode = uuidv4;
+    user.emailConfirmation.expirationDate = add(new Date(), { hours: 5 });
+    const update = await this.usersRepository.updateUser(user);
+    if (update) return user.emailConfirmation.confirmationCode;
+    return null;
+  }
+
+  async findAccountByConfirmationCode(
+    code: string,
+  ): Promise<UserDBType | null> {
+    const account = await this.usersRepository.findAccountByConfirmationCode(
+      code,
+    );
+    if (!account) return null;
+    if (new Date() > account.emailConfirmation.expirationDate) return null;
+    return account;
+  }
+
+  async confirmAccount(accountId: string): Promise<boolean> {
+    return await this.usersRepository.confirmedAccount(accountId);
+  }
+
+  async accountIsConfirmed(email: string): Promise<boolean> {
+    return await this.usersRepository.accountIsConfirmed(email);
+  }
+
   // async addRefreshTokenToBlackList(refreshToken: string) {
   //   await this.usersRepository.addRefreshTokenToBlackList(refreshToken);
   // }

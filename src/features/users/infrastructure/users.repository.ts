@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { UserDBType } from '../types/users.types';
 import { ObjectId } from 'mongodb';
+import add from 'date-fns/add';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UsersRepository {
@@ -25,7 +27,37 @@ export class UsersRepository {
     return user;
   }
 
-  async updateUser(user) {
-    await user.save();
+  async updateUser(user): Promise<boolean> {
+    const update = await user.save();
+    return update.modifiedPaths.length > 0;
+  }
+
+  async findAccountByConfirmationCode(
+    code: string,
+  ): Promise<UserDBType | null> {
+    const account = await this.userModel.findOne({
+      'emailConfirmation.confirmationCode': code,
+    });
+    if (!account) return null;
+    return account;
+  }
+
+  async confirmedAccount(accountId: string): Promise<boolean> {
+    const confirmAccount = await this.userModel.updateOne(
+      { _id: accountId },
+      { $set: { 'emailConfirmation.isConfirmed': true } },
+      {},
+    );
+    return confirmAccount.matchedCount === 1;
+  }
+
+  async getUserByEmail(email: string) {
+    return this.userModel.findOne({ email: email });
+  }
+
+  async accountIsConfirmed(email: string): Promise<boolean> {
+    const account = await this.userModel.findOne({ email: email });
+    if (!account) return true;
+    return !!account.emailConfirmation.isConfirmed;
   }
 }

@@ -1,7 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { UserDBType } from '../../users/types/users.types';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersRepository {
+  constructor(
+    @Inject('USER_MODEL') private readonly userModel: Model<UserDBType>,
+  ) {}
   //   async getUsers(
   //     pageNumber: number,
   //     pageSize: number,
@@ -91,16 +96,16 @@ export class UsersRepository {
   //     return userWithNewConfirmationCode!.emailConfirmation.confirmationCode;
   //   }
   //
-  //   async findAccountByConfirmationCode(
-  //     code: string,
-  //   ): Promise<UserDBType | null> {
-  //     const account = await UserModel.findOne({
-  //       'emailConfirmation.confirmationCode': code,
-  //     });
-  //     if (!account) return null;
-  //     if (new Date() > account.emailConfirmation.expirationDate) return null;
-  //     return account;
-  //   }
+  async findAccountByConfirmationCode(
+    code: string,
+  ): Promise<UserDBType | null> {
+    const account = await this.userModel.findOne({
+      'emailConfirmation.confirmationCode': code,
+    });
+    if (!account) return null;
+    if (new Date() > account.emailConfirmation.expirationDate) return null;
+    return account;
+  }
   //
   //   async confirmedAccount(accountId: string): Promise<boolean> {
   //     const confirmAccount = await UserModel.updateOne(

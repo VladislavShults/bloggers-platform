@@ -14,6 +14,9 @@ import { UsersService } from '../../users/application/users.servive';
 import { CreateUserDto } from '../../users/api/models/create-user.dto';
 import { UsersQueryRepository } from '../../users/api/users.query.repository';
 import { CheckDuplicateEmailGuard } from '../guards/check-duplicate-email.guard';
+import { RegistrationConfirmationAuthDto } from './models/registration-confirmation.auth.dto';
+import { createErrorMessage } from '../helpers/create-error-message';
+import { RegistrationEmailResendingAuthDto } from './models/registration-email-resending.auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -37,6 +40,47 @@ export class AuthController {
       user!.emailConfirmation.confirmationCode,
     );
     return;
+  }
+
+  @Post('registration-confirmation')
+  @HttpCode(204)
+  async registrationConfirmation(
+    @Body()
+    inputModel: RegistrationConfirmationAuthDto,
+  ): Promise<HttpStatus> {
+    const userByConfirmationCode =
+      await this.authService.findAccountByConfirmationCode(inputModel.code);
+    if (!userByConfirmationCode)
+      throw new BadRequestException(createErrorMessage('Code'));
+    if (userByConfirmationCode.emailConfirmation.isConfirmed)
+      throw new BadRequestException(createErrorMessage('Code'));
+    const verifiedAccount = await this.authService.confirmAccount(
+      userByConfirmationCode._id.toString(),
+    );
+    if (!verifiedAccount) {
+      throw new BadRequestException(createErrorMessage('Code'));
+    }
+    return;
+  }
+
+  @Post('registration-email-resending')
+  @HttpCode(204)
+  async registrationEmailResending(
+    @Body() inputModel: RegistrationEmailResendingAuthDto,
+  ): Promise<HttpStatus> {
+    const confirmationCode = await this.authService.refreshConfirmationCode(
+      inputModel.email,
+    );
+    const accountIsConfirmed = await this.authService.accountIsConfirmed(
+      inputModel.email,
+    );
+    if (confirmationCode && !accountIsConfirmed) {
+      await this.emailService.sendEmailRecoveryCode(
+        inputModel.email,
+        confirmationCode,
+      );
+      return;
+    } else throw new BadRequestException(createErrorMessage('Email'));
   }
 
   // create(@Body() createAuthDto: CreateAuthDto) {

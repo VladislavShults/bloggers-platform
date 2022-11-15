@@ -8,6 +8,7 @@ import { Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { UserDBType } from '../../users/types/users.types';
 import { Request } from 'express';
+import { createErrorMessage } from '../helpers/create-error-message';
 
 @Injectable()
 export class CheckDuplicateEmailGuard implements CanActivate {
@@ -20,9 +21,7 @@ export class CheckDuplicateEmailGuard implements CanActivate {
       email: request.body.email,
     });
     if (duplicatedEmail.length > 0)
-      throw new BadRequestException([
-        { message: 'Email duplicated', field: 'Email' },
-      ]);
+      throw new BadRequestException(createErrorMessage('Email'));
     return true;
   }
 }
