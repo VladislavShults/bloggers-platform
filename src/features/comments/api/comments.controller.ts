@@ -8,15 +8,18 @@ import {
   HttpStatus,
   Param,
   Put,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { CommentsService } from '../application/comments.service';
 import { CommentsRepository } from '../infrastructure/comments.repository';
 import { CommentsQueryRepository } from './comments.query.repository';
 import { URIParamCommentDto } from './models/URIParam-comment.dto';
 import { ViewCommentType } from '../types/comments.types';
-import { URIParamBlogDto } from '../../blogs/api/models/URIParam-blog.dto';
-import { UpdateBlogDto } from '../../blogs/api/models/update-blog.dto';
 import { UpdateCommentDto } from './models/update-comment.dto';
+import { URIParamPostDto } from '../../posts/api/models/URIParam-post.dto';
+import { LikeStatusCommentDto } from './models/like-status.comment.dto';
+import { JwtAuthGuard } from '../../auth/guards/JWT-auth.guard';
 
 @Controller('comments')
 export class CommentsController {
@@ -39,6 +42,7 @@ export class CommentsController {
 
   @Delete(':commentId')
   @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
   async deleteCommentById(
     @Param() params: URIParamCommentDto,
   ): Promise<HttpStatus> {
@@ -52,6 +56,7 @@ export class CommentsController {
 
   @Put(':commentId')
   @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
   async updateCommentById(
     @Param() params: URIParamCommentDto,
     @Body() updateCommentDTO: UpdateCommentDto,
@@ -62,6 +67,22 @@ export class CommentsController {
     );
     if (!updateComment)
       throw new HttpException('COMMENT NOT FOUND', HttpStatus.NOT_FOUND);
+    return;
+  }
+
+  @Put(':commentId/like-status')
+  @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
+  async makeLikeOrUnlike(
+    @Param() params: URIParamPostDto,
+    @Body() inputModel: LikeStatusCommentDto,
+    @Request() req,
+  ) {
+    const userId = req.user._id;
+    await this.commentsService.makeLikeOrUnlike(
+      params.postId,
+      inputModel.likeStatus,
+    );
     return;
   }
 }

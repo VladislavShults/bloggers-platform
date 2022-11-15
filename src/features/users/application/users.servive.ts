@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { addHours } from 'date-fns';
 import { UsersRepository } from '../infrastructure/users.repository';
 import { ObjectId } from 'mongodb';
 import { CreateUserDto } from '../api/models/create-user.dto';
@@ -23,7 +24,7 @@ export class UsersService {
       passwordHash: hash,
       emailConfirmation: {
         confirmationCode: uuidv4(),
-        expirationDate: new Date(new Date().getHours() + 5),
+        expirationDate: addHours(new Date(), 5),
         isConfirmed: false,
       },
       banInfo: {

@@ -14,10 +14,16 @@ export class UsersQueryRepository {
     @Inject('USER_MODEL') private readonly userModel: Model<UserDBType>,
   ) {}
 
-  async getUserById(userId: string): Promise<ViewUserType | null> {
+  async getUserByIdViewType(userId: string): Promise<ViewUserType | null> {
     const userDBType = await this.userModel.findById(userId);
     if (!userDBType) return null;
     return mapUserDBTypeToViewType(userDBType);
+  }
+
+  async getUserByIdDBType(userId: string): Promise<UserDBType | null> {
+    const userDBType = await this.userModel.findById(userId);
+    if (!userDBType) return null;
+    return userDBType;
   }
 
   async getUsers(query: QueryUserDto): Promise<ViewUsersTypeWithPagination> {

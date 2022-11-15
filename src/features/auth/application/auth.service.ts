@@ -1,9 +1,5 @@
 import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { Injectable } from '@nestjs/common';
-import { UserDBType } from '../../users/types/users.types';
-import { jwtUtility } from '../../../JWT-utility/jwt-utility';
-import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {

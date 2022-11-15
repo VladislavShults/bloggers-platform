@@ -1,0 +1,28 @@
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  BadRequestException,
+} from '@nestjs/common';
+import { Inject } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { UserDBType } from '../../users/types/users.types';
+import { Request } from 'express';
+
+@Injectable()
+export class CheckDuplicateEmailGuard implements CanActivate {
+  constructor(
+    @Inject('USER_MODEL') private readonly userModel: Model<UserDBType>,
+  ) {}
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request: Request = context.switchToHttp().getRequest();
+    const duplicatedEmail = await this.userModel.find({
+      email: request.body.email,
+    });
+    if (duplicatedEmail.length > 0)
+      throw new BadRequestException([
+        { message: 'Email duplicated', field: 'Email' },
+      ]);
+    return true;
+  }
+}

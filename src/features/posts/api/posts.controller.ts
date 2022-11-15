@@ -30,6 +30,7 @@ import { CommentsQueryRepository } from '../../comments/api/comments.query.repos
 import { QueryPostDto } from './models/query-post.dto';
 import { LikeStatusPostDto } from './models/like-status.post.dto';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/JWT-auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -106,6 +107,7 @@ export class PostsController {
 
   @Post(':postId/comments')
   @HttpCode(201)
+  @UseGuards(JwtAuthGuard)
   async createCommentByPost(
     @Param() params: URIParamPostDto,
     @Body() inputModel: CreateCommentDto,
@@ -136,6 +138,7 @@ export class PostsController {
   }
   @Put(':postId/like-status')
   @HttpCode(204)
+  @UseGuards(JwtAuthGuard)
   async makeLikeOrUnlike(
     @Param() params: URIParamPostDto,
     @Body() inputModel: LikeStatusPostDto,
