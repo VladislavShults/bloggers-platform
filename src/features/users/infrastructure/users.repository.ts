@@ -64,4 +64,8 @@ export class UsersRepository {
   async findByLogin(login: string): Promise<UserDBType | null> {
     return this.userModel.findOne({ login: login });
   }
+
+  async findUserByEmail(email: string): Promise<UserDBType | null> {
+    return this.userModel.findOne({ email: email });
+  }
 }

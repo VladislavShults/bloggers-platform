@@ -11,6 +11,7 @@ import { extractExpiresDateFromRefreshToken } from '../helpers/extractExpiresDat
 import { RefreshTokenDBType } from '../../refresh-token/types/refresh-token.types';
 import { AuthRepository } from '../infrastrucrure/auth.repository';
 import { ObjectId } from 'mongodb';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -24,10 +25,10 @@ export class AuthService {
     return await this.usersRepository.findByLogin(login);
   }
 
-  // async generateHash(password: string) {
-  //   return await bcrypt.hash(password, 10);
-  // }
-  //
+  async generateHash(password: string) {
+    return await bcrypt.hash(password, 10);
+  }
+
   // async isPasswordCorrect(password: string, hash: string) {
   //   return await bcrypt.compare(password, hash);
   // }

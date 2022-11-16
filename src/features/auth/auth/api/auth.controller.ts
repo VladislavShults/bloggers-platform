@@ -23,6 +23,7 @@ import { response } from 'express';
 import { AccesssTokenAuthDto } from './models/accesss-token.auth.dto';
 import { JwtUtility } from '../../../../JWT-utility/jwt-utility';
 import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
+import { EmailAuthDto } from './models/email-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -153,6 +154,19 @@ export class AuthController {
     });
 
     return { accessToken: newAccessToken };
+  }
+
+  @Post('passwordRecovery')
+  @HttpCode(204)
+  async passwordRecovery(@Body() inputModel: EmailAuthDto) {
+    const email = inputModel.email;
+    const user = await this.usersService.findUserByEmail(email);
+    if (!user) return;
+    await this.emailService.sendEmailRecoveryCode(
+      inputModel.email,
+      user.emailConfirmation.confirmationCode,
+    );
+    return;
   }
 
   // create(@Body() createAuthDto: CreateAuthDto) {

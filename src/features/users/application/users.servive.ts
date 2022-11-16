@@ -6,16 +6,19 @@ import { CreateUserDto } from '../api/models/create-user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { UserDBType } from '../types/users.types';
 import { BanUserDto } from '../api/models/ban-user.dto';
+import { AuthService } from '../../auth/auth/application/auth.service';
 
 @Injectable()
 export class UsersService {
   constructor(
-    // private readonly authService: AuthService,
+    private readonly authService: AuthService,
     private readonly usersRepository: UsersRepository,
   ) {}
 
   async createUser(inputModel: CreateUserDto): Promise<ObjectId> {
-    const hash = inputModel.password + 'bad password';
+    const hash: string = await this.authService.generateHash(
+      inputModel.password,
+    );
 
     const user: Omit<UserDBType, '_id'> = {
       login: inputModel.login,
@@ -61,5 +64,9 @@ export class UsersService {
       await this.usersRepository.updateUser(user);
       return;
     }
+  }
+
+  async findUserByEmail(email: string): Promise<UserDBType | null> {
+    return await this.usersRepository.findUserByEmail(email);
   }
 }
