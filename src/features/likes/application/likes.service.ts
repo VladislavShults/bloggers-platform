@@ -17,4 +17,11 @@ export class LikesService {
   async updateLike(likeInDb) {
     await this.likesRepository.updateLike(likeInDb);
   }
+
+  async findLikeByUserIdAndCommentId(userId: string, commentId: string) {
+    return await this.likesRepository.findLikeByUserIdAndCommentId(
+      userId,
+      commentId,
+    );
+  }
 }

@@ -14,7 +14,7 @@ import { EmailService } from '../../../../infrastructure/SMTP-adapter/email-serv
 import { UsersService } from '../../../users/application/users.servive';
 import { CreateUserDto } from '../../../users/api/models/create-user.dto';
 import { UsersQueryRepository } from '../../../users/api/users.query.repository';
-import { CheckDuplicateEmailGuard } from '../guards/check-duplicate-email.guard';
+import { CheckDuplicatedEmailGuard } from '../guards/check-duplicated-email-guard.service';
 import { RegistrationConfirmationAuthDto } from './models/registration-confirmation.auth.dto';
 import { createErrorMessage } from '../helpers/create-error-message';
 import { RegistrationEmailResendingAuthDto } from './models/registration-email-resending.auth.dto';
@@ -28,6 +28,7 @@ import { EmailAuthDto } from './models/email-auth.dto';
 import { NewPasswordAuthDto } from './models/new-password.auth.dto';
 import { JwtAuthGuard } from '../guards/JWT-auth.guard';
 import { InfoAboutMeType } from '../types/info-about-me-type';
+import { CheckDuplicatedLoginGuard } from '../guards/check-duplicated-login.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -41,7 +42,7 @@ export class AuthController {
 
   @Post('registration')
   @HttpCode(204)
-  @UseGuards(CheckDuplicateEmailGuard)
+  @UseGuards(CheckDuplicatedEmailGuard, CheckDuplicatedLoginGuard)
   async registration(@Body() inputModel: CreateUserDto): Promise<HttpStatus> {
     const newUserObjectId = await this.usersService.createUser(inputModel);
     const user = await this.usersQueryRepository.getUserByIdDBType(

@@ -11,7 +11,7 @@ import { Request } from 'express';
 import { createErrorMessage } from '../helpers/create-error-message';
 
 @Injectable()
-export class CheckDuplicateEmailGuard implements CanActivate {
+export class CheckDuplicatedEmailGuard implements CanActivate {
   constructor(
     @Inject('USER_MODEL') private readonly userModel: Model<UserDBType>,
   ) {}

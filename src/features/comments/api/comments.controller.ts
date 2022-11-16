@@ -17,7 +17,6 @@ import { CommentsQueryRepository } from './comments.query.repository';
 import { URIParamCommentDto } from './models/URIParam-comment.dto';
 import { ViewCommentType } from '../types/comments.types';
 import { UpdateCommentDto } from './models/update-comment.dto';
-import { URIParamPostDto } from '../../posts/api/models/URIParam-post.dto';
 import { LikeStatusCommentDto } from './models/like-status.comment.dto';
 import { JwtAuthGuard } from '../../auth/auth/guards/JWT-auth.guard';
 
@@ -74,13 +73,14 @@ export class CommentsController {
   @HttpCode(204)
   @UseGuards(JwtAuthGuard)
   async makeLikeOrUnlike(
-    @Param() params: URIParamPostDto,
+    @Param() params: URIParamCommentDto,
     @Body() inputModel: LikeStatusCommentDto,
     @Request() req,
   ) {
-    const userId = req.user._id;
+    const user = req.user;
     await this.commentsService.makeLikeOrUnlike(
-      params.postId,
+      params.commentId,
+      user,
       inputModel.likeStatus,
     );
     return;

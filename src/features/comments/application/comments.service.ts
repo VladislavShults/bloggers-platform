@@ -3,10 +3,15 @@ import { CommentsRepository } from '../infrastructure/comments.repository';
 import { CreateCommentDto } from '../api/models/create-comment.dto';
 import { CommentDBType } from '../types/comments.types';
 import { ObjectId } from 'mongodb';
+import { LikeDBType, LikeType } from '../../likes/types/likes.types';
+import { LikesService } from '../../likes/application/likes.service';
 
 @Injectable()
 export class CommentsService {
-  constructor(private readonly commentsRepository: CommentsRepository) {}
+  constructor(
+    private readonly commentsRepository: CommentsRepository,
+    private readonly likesService: LikesService,
+  ) {}
 
   async createCommentByPost(
     postId: string,
@@ -37,9 +42,141 @@ export class CommentsService {
   }
 
   async makeLikeOrUnlike(
-    postId: string,
-    likeStatus: 'Like' | 'Dislike' | 'None',
-  ) {
-    if (postId.length !== 24) return;
+    commentId: string,
+    user,
+    likeStatus: LikeType,
+  ): Promise<boolean> {
+    const comment = await this.commentsRepository.getCommentById(commentId);
+    if (!comment) return false;
+    if (likeStatus === 'Like') {
+      return await this.makeLike(commentId, user);
+    }
+    if (likeStatus === 'Dislike') {
+      return await this.makeDislike(commentId, user);
+    }
+    if (likeStatus === 'None') {
+      return await this.resetLike(commentId, user);
+    }
+    return true;
+  }
+
+  private async makeLike(commentId: string, user): Promise<boolean> {
+    const comment = await this.commentsRepository.getCommentById(commentId);
+    const myLike = await this.likesService.findLikeByUserIdAndCommentId(
+      user._id.toString(),
+      commentId,
+    );
+
+    let myStatus: string;
+    if (!myLike) myStatus = null;
+    else myStatus = myLike.status;
+
+    if (comment && myStatus === 'Dislike') {
+      comment.likesCount += 1;
+      comment.dislikesCount -= 1;
+      myLike.addedAt = new Date();
+      myLike.status = 'Like';
+      await this.commentsRepository.updateComment(comment);
+      await this.likesService.updateLike(myLike);
+      return true;
+    }
+    if (comment && myStatus === null) {
+      comment.likesCount += 1;
+      const like: Omit<LikeDBType, '_id'> = {
+        idObject: comment._id,
+        userId: user._id,
+        login: user.login,
+        addedAt: new Date(),
+        status: 'Like',
+        postOrComment: 'comment',
+      };
+      await this.commentsRepository.updateComment(comment);
+      await this.likesService.saveLikeOrUnlike(like);
+      return true;
+    }
+    if (comment && myStatus === 'None') {
+      comment.likesCount += 1;
+      myLike.status = 'Like';
+      myLike.addedAt = new Date();
+      await this.commentsRepository.updateComment(comment);
+      await this.likesService.updateLike(myLike);
+      return true;
+    }
+    return true;
+  }
+
+  private async makeDislike(commentId: string, user): Promise<boolean> {
+    const comment = await this.commentsRepository.getCommentById(commentId);
+    const myLike = await this.likesService.findLikeByUserIdAndCommentId(
+      user._id.toString(),
+      commentId,
+    );
+
+    let myStatus: string;
+    if (!myLike) myStatus = null;
+    else myStatus = myLike.status;
+
+    if (comment && myStatus === 'Like') {
+      comment.likesCount -= 1;
+      comment.dislikesCount += 1;
+      myLike.addedAt = new Date();
+      myLike.status = 'Dislike';
+      await this.commentsRepository.updateComment(comment);
+      await this.likesService.updateLike(myLike);
+      return true;
+    }
+    if (comment && myStatus === null) {
+      comment.dislikesCount += 1;
+      const like: Omit<LikeDBType, '_id'> = {
+        idObject: comment._id,
+        userId: user._id,
+        login: user.login,
+        addedAt: new Date(),
+        status: 'Dislike',
+        postOrComment: 'comment',
+      };
+      await this.commentsRepository.updateComment(comment);
+      await this.likesService.saveLikeOrUnlike(like);
+      return true;
+    }
+    if (comment && myStatus === 'None') {
+      comment.dislikesCount += 1;
+      myLike.status = 'Dislike';
+      myLike.addedAt = new Date();
+      await this.commentsRepository.updateComment(comment);
+      await this.likesService.updateLike(myLike);
+      return true;
+    }
+    return true;
+  }
+
+  private async resetLike(commentId: string, user): Promise<boolean> {
+    const comment = await this.commentsRepository.getCommentById(commentId);
+    const myLike = await this.likesService.findLikeByUserIdAndPostId(
+      user._id.toString(),
+      commentId,
+    );
+
+    let myStatus: string;
+    if (!myLike) myStatus = null;
+    else myStatus = myLike.status;
+
+    if (comment && myStatus === 'Like') {
+      comment.likesCount -= 1;
+      myLike.addedAt = new Date();
+      myLike.status = 'None';
+      await this.commentsRepository.updateComment(comment);
+      await this.likesService.updateLike(myLike);
+      return true;
+    }
+    if (comment && myStatus === 'Dislike') {
+      comment.dislikesCount -= 1;
+      myLike.addedAt = new Date();
+      myLike.status = 'None';
+      await this.commentsRepository.updateComment(comment);
+      await this.likesService.updateLike(myLike);
+      return true;
+    }
+    return true;
   }
 }

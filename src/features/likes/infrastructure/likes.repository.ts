@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { PostDBType } from '../../posts/types/posts.types';
 import { LikeDBType } from '../types/likes.types';
 
 @Injectable()
@@ -25,5 +24,15 @@ export class LikesRepository {
 
   async updateLike(likeInDb) {
     await likeInDb.save();
+  }
+
+  async findLikeByUserIdAndCommentId(userId: string, commentId: string) {
+    const like = await this.likesModel.findOne({
+      idObject: commentId,
+      userId: userId,
+      postOrComment: 'comment',
+    });
+    if (!like) return null;
+    return like;
   }
 }
