@@ -14,7 +14,7 @@ import { EmailService } from '../../../../infrastructure/SMTP-adapter/email-serv
 import { UsersService } from '../../../users/application/users.servive';
 import { CreateUserDto } from '../../../users/api/models/create-user.dto';
 import { UsersQueryRepository } from '../../../users/api/users.query.repository';
-import { CheckDuplicatedEmailGuard } from '../guards/check-duplicated-email-guard.service';
+import { CheckDuplicatedEmailGuard } from '../guards/check-duplicated-email-guard';
 import { RegistrationConfirmationAuthDto } from './models/registration-confirmation.auth.dto';
 import { createErrorMessage } from '../helpers/create-error-message';
 import { RegistrationEmailResendingAuthDto } from './models/registration-email-resending.auth.dto';
