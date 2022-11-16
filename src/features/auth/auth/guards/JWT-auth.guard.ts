@@ -6,14 +6,14 @@ import {
   Inject,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { JwtUtility } from '../../../../JWT-utility/jwt-utility';
+import { JwtService } from '../../../../JWT-utility/jwt-service';
 import { Model } from 'mongoose';
 import { UserDBType } from '../../../users/types/users.types';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
-    private readonly jwtUtility: JwtUtility,
+    private readonly jwtUtility: JwtService,
     @Inject('USER_MODEL') private readonly userModel: Model<UserDBType>,
   ) {}
 

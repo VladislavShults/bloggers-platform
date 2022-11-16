@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -21,10 +22,12 @@ import { LoginAuthDto } from './models/login.auth.dto';
 import { AccessTokenViewModel } from './models/accessTokenViewModel';
 import { response } from 'express';
 import { AccesssTokenAuthDto } from './models/accesss-token.auth.dto';
-import { JwtUtility } from '../../../../JWT-utility/jwt-utility';
+import { JwtService } from '../../../../JWT-utility/jwt-service';
 import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
 import { EmailAuthDto } from './models/email-auth.dto';
 import { NewPasswordAuthDto } from './models/new-password.auth.dto';
+import { JwtAuthGuard } from '../guards/JWT-auth.guard';
+import { InfoAboutMeType } from '../types/info-about-me-type';
 
 @Controller('auth')
 export class AuthController {
@@ -33,7 +36,7 @@ export class AuthController {
     private readonly emailService: EmailService,
     private readonly usersService: UsersService,
     private readonly usersQueryRepository: UsersQueryRepository,
-    private readonly jwtUtility: JwtUtility,
+    private readonly jwtService: JwtService,
   ) {}
 
   @Post('registration')
@@ -130,7 +133,7 @@ export class AuthController {
     @Request() req,
   ): Promise<AccessTokenViewModel> {
     const oldRefreshToken = req.cookies?.refreshToken;
-    const userId = await this.jwtUtility.extractUserIdFromToken(
+    const userId = await this.jwtService.extractUserIdFromToken(
       oldRefreshToken,
     );
     const deviceId = extractDeviceIdFromRefreshToken(oldRefreshToken);
@@ -138,7 +141,7 @@ export class AuthController {
       userId!.toString(),
       '600000',
     );
-    const newRefreshToken = await this.jwtUtility.createRefreshJWT(
+    const newRefreshToken = await this.jwtService.createRefreshJWT(
       userId!.toString(),
       deviceId!,
       '200000',
@@ -189,27 +192,22 @@ export class AuthController {
     return;
   }
 
-  // create(@Body() createAuthDto: CreateAuthDto) {
-  //   return this.authService.create(createAuthDto);
-  // }
-  //
-  // @Get()
-  // findAll() {
-  //   return this.authService.findAll();
-  // }
-  //
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authService.findOne(+id);
-  // }
-  //
-  // @Put(':id')
-  // update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-  //   return this.authService.update(+id, updateAuthDto);
-  // }
-  //
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.authService.remove(+id);
-  // }
+  @Post('logout')
+  @HttpCode(204)
+  async logout(@Request() req): Promise<HttpStatus> {
+    const refreshToken = req.cookies?.refreshToken;
+    await this.authService.deleteRefreshToken(refreshToken);
+    return;
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async infoAboutMe(@Request() req): Promise<InfoAboutMeType> {
+    const token: string = req.headers.authorization!.split(' ')[1];
+    const userId = await this.jwtService.extractUserIdFromToken(token);
+    const user = await this.usersQueryRepository.returnInfoAboutMe(
+      userId!.toString(),
+    );
+    return user;
+  }
 }

@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 
-export class JwtUtility {
+export class JwtService {
   async createJWT(userId: string, expiresTime: string) {
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
       expiresIn: expiresTime,

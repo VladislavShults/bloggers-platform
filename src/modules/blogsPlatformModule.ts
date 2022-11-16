@@ -23,12 +23,13 @@ import { UsersQueryRepository } from '../features/users/api/users.query.reposito
 import { UsersController } from '../features/users/api/users.controller';
 import { likesMongooseConnection } from '../features/likes/likesMongooseConnection';
 import { AuthController } from '../features/auth/auth/api/auth.controller';
-import { JwtUtility } from '../JWT-utility/jwt-utility';
+import { JwtService } from '../JWT-utility/jwt-service';
 import { AuthService } from '../features/auth/auth/application/auth.service';
 import { EmailService } from '../SMTP-adapter/email-service';
 import { EmailManager } from '../SMTP-adapter/email-manager';
 import { EmailAdapter } from '../SMTP-adapter/email-adapter';
 import { refreshTokenMongooseConnection } from '../features/auth/refresh-token/refreshTokenMongooseConnection';
+import { AuthRepository } from '../features/auth/auth/infrastrucrure/auth.repository';
 
 @Module({
   imports: [DatabaseModule],
@@ -54,7 +55,8 @@ import { refreshTokenMongooseConnection } from '../features/auth/refresh-token/r
     UsersRepository,
     UsersQueryRepository,
     AuthService,
-    JwtUtility,
+    AuthRepository,
+    JwtService,
     EmailService,
     EmailManager,
     EmailAdapter,

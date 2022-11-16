@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { UserDBType } from '../../../users/types/users.types';
 import { v4 as uuidv4 } from 'uuid';
 import add from 'date-fns/add';
-import { JwtUtility } from '../../../../JWT-utility/jwt-utility';
+import { JwtService } from '../../../../JWT-utility/jwt-service';
 import { extractUserIdFromRefreshToken } from '../helpers/extractUserIdFromRefreshToken';
 import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
 import { extractIssueAtFromRefreshToken } from '../helpers/extractIssueAtFromRefreshToken';
@@ -17,7 +17,7 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly jwtUtility: JwtUtility,
+    private readonly jwtUtility: JwtService,
     private readonly authRepository: AuthRepository,
   ) {}
 
@@ -130,14 +130,13 @@ export class AuthService {
     token!.lastActiveDate = new Date();
     await this.authRepository.updateToken(token);
   }
-  // async deleteRefreshToken(refreshToken: string): Promise<void> {
-  //   const issuedAtToken = extractIssueAtFromRefreshToken(refreshToken);
-  //   const userId = extractUserIdFromRefreshToken(refreshToken);
-  //   await RefreshToken.deleteMany({
-  //     userId: userId!,
-  //     issuedAt: issuedAtToken!,
-  //   });
-  // }
+
+  async deleteRefreshToken(refreshToken: string): Promise<void> {
+    const issuedAtToken = extractIssueAtFromRefreshToken(refreshToken);
+    const userId = extractUserIdFromRefreshToken(refreshToken);
+    await this.authRepository.deleteRefreshToken(userId!, issuedAtToken);
+  }
+
   async changePassword(newPasswordHash: string, userId: string): Promise<void> {
     const user = await this.usersRepository.getUser(userId);
     user!.passwordHash = newPasswordHash;

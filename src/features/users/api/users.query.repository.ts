@@ -7,6 +7,7 @@ import {
 } from '../types/users.types';
 import { QueryUserDto } from './models/query-user.dto';
 import { mapUserDBTypeToViewType } from '../helpers/mapUserDBTypeToViewType';
+import { InfoAboutMeType } from '../../auth/auth/types/info-about-me-type';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -110,6 +111,15 @@ export class UsersQueryRepository {
       pageSize,
       totalCount,
       items,
+    };
+  }
+
+  async returnInfoAboutMe(userId: string): Promise<InfoAboutMeType> {
+    const userById = await this.userModel.findById(userId);
+    return {
+      email: userById!.email,
+      login: userById!.login,
+      userId: userById!._id.toString(),
     };
   }
 }

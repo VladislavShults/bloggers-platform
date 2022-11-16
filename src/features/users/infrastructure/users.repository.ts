@@ -2,8 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { UserDBType } from '../types/users.types';
 import { ObjectId } from 'mongodb';
-import add from 'date-fns/add';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UsersRepository {

@@ -6,7 +6,6 @@ import { ObjectId } from 'mongodb';
 @Injectable()
 export class AuthRepository {
   constructor(
-    // @Inject('USER_MODEL') private readonly userModel: Model<UserDBType>,
     @Inject('REFRESH_TOKEN_MODEL')
     private readonly refreshTokenModel: Model<RefreshTokenDBType>,
   ) {}
@@ -23,12 +22,19 @@ export class AuthRepository {
     issuedAtOldToken: string,
   ) {
     return this.refreshTokenModel.findOne({
-      userId: userIdOldToken!,
-      issuedAt: issuedAtOldToken!,
+      userId: userIdOldToken,
+      issuedAt: issuedAtOldToken,
     });
   }
 
   async updateToken(token) {
     await token.save();
+  }
+
+  async deleteRefreshToken(userId: string, issuedAtToken: string) {
+    await this.refreshTokenModel.deleteMany({
+      userId: userId,
+      issuedAt: issuedAtToken,
+    });
   }
 }
