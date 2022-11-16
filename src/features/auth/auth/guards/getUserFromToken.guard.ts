@@ -5,7 +5,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { JwtService } from '../../../../JWT-utility/jwt-service';
+import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
 import { Model } from 'mongoose';
 import { UserDBType } from '../../../users/types/users.types';
 

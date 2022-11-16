@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
-import { EmailService } from '../../../../SMTP-adapter/email-service';
+import { EmailService } from '../../../../infrastructure/SMTP-adapter/email-service';
 import { UsersService } from '../../../users/application/users.servive';
 import { CreateUserDto } from '../../../users/api/models/create-user.dto';
 import { UsersQueryRepository } from '../../../users/api/users.query.repository';
@@ -22,7 +22,7 @@ import { LoginAuthDto } from './models/login.auth.dto';
 import { AccessTokenViewModel } from './models/accessTokenViewModel';
 import { response } from 'express';
 import { AccessTokenAuthDto } from './models/access-token-auth.dto';
-import { JwtService } from '../../../../JWT-utility/jwt-service';
+import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
 import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
 import { EmailAuthDto } from './models/email-auth.dto';
 import { NewPasswordAuthDto } from './models/new-password.auth.dto';

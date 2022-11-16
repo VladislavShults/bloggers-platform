@@ -2,9 +2,8 @@ import mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { LikeDBType } from '../types/likes.types';
 
-export const LikesSchema = new mongoose.Schema<LikeDBType>(
+export const LikesSchema = new mongoose.Schema<Omit<LikeDBType, '_id'>>(
   {
-    _id: ObjectId,
     idObject: ObjectId,
     addedAt: Date,
     userId: ObjectId,

@@ -11,6 +11,7 @@ import {
   Put,
   Query,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { CreatePostDto } from './models/create-post.dto';
 import { ObjectId } from 'mongodb';
@@ -142,10 +143,12 @@ export class PostsController {
   async makeLikeOrUnlike(
     @Param() params: URIParamPostDto,
     @Body() inputModel: LikeStatusPostDto,
+    @Request() req,
   ) {
-    // const userId: ObjectId | null = await extractUserIdFromHeaders(req);
+    const user = req.user;
     await this.postsService.makeLikeOrUnlike(
       params.postId,
+      user,
       inputModel.likeStatus,
     );
     return;

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { UserDBType } from '../../../users/types/users.types';
 import { v4 as uuidv4 } from 'uuid';
 import add from 'date-fns/add';
-import { JwtService } from '../../../../JWT-utility/jwt-service';
+import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
 import { extractUserIdFromRefreshToken } from '../helpers/extractUserIdFromRefreshToken';
 import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
 import { extractIssueAtFromRefreshToken } from '../helpers/extractIssueAtFromRefreshToken';
