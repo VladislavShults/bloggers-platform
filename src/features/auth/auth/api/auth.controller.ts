@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Post,
   Request,
+  Response,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
@@ -19,11 +20,8 @@ import { RegistrationConfirmationAuthDto } from './models/registration-confirmat
 import { createErrorMessage } from '../helpers/create-error-message';
 import { RegistrationEmailResendingAuthDto } from './models/registration-email-resending.auth.dto';
 import { LoginAuthDto } from './models/login.auth.dto';
-import { AccessTokenViewModel } from './models/accessTokenViewModel';
-import { response } from 'express';
 import { AccessTokenAuthDto } from './models/access-token-auth.dto';
 import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
-import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
 import { EmailAuthDto } from './models/email-auth.dto';
 import { NewPasswordAuthDto } from './models/new-password.auth.dto';
 import { JwtAuthGuard } from '../guards/JWT-auth.guard';
@@ -97,11 +95,13 @@ export class AuthController {
   }
 
   @Post('login')
+  @HttpCode(200)
   // @UseGuards(GetUserFromTokenGuard)
   async login(
     @Body() inputModel: LoginAuthDto,
     @Request() req,
-  ): Promise<AccessTokenViewModel> {
+    @Response() res,
+  ) {
     // if (req.cookies?.refreshToken) {
     //   await this.authService.addRefreshTokenToBlackList(
     //     req.cookies?.refreshToken,
@@ -120,31 +120,36 @@ export class AuthController {
       req.ip,
       req.headers['user-agent'],
     );
-    response.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 200 * 1000,
-    });
-    return { accessToken: newAccessToken };
+    res
+      .cookie('refreshToken', newRefreshToken, {
+        httpOnly: false,
+        secure: false,
+        maxAge: 200 * 1000,
+      })
+      .status(200)
+      .json({ accessToken: newAccessToken });
   }
 
   @Post('refresh-token')
   async updateRefreshToken(
     @Body() inputModel: AccessTokenAuthDto,
     @Request() req,
-  ): Promise<AccessTokenViewModel> {
+    @Response() res,
+  ) {
     const oldRefreshToken = req.cookies?.refreshToken;
     const userId = await this.jwtService.extractUserIdFromToken(
       oldRefreshToken,
     );
-    const deviceId = extractDeviceIdFromRefreshToken(oldRefreshToken);
+    const deviceId = await this.jwtService.extractDeviceIdFromToken(
+      oldRefreshToken,
+    );
     const newAccessToken = await this.authService.createAccessToken(
       userId.toString(),
       '600000',
     );
     const newRefreshToken = await this.jwtService.createRefreshJWT(
       userId.toString(),
-      deviceId,
+      deviceId.toString(),
       '200000',
     );
     await this.authService.updateRefreshToken(
@@ -152,13 +157,14 @@ export class AuthController {
       newRefreshToken,
       req.ip,
     );
-    response.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 200 * 1000,
-    });
-
-    return { accessToken: newAccessToken };
+    res
+      .cookie('refreshToken', newRefreshToken, {
+        httpOnly: false,
+        secure: false,
+        maxAge: 200 * 1000,
+      })
+      .status(200)
+      .json({ accessToken: newAccessToken });
   }
 
   @Post('password-recovery')

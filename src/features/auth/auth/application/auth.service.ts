@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import add from 'date-fns/add';
 import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
 import { extractUserIdFromRefreshToken } from '../helpers/extractUserIdFromRefreshToken';
-import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
 import { extractIssueAtFromRefreshToken } from '../helpers/extractIssueAtFromRefreshToken';
 import { extractExpiresDateFromRefreshToken } from '../helpers/extractExpiresDateFromRefreshToken';
 import { RefreshTokenDBType } from '../../refresh-token/types/refresh-token.types';
@@ -33,9 +32,8 @@ export class AuthService {
   //   return await bcrypt.compare(password, hash);
   // }
 
-  async createAccessToken(login: string, expirationTime: string) {
-    const user = await this.checkCredentials(login);
-    return await this.jwtUtility.createJWT(user._id.toString(), expirationTime);
+  async createAccessToken(userId: string, expirationTime: string) {
+    return await this.jwtUtility.createJWT(userId, expirationTime);
   }
 
   async createRefreshToken(login: string, expirationTime: string) {
@@ -90,13 +88,15 @@ export class AuthService {
     deviceName: string | undefined,
   ): Promise<ObjectId> {
     const userId = extractUserIdFromRefreshToken(refreshToken);
-    const deviceId = extractDeviceIdFromRefreshToken(refreshToken);
+    const deviceId = await this.jwtUtility.extractDeviceIdFromToken(
+      refreshToken,
+    );
     const issueAt = extractIssueAtFromRefreshToken(refreshToken);
     const expiresAt = extractExpiresDateFromRefreshToken(refreshToken);
     if (userId && deviceId && issueAt && deviceName && expiresAt) {
       const newInput: Omit<RefreshTokenDBType, '_id'> = {
         issuedAt: issueAt,
-        deviceId: deviceId,
+        deviceId: deviceId.toString(),
         ip: ip,
         deviceName: deviceName,
         userId: userId,
