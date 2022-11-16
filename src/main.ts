@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './main-app/app.module';
+import * as cookieParser from 'cookie-parser';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './exception.filter';
-import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const port = process.env.PORT || 5000;
