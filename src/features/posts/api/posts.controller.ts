@@ -32,6 +32,7 @@ import { QueryPostDto } from './models/query-post.dto';
 import { LikeStatusPostDto } from './models/like-status.post.dto';
 import { BasicAuthGuard } from '../../auth/auth/guards/basic-auth.guard';
 import { JwtAuthGuard } from '../../auth/auth/guards/JWT-auth.guard';
+import { CheckPostInDBGuard } from '../guards/check-post-in-DB.post';
 
 @Controller('posts')
 export class PostsController {
@@ -61,8 +62,8 @@ export class PostsController {
     @Param() params: URIParamPostDto,
   ): Promise<ViewPostWithoutLikesType> {
     const post = await this.postsQueryRepository.getPostById(params.postId);
-    if (post) return post;
-    else throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
+    if (!post) throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
+    else return post;
   }
 
   @Get()
@@ -108,13 +109,13 @@ export class PostsController {
 
   @Post(':postId/comments')
   @HttpCode(201)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, CheckPostInDBGuard)
   async createCommentByPost(
     @Param() params: URIParamPostDto,
     @Body() inputModel: CreateCommentDto,
   ): Promise<ViewCommentType> {
-    const post = await this.postsQueryRepository.getPostById(params.postId);
-    if (!post) throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
+    // const post = await this.postsQueryRepository.getPostById(params.postId);
+    // if (!post) throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
     const commentObjectId = await this.commentsService.createCommentByPost(
       params.postId,
       inputModel,
@@ -139,12 +140,14 @@ export class PostsController {
   }
   @Put(':postId/like-status')
   @HttpCode(204)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, CheckPostInDBGuard)
   async makeLikeOrUnlike(
     @Param() params: URIParamPostDto,
     @Body() inputModel: LikeStatusPostDto,
     @Request() req,
   ) {
+    // const post = await this.postsQueryRepository.getPostById(params.postId);
+    // if (!post) throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
     const user = req.user;
     await this.postsService.makeLikeOrUnlike(
       params.postId,

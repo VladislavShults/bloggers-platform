@@ -5,7 +5,6 @@ import { CreatePostDto } from '../api/models/create-post.dto';
 import { ObjectId } from 'mongodb';
 import { PostDBType } from '../types/posts.types';
 import { UpdatePostDto } from '../api/models/update-post.dto';
-import { UserDBType } from '../../users/types/users.types';
 import { LikesService } from '../../likes/application/likes.service';
 import { LikeDBType, LikeType } from '../../likes/types/likes.types';
 
