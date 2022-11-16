@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   HttpCode,
-  HttpException,
   HttpStatus,
   Post,
   Request,
@@ -20,8 +19,10 @@ import { createErrorMessage } from '../helpers/create-error-message';
 import { RegistrationEmailResendingAuthDto } from './models/registration-email-resending.auth.dto';
 import { LoginAuthDto } from './models/login.auth.dto';
 import { AccessTokenViewModel } from './models/accessTokenViewModel';
-import { GetUserFromTokenGuard } from '../guards/getUserFromToken.guard';
 import { response } from 'express';
+import { AccesssTokenAuthDto } from './models/accesss-token.auth.dto';
+import { JwtUtility } from '../../../../JWT-utility/jwt-utility';
+import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
 
 @Controller('auth')
 export class AuthController {
@@ -30,6 +31,7 @@ export class AuthController {
     private readonly emailService: EmailService,
     private readonly usersService: UsersService,
     private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly jwtUtility: JwtUtility,
   ) {}
 
   @Post('registration')
@@ -100,11 +102,11 @@ export class AuthController {
     //   );
     // }
     const newAccessToken = await this.authService.createAccessToken(
-      req.body.login,
+      inputModel.login,
       '600000',
     );
     const newRefreshToken = await this.authService.createRefreshToken(
-      req.body.login,
+      inputModel.login,
       '200000',
     );
     await this.authService.saveDeviceInputInDB(
@@ -117,8 +119,40 @@ export class AuthController {
       secure: true,
       maxAge: 200 * 1000,
     });
-    const result = { accessToken: newAccessToken };
-    return result;
+    return { accessToken: newAccessToken };
+  }
+
+  @Post('refresh-token')
+  async updateRefreshToken(
+    @Body() inputModel: AccesssTokenAuthDto,
+    @Request() req,
+  ): Promise<AccessTokenViewModel> {
+    const oldRefreshToken = req.cookies?.refreshToken;
+    const userId = await this.jwtUtility.extractUserIdFromToken(
+      oldRefreshToken,
+    );
+    const deviceId = extractDeviceIdFromRefreshToken(oldRefreshToken);
+    const newAccessToken = await this.authService.createAccessToken(
+      userId!.toString(),
+      '600000',
+    );
+    const newRefreshToken = await this.jwtUtility.createRefreshJWT(
+      userId!.toString(),
+      deviceId!,
+      '200000',
+    );
+    await this.authService.updateRefreshToken(
+      oldRefreshToken,
+      newRefreshToken,
+      req.ip,
+    );
+    response.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 200 * 1000,
+    });
+
+    return { accessToken: newAccessToken };
   }
 
   // create(@Body() createAuthDto: CreateAuthDto) {

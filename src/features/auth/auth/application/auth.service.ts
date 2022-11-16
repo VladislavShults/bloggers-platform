@@ -109,26 +109,26 @@ export class AuthService {
     }
   }
 
-  // async updateRefreshToken(
-  //   oldRefreshToken: string,
-  //   newRefreshToken: string,
-  //   ip: string,
-  // ): Promise<void> {
-  //   const issuedAtOldToken = extractIssueAtFromRefreshToken(oldRefreshToken);
-  //   const userIdOldToken = extractUserIdFromRefreshToken(oldRefreshToken);
-  //   const issuedAtNewToken = extractIssueAtFromRefreshToken(newRefreshToken);
-  //   const expiresAtNewToken =
-  //     extractExpiresDateFromRefreshToken(newRefreshToken);
-  //   const token = await RefreshToken.findOne({
-  //     userId: userIdOldToken!,
-  //     issuedAt: issuedAtOldToken!,
-  //   });
-  //   token!.issuedAt = issuedAtNewToken!;
-  //   token!.ip = ip;
-  //   token!.expiresAt = expiresAtNewToken!;
-  //   token!.lastActiveDate = new Date();
-  //   await token!.save();
-  // }
+  async updateRefreshToken(
+    oldRefreshToken: string,
+    newRefreshToken: string,
+    ip: string,
+  ): Promise<void> {
+    const issuedAtOldToken = extractIssueAtFromRefreshToken(oldRefreshToken);
+    const userIdOldToken = extractUserIdFromRefreshToken(oldRefreshToken);
+    const issuedAtNewToken = extractIssueAtFromRefreshToken(newRefreshToken);
+    const expiresAtNewToken =
+      extractExpiresDateFromRefreshToken(newRefreshToken);
+    const token = await this.authRepository.findTokenByUserIdAndIssuedAt(
+      userIdOldToken,
+      issuedAtOldToken,
+    );
+    token!.issuedAt = issuedAtNewToken!;
+    token!.ip = ip;
+    token!.expiresAt = expiresAtNewToken!;
+    token!.lastActiveDate = new Date();
+    await this.authRepository.updateToken(token);
+  }
   // async deleteRefreshToken(refreshToken: string): Promise<void> {
   //   const issuedAtToken = extractIssueAtFromRefreshToken(refreshToken);
   //   const userId = extractUserIdFromRefreshToken(refreshToken);

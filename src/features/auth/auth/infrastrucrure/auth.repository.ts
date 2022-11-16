@@ -17,4 +17,18 @@ export class AuthRepository {
     const result = await this.refreshTokenModel.create(newInput);
     return result._id;
   }
+
+  async findTokenByUserIdAndIssuedAt(
+    userIdOldToken: string,
+    issuedAtOldToken: string,
+  ) {
+    return this.refreshTokenModel.findOne({
+      userId: userIdOldToken!,
+      issuedAt: issuedAtOldToken!,
+    });
+  }
+
+  async updateToken(token) {
+    await token.save();
+  }
 }
