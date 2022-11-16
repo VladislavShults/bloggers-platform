@@ -24,6 +24,7 @@ import { AccesssTokenAuthDto } from './models/accesss-token.auth.dto';
 import { JwtUtility } from '../../../../JWT-utility/jwt-utility';
 import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
 import { EmailAuthDto } from './models/email-auth.dto';
+import { NewPasswordAuthDto } from './models/new-password.auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -156,7 +157,7 @@ export class AuthController {
     return { accessToken: newAccessToken };
   }
 
-  @Post('passwordRecovery')
+  @Post('password-recovery')
   @HttpCode(204)
   async passwordRecovery(@Body() inputModel: EmailAuthDto) {
     const email = inputModel.email;
@@ -165,6 +166,25 @@ export class AuthController {
     await this.emailService.sendEmailRecoveryCode(
       inputModel.email,
       user.emailConfirmation.confirmationCode,
+    );
+    return;
+  }
+
+  @Post('new-password')
+  @HttpCode(204)
+  async newPassword(@Body() inputModel: NewPasswordAuthDto) {
+    const userByConfirmationCode =
+      await this.authService.findAccountByConfirmationCode(
+        inputModel.recoveryCode,
+      );
+    if (!userByConfirmationCode)
+      throw new BadRequestException(createErrorMessage('recoveryCode'));
+    const hashNewPassword = await this.authService.generateHash(
+      inputModel.newPassword,
+    );
+    await this.authService.changePassword(
+      hashNewPassword,
+      userByConfirmationCode._id.toString(),
     );
     return;
   }

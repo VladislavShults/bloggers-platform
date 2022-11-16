@@ -138,9 +138,9 @@ export class AuthService {
   //     issuedAt: issuedAtToken!,
   //   });
   // }
-  // async changePassword(newPasswordHash: string, userId: string): Promise<void> {
-  //   const user = await UserModel.findById(userId);
-  //   user!.accountData.passwordHash = newPasswordHash;
-  //   await user!.save();
-  // }
+  async changePassword(newPasswordHash: string, userId: string): Promise<void> {
+    const user = await this.usersRepository.getUser(userId);
+    user!.passwordHash = newPasswordHash;
+    await this.usersRepository.updateUser(user);
+  }
 }
