@@ -1,17 +1,29 @@
-import { UsersRepository } from '../../users/infrastructure/users.repository';
+import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { Injectable } from '@nestjs/common';
-import { UserDBType } from '../../users/types/users.types';
+import { UserDBType } from '../../../users/types/users.types';
 import { v4 as uuidv4 } from 'uuid';
 import add from 'date-fns/add';
+import { JwtUtility } from '../../../../JWT-utility/jwt-utility';
+import { extractUserIdFromRefreshToken } from '../helpers/extractUserIdFromRefreshToken';
+import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
+import { extractIssueAtFromRefreshToken } from '../helpers/extractIssueAtFromRefreshToken';
+import { extractExpiresDateFromRefreshToken } from '../helpers/extractExpiresDateFromRefreshToken';
+import { RefreshTokenDBType } from '../../refresh-token/types/refresh-token.types';
+import { AuthRepository } from '../infrastrucrure/auth.repository';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class AuthService {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly jwtUtility: JwtUtility,
+    private readonly authRepository: AuthRepository,
+  ) {}
 
-  // async checkCredentials(login: string): Promise<UserDBType | null> {
-  //   return await this.usersRepository.findByLogin(login);
-  // }
-  //
+  async checkCredentials(login: string): Promise<UserDBType | null> {
+    return await this.usersRepository.findByLogin(login);
+  }
+
   // async generateHash(password: string) {
   //   return await bcrypt.hash(password, 10);
   // }
@@ -19,20 +31,23 @@ export class AuthService {
   // async isPasswordCorrect(password: string, hash: string) {
   //   return await bcrypt.compare(password, hash);
   // }
-  //
-  // async createAccessToken(login: string, expirationTime: string) {
-  //   const user = await this.checkCredentials(login);
-  //   return await jwtUtility.createJWT(user!._id, expirationTime);
-  // }
-  //
-  // async createRefreshToken(login: string, expirationTime: string) {
-  //   const user = await this.checkCredentials(login);
-  //   return await jwtUtility.createRefreshJWT(
-  //     user!._id,
-  //     uuidv4().toString(),
-  //     expirationTime,
-  //   );
-  // }
+
+  async createAccessToken(login: string, expirationTime: string) {
+    const user = await this.checkCredentials(login);
+    return await this.jwtUtility.createJWT(
+      user!._id.toString(),
+      expirationTime,
+    );
+  }
+
+  async createRefreshToken(login: string, expirationTime: string) {
+    const user = await this.checkCredentials(login);
+    return await this.jwtUtility.createRefreshJWT(
+      user!._id.toString(),
+      uuidv4().toString(),
+      expirationTime,
+    );
+  }
 
   async refreshConfirmationCode(email: string): Promise<string | null> {
     const user = await this.usersRepository.getUserByEmail(email);
@@ -70,29 +85,30 @@ export class AuthService {
   // async findRefreshTokenInBlackList(refreshToken: string): Promise<boolean> {
   //   return await this.usersRepository.findRefreshTokenInBlackList(refreshToken);
   // }
-  //
-  // async saveRefreshToken(
-  //   refreshToken: string,
-  //   ip: string,
-  //   deviceName: string | undefined,
-  // ): Promise<void> {
-  //   const userId = extractUserIdFromRefreshToken(refreshToken);
-  //   const deviceId = extractDeviceIdFromRefreshToken(refreshToken);
-  //   const issueAt = extractIssueAtFromRefreshToken(refreshToken);
-  //   const expiresAt = extractExpiresDateFromRefreshToken(refreshToken);
-  //   if (userId && deviceId && issueAt && deviceName && expiresAt) {
-  //     const newRefreshToken = new RefreshToken();
-  //     newRefreshToken.issuedAt = issueAt;
-  //     newRefreshToken.deviceId = deviceId;
-  //     newRefreshToken.ip = ip;
-  //     newRefreshToken.deviceName = deviceName;
-  //     newRefreshToken.userId = userId;
-  //     newRefreshToken.expiresAt = expiresAt;
-  //     newRefreshToken.lastActiveDate = new Date();
-  //     await newRefreshToken.save();
-  //   }
-  // }
-  //
+
+  async saveDeviceInputInDB(
+    refreshToken: string,
+    ip: string,
+    deviceName: string | undefined,
+  ): Promise<ObjectId> {
+    const userId = extractUserIdFromRefreshToken(refreshToken);
+    const deviceId = extractDeviceIdFromRefreshToken(refreshToken);
+    const issueAt = extractIssueAtFromRefreshToken(refreshToken);
+    const expiresAt = extractExpiresDateFromRefreshToken(refreshToken);
+    if (userId && deviceId && issueAt && deviceName && expiresAt) {
+      const newInput: Omit<RefreshTokenDBType, '_id'> = {
+        issuedAt: issueAt,
+        deviceId: deviceId,
+        ip: ip,
+        deviceName: deviceName,
+        userId: userId,
+        expiresAt: expiresAt,
+        lastActiveDate: new Date(),
+      };
+      return await this.authRepository.saveDeviceInputInDB(newInput);
+    }
+  }
+
   // async updateRefreshToken(
   //   oldRefreshToken: string,
   //   newRefreshToken: string,

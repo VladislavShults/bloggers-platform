@@ -29,7 +29,7 @@ import {
 import { PostsQueryRepository } from '../../posts/api/posts.query.repository';
 import { QueryGetPostsByBlogIdDto } from './models/query-getPostsByBlogId.dto';
 import { CreatePostBySpecificBlogDto } from './models/create-postBySpecificBlog.dto';
-import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
+import { BasicAuthGuard } from '../../auth/auth/guards/basic-auth.guard';
 
 @Controller('blogs')
 export class BlogsController {

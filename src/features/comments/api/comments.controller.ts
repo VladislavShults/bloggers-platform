@@ -19,7 +19,7 @@ import { ViewCommentType } from '../types/comments.types';
 import { UpdateCommentDto } from './models/update-comment.dto';
 import { URIParamPostDto } from '../../posts/api/models/URIParam-post.dto';
 import { LikeStatusCommentDto } from './models/like-status.comment.dto';
-import { JwtAuthGuard } from '../../auth/guards/JWT-auth.guard';
+import { JwtAuthGuard } from '../../auth/auth/guards/JWT-auth.guard';
 
 @Controller('comments')
 export class CommentsController {

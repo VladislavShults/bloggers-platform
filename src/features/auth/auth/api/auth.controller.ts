@@ -6,17 +6,22 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
-import { EmailService } from '../../../SMTP-adapter/email-service';
-import { UsersService } from '../../users/application/users.servive';
-import { CreateUserDto } from '../../users/api/models/create-user.dto';
-import { UsersQueryRepository } from '../../users/api/users.query.repository';
+import { EmailService } from '../../../../SMTP-adapter/email-service';
+import { UsersService } from '../../../users/application/users.servive';
+import { CreateUserDto } from '../../../users/api/models/create-user.dto';
+import { UsersQueryRepository } from '../../../users/api/users.query.repository';
 import { CheckDuplicateEmailGuard } from '../guards/check-duplicate-email.guard';
 import { RegistrationConfirmationAuthDto } from './models/registration-confirmation.auth.dto';
 import { createErrorMessage } from '../helpers/create-error-message';
 import { RegistrationEmailResendingAuthDto } from './models/registration-email-resending.auth.dto';
+import { LoginAuthDto } from './models/login.auth.dto';
+import { AccessTokenViewModel } from './models/accessTokenViewModel';
+import { GetUserFromTokenGuard } from '../guards/getUserFromToken.guard';
+import { response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -81,6 +86,39 @@ export class AuthController {
       );
       return;
     } else throw new BadRequestException(createErrorMessage('Email'));
+  }
+
+  @Post('login')
+  // @UseGuards(GetUserFromTokenGuard)
+  async login(
+    @Body() inputModel: LoginAuthDto,
+    @Request() req,
+  ): Promise<AccessTokenViewModel> {
+    // if (req.cookies?.refreshToken) {
+    //   await this.authService.addRefreshTokenToBlackList(
+    //     req.cookies?.refreshToken,
+    //   );
+    // }
+    const newAccessToken = await this.authService.createAccessToken(
+      req.body.login,
+      '600000',
+    );
+    const newRefreshToken = await this.authService.createRefreshToken(
+      req.body.login,
+      '200000',
+    );
+    await this.authService.saveDeviceInputInDB(
+      newRefreshToken,
+      req.ip,
+      req.headers['user-agent'],
+    );
+    response.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 200 * 1000,
+    });
+    const result = { accessToken: newAccessToken };
+    return result;
   }
 
   // create(@Body() createAuthDto: CreateAuthDto) {

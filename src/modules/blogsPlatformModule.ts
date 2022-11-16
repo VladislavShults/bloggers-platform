@@ -22,12 +22,13 @@ import { UsersRepository } from '../features/users/infrastructure/users.reposito
 import { UsersQueryRepository } from '../features/users/api/users.query.repository';
 import { UsersController } from '../features/users/api/users.controller';
 import { likesMongooseConnection } from '../features/likes/likesMongooseConnection';
-import { AuthController } from '../features/auth/api/auth.controller';
+import { AuthController } from '../features/auth/auth/api/auth.controller';
 import { JwtUtility } from '../JWT-utility/jwt-utility';
-import { AuthService } from '../features/auth/application/auth.service';
+import { AuthService } from '../features/auth/auth/application/auth.service';
 import { EmailService } from '../SMTP-adapter/email-service';
 import { EmailManager } from '../SMTP-adapter/email-manager';
 import { EmailAdapter } from '../SMTP-adapter/email-adapter';
+import { refreshTokenMongooseConnection } from '../features/auth/refresh-token/refreshTokenMongooseConnection';
 
 @Module({
   imports: [DatabaseModule],
@@ -62,6 +63,7 @@ import { EmailAdapter } from '../SMTP-adapter/email-adapter';
     ...commentsMongooseConnection,
     ...usersMongooseConnection,
     ...likesMongooseConnection,
+    ...refreshTokenMongooseConnection,
   ],
 })
 export class BlogsPlatformModule {}

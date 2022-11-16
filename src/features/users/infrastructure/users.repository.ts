@@ -60,4 +60,8 @@ export class UsersRepository {
     if (!account) return true;
     return !!account.emailConfirmation.isConfirmed;
   }
+
+  async findByLogin(login: string): Promise<UserDBType | null> {
+    return this.userModel.findOne({ login: login });
+  }
 }
