@@ -35,10 +35,9 @@ export class UsersController {
   @UseGuards(BasicAuthGuard)
   async createUser(@Body() inputModel: CreateUserDto): Promise<ViewUserType> {
     const userObjectId = await this.usersService.createUser(inputModel);
-    const user = await this.usersQueryRepository.getUserByIdViewType(
+    return await this.usersQueryRepository.getUserByIdViewType(
       userObjectId.toString(),
     );
-    return user;
   }
 
   @Get()
@@ -46,8 +45,7 @@ export class UsersController {
   async getUsers(
     @Query() query: QueryUserDto,
   ): Promise<ViewUsersTypeWithPagination> {
-    const users = await this.usersQueryRepository.getUsers(query);
-    return users;
+    return await this.usersQueryRepository.getUsers(query);
   }
 
   @Delete(':userId')

@@ -27,9 +27,7 @@ export class BlogsService {
     if (!blog) return false;
     blog.name = name;
     blog.youtubeUrl = youtubeUrl;
-    const updateBlog = await this.blogsRepository.updateBlog(blog);
-    if (updateBlog) return true;
-    else return false;
+    return await this.blogsRepository.updateBlog(blog);
   }
 
   async deleteBlogById(blogId: string): Promise<boolean> {
@@ -41,13 +39,11 @@ export class BlogsService {
     blogId: string,
     inputModel: CreatePostBySpecificBlogDto,
   ): CreatePostDto {
-    const createPostDTO = {
+    return {
       title: inputModel.title,
       shortDescription: inputModel.shortDescription,
       content: inputModel.content,
       blogId: blogId,
     };
-
-    return createPostDTO;
   }
 }

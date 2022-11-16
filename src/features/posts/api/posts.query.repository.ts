@@ -2,15 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   PostDBType,
   ViewPostsTypeWithoutLikesWithPagination,
-  ViewPostsTypeWithPagination,
   ViewPostType,
-  ViewPostWithoutLikesType,
 } from '../types/posts.types';
 import { Model } from 'mongoose';
 import { mapPost } from '../helpers/mapPostDBToViewModel';
 import { QueryGetPostsByBlogIdDto } from '../../blogs/api/models/query-getPostsByBlogId.dto';
 import { mapPostsDBToViewModelWithoutLikes } from '../helpers/mapPostsDBToViewModelWithoutLikes';
-import { mapPostViewModelToModelWithoutLikes } from '../helpers/mapPostViewModelToModelWithoutLikes';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -23,8 +20,7 @@ export class PostsQueryRepository {
     if (postId.length !== 24) return null;
     const postDBType = await this.postModel.findById(postId);
     if (!postDBType) return null;
-    const postViewType: ViewPostType = mapPost(postDBType);
-    return postViewType;
+    return mapPost(postDBType);
   }
 
   async getPosts(

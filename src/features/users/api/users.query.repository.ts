@@ -117,9 +117,9 @@ export class UsersQueryRepository {
   async returnInfoAboutMe(userId: string): Promise<InfoAboutMeType> {
     const userById = await this.userModel.findById(userId);
     return {
-      email: userById!.email,
-      login: userById!.login,
-      userId: userById!._id.toString(),
+      email: userById.email,
+      login: userById.login,
+      userId: userById._id.toString(),
     };
   }
 }

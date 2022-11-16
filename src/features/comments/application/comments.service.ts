@@ -33,9 +33,7 @@ export class CommentsService {
     const comment = await this.commentsRepository.getCommentById(commentId);
     if (!comment) return null;
     comment.content = content;
-    const updateComment = await this.commentsRepository.updateComment(comment);
-    if (!updateComment) return false;
-    return true;
+    return await this.commentsRepository.updateComment(comment);
   }
 
   async makeLikeOrUnlike(

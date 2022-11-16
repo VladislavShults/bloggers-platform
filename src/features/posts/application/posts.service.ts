@@ -33,7 +33,7 @@ export class PostsService {
     postId: string,
     inputModel: UpdatePostDto,
   ): Promise<boolean> {
-    return this.verifyPostId(postId);
+    this.verifyPostId(postId);
     const post = await this.postsRepository.getPostById(postId);
     if (!post) return false;
     post.title = inputModel.title;
@@ -43,13 +43,12 @@ export class PostsService {
   }
 
   async deletePostById(postId: string): Promise<boolean> {
-    return this.verifyPostId(postId);
+    this.verifyPostId(postId);
     return await this.postsRepository.deletePostById(postId);
   }
 
   private verifyPostId = (postId: string): boolean => {
-    if (postId.length !== 24) return false;
-    return true;
+    return postId.length === 24;
   };
 
   async makeLikeOrUnlike(

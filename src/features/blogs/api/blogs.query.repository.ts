@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import {
   BlogDBType,
-  ViewBlogType,
   ViewBlogsTypeWithPagination,
+  ViewBlogType,
 } from '../types/blogs.types';
 import { mapBlog } from '../helpers/mapBlogDBToViewModel';
 
@@ -17,8 +17,7 @@ export class BlogsQueryRepository {
     if (blogId.length !== 24) return null;
     const blogDBType = await this.blogModel.findById(blogId);
     if (!blogDBType) return null;
-    const blog: ViewBlogType = mapBlog(blogDBType);
-    return blog;
+    return mapBlog(blogDBType);
   }
 
   async getBlogs(

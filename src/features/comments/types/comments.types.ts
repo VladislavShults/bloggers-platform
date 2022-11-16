@@ -1,5 +1,4 @@
 import { ObjectId } from 'mongodb';
-import { ViewPostType } from '../../posts/types/posts.types';
 
 export type CommentDBType = {
   _id: ObjectId;

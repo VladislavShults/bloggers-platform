@@ -3,10 +3,9 @@ import jwt from 'jsonwebtoken';
 
 export class JwtService {
   async createJWT(userId: string, expiresTime: string) {
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    return jwt.sign({ userId }, process.env.JWT_SECRET, {
       expiresIn: expiresTime,
     });
-    return token;
   }
 
   async createRefreshJWT(
@@ -14,10 +13,9 @@ export class JwtService {
     deviceId: string,
     expiresTime: string,
   ) {
-    const token = jwt.sign({ userId, deviceId }, process.env.JWT_SECRET, {
+    return jwt.sign({ userId, deviceId }, process.env.JWT_SECRET, {
       expiresIn: expiresTime,
     });
-    return token;
   }
 
   async extractUserIdFromToken(token: string): Promise<ObjectId | null> {

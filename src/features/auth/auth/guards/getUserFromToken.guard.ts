@@ -2,7 +2,6 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  UnauthorizedException,
   Inject,
 } from '@nestjs/common';
 import { Request } from 'express';

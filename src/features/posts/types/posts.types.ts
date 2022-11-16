@@ -36,14 +36,6 @@ export type ViewPostType = {
   extendedLikesInfo: ExtendedLikesInfoType;
 };
 
-export type ViewPostsTypeWithPagination = {
-  pagesCount: number;
-  page: number;
-  pageSize: number;
-  totalCount: number;
-  items: ViewPostType[];
-};
-
 export type ViewPostWithoutLikesType = Omit<ViewPostType, 'extendedLikesInfo'>;
 
 export type ViewPostsTypeWithoutLikesWithPagination = {

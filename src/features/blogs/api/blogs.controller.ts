@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -49,10 +48,9 @@ export class BlogsController {
     const newBlogObjectId: ObjectId = await this.blogsService.createBlog(
       createBlogsDTO,
     );
-    const newBlog: ViewBlogType = await this.blogsQueryRepository.findBlogById(
+    return await this.blogsQueryRepository.findBlogById(
       newBlogObjectId.toString(),
     );
-    return newBlog;
   }
 
   @Get(':blogId')
@@ -98,14 +96,13 @@ export class BlogsController {
     const sortBy: string = query.sortBy || 'createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
 
-    const blogs = await this.blogsQueryRepository.getBlogs(
+    return await this.blogsQueryRepository.getBlogs(
       searchNameTerm,
       pageNumber,
       pageSize,
       sortBy,
       sortDirection,
     );
-    return blogs;
   }
 
   @Get(':blogId/posts')
@@ -139,10 +136,6 @@ export class BlogsController {
 
     const postObjectId = await this.postsService.createPost(createPostDTO);
 
-    const postDBType = await this.postsQueryRepository.getPostById(
-      postObjectId.toString(),
-    );
-
-    return postDBType;
+    return await this.postsQueryRepository.getPostById(postObjectId.toString());
   }
 }

@@ -14,8 +14,7 @@ export class BlogsRepository {
   }
 
   async getBlogById(blogId: string) {
-    const blog = await this.blogModel.findById(blogId);
-    return blog;
+    return this.blogModel.findById(blogId);
   }
 
   async updateBlog(blog): Promise<boolean> {
@@ -30,7 +29,6 @@ export class BlogsRepository {
 
   async getLoginBloggerByBlogId(blogId: string): Promise<string> {
     const blog = await this.blogModel.findById(blogId);
-    const login = blog.name;
-    return login;
+    return blog.name;
   }
 }

@@ -35,16 +35,13 @@ export class AuthService {
 
   async createAccessToken(login: string, expirationTime: string) {
     const user = await this.checkCredentials(login);
-    return await this.jwtUtility.createJWT(
-      user!._id.toString(),
-      expirationTime,
-    );
+    return await this.jwtUtility.createJWT(user._id.toString(), expirationTime);
   }
 
   async createRefreshToken(login: string, expirationTime: string) {
     const user = await this.checkCredentials(login);
     return await this.jwtUtility.createRefreshJWT(
-      user!._id.toString(),
+      user._id.toString(),
       uuidv4().toString(),
       expirationTime,
     );
@@ -124,22 +121,22 @@ export class AuthService {
       userIdOldToken,
       issuedAtOldToken,
     );
-    token!.issuedAt = issuedAtNewToken!;
-    token!.ip = ip;
-    token!.expiresAt = expiresAtNewToken!;
-    token!.lastActiveDate = new Date();
+    token.issuedAt = issuedAtNewToken;
+    token.ip = ip;
+    token.expiresAt = expiresAtNewToken;
+    token.lastActiveDate = new Date();
     await this.authRepository.updateToken(token);
   }
 
   async deleteRefreshToken(refreshToken: string): Promise<void> {
     const issuedAtToken = extractIssueAtFromRefreshToken(refreshToken);
     const userId = extractUserIdFromRefreshToken(refreshToken);
-    await this.authRepository.deleteRefreshToken(userId!, issuedAtToken);
+    await this.authRepository.deleteRefreshToken(userId, issuedAtToken);
   }
 
   async changePassword(newPasswordHash: string, userId: string): Promise<void> {
     const user = await this.usersRepository.getUser(userId);
-    user!.passwordHash = newPasswordHash;
+    user.passwordHash = newPasswordHash;
     await this.usersRepository.updateUser(user);
   }
 }

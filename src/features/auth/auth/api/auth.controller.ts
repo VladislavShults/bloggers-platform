@@ -21,7 +21,7 @@ import { RegistrationEmailResendingAuthDto } from './models/registration-email-r
 import { LoginAuthDto } from './models/login.auth.dto';
 import { AccessTokenViewModel } from './models/accessTokenViewModel';
 import { response } from 'express';
-import { AccesssTokenAuthDto } from './models/accesss-token.auth.dto';
+import { AccessTokenAuthDto } from './models/access-token-auth.dto';
 import { JwtService } from '../../../../JWT-utility/jwt-service';
 import { extractDeviceIdFromRefreshToken } from '../helpers/extractDeviceIdFromRefreshToken';
 import { EmailAuthDto } from './models/email-auth.dto';
@@ -49,7 +49,7 @@ export class AuthController {
     );
     await this.emailService.sendEmailRecoveryCode(
       inputModel.email,
-      user!.emailConfirmation.confirmationCode,
+      user.emailConfirmation.confirmationCode,
     );
     return;
   }
@@ -129,7 +129,7 @@ export class AuthController {
 
   @Post('refresh-token')
   async updateRefreshToken(
-    @Body() inputModel: AccesssTokenAuthDto,
+    @Body() inputModel: AccessTokenAuthDto,
     @Request() req,
   ): Promise<AccessTokenViewModel> {
     const oldRefreshToken = req.cookies?.refreshToken;
@@ -138,12 +138,12 @@ export class AuthController {
     );
     const deviceId = extractDeviceIdFromRefreshToken(oldRefreshToken);
     const newAccessToken = await this.authService.createAccessToken(
-      userId!.toString(),
+      userId.toString(),
       '600000',
     );
     const newRefreshToken = await this.jwtService.createRefreshJWT(
-      userId!.toString(),
-      deviceId!,
+      userId.toString(),
+      deviceId,
       '200000',
     );
     await this.authService.updateRefreshToken(
@@ -203,11 +203,8 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async infoAboutMe(@Request() req): Promise<InfoAboutMeType> {
-    const token: string = req.headers.authorization!.split(' ')[1];
+    const token: string = req.headers.authorization.split(' ')[1];
     const userId = await this.jwtService.extractUserIdFromToken(token);
-    const user = await this.usersQueryRepository.returnInfoAboutMe(
-      userId!.toString(),
-    );
-    return user;
+    return await this.usersQueryRepository.returnInfoAboutMe(userId.toString());
   }
 }
