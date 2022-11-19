@@ -5,11 +5,13 @@ import {
   Length,
   MaxLength,
 } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 export class UpdateBlogDto {
   @IsString()
   @Length(3, 15)
   @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   name: string;
 
   @IsString()
