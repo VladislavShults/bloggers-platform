@@ -27,6 +27,7 @@ import { NewPasswordAuthDto } from './models/new-password.auth.dto';
 import { JwtAuthGuard } from '../guards/JWT-auth.guard';
 import { InfoAboutMeType } from '../types/info-about-me-type';
 import { CheckDuplicatedLoginGuard } from '../guards/check-duplicated-login.guard';
+import { CheckUserAndHisPasswordInDB } from '../guards/checkUserAndHisPasswordInDB';
 
 @Controller('auth')
 export class AuthController {
@@ -96,7 +97,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(200)
-  // @UseGuards(GetUserFromTokenGuard)
+  @UseGuards(CheckUserAndHisPasswordInDB)
   async login(
     @Body() inputModel: LoginAuthDto,
     @Request() req,
@@ -107,6 +108,7 @@ export class AuthController {
     //     req.cookies?.refreshToken,
     //   );
     // }
+
     const newAccessToken = await this.authService.createAccessToken(
       inputModel.login,
       '600000',
