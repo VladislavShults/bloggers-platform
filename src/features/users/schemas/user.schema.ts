@@ -15,7 +15,7 @@ export const UserSchema = new mongoose.Schema<UserDBType>(
     banInfo: {
       isBanned: Boolean,
       banDate: Date,
-      banReason: String,
+      banReason: String || null,
     },
   },
   {
