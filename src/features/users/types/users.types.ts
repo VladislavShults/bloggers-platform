@@ -29,7 +29,7 @@ export type UserDBType = {
   banInfo: {
     isBanned: boolean;
     banDate: Date | null;
-    banReason: string;
+    banReason: string | null;
   };
 };
 

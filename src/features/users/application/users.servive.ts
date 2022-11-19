@@ -33,7 +33,7 @@ export class UsersService {
       banInfo: {
         isBanned: false,
         banDate: null,
-        banReason: 'new user',
+        banReason: null,
       },
     };
     return await this.usersRepository.createUser(user);
