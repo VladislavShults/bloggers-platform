@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 export type BlogDBType = {
   _id: ObjectId;
   name: string;
+  description: string;
   websiteUrl: string;
   createdAt: Date;
 };
@@ -10,8 +11,8 @@ export type BlogDBType = {
 export type ViewBlogType = {
   id: string;
   name: string;
+  description: string;
   websiteUrl: string;
-  createdAt: Date;
 };
 
 export type ViewBlogsTypeWithPagination = {

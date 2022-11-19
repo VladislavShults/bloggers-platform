@@ -14,6 +14,7 @@ export class BlogsService {
     const newBlog: BlogDBType = {
       _id: new ObjectId(),
       name: createBlogDTO.name,
+      description: createBlogDTO.description,
       websiteUrl: createBlogDTO.websiteUrl,
       createdAt: new Date(),
     };
@@ -21,12 +22,18 @@ export class BlogsService {
     return newBlog._id;
   }
 
-  async updateBlogById(blogId: string, name: string, websiteUrl: string) {
+  async updateBlogById(
+    blogId: string,
+    name: string,
+    websiteUrl: string,
+    description: string,
+  ) {
     if (blogId.length !== 24) return false;
     const blog = await this.blogsRepository.getBlogById(blogId);
     if (!blog) return false;
     blog.name = name;
     blog.websiteUrl = websiteUrl;
+    blog.description = description;
     return await this.blogsRepository.updateBlog(blog);
   }
 

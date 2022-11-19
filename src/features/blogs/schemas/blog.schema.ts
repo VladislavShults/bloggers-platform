@@ -6,6 +6,7 @@ export const BlogSchema = new mongoose.Schema<BlogDBType>(
   {
     _id: ObjectId,
     name: String,
+    description: String,
     websiteUrl: String,
     createdAt: Date,
   },

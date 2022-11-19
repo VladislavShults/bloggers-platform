@@ -71,6 +71,7 @@ export class BlogsController {
       params.blogId,
       updateBlogDTO.name,
       updateBlogDTO.websiteUrl,
+      updateBlogDTO.description,
     );
     if (desiredBlogger) {
       return;
