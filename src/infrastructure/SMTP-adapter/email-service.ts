@@ -18,11 +18,11 @@ export class EmailService {
     const info = await transporter.sendMail({
       from: '"Vladislav" <shvs1510@gmail.com>',
       to: email,
-      subject: 'Confirmation code',
+      subject: 'code',
       html:
         "<a href='https://some-front.com/confirm-registration?code=" +
         code +
-        "'>recovery password</a>",
+        "'>code</a>",
     });
   }
 }
