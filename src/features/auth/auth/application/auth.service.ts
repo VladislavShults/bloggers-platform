@@ -1,7 +1,7 @@
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { Injectable } from '@nestjs/common';
 import { UserDBType } from '../../../users/types/users.types';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
 import { extractUserIdFromRefreshToken } from '../helpers/extractUserIdFromRefreshToken';
 import { extractIssueAtFromRefreshToken } from '../helpers/extractIssueAtFromRefreshToken';
@@ -40,7 +40,7 @@ export class AuthService {
     const user = await this.checkCredentials(login);
     return await this.jwtUtility.createRefreshJWT(
       user._id.toString(),
-      uuidv4().toString(),
+      uuid().toString(),
       expirationTime,
     );
   }
@@ -48,7 +48,7 @@ export class AuthService {
   async refreshConfirmationCode(email: string): Promise<string | null> {
     const user = await this.usersRepository.getUserByEmail(email);
     if (!user) return null;
-    user.emailConfirmation.confirmationCode = uuidv4;
+    user.emailConfirmation.confirmationCode = uuid();
     user.emailConfirmation.expirationDate = add(new Date(), { hours: 5 });
     const update = await this.usersRepository.updateUser(user);
     if (update) return user.emailConfirmation.confirmationCode;
