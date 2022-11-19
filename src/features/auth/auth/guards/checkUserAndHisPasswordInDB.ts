@@ -20,9 +20,21 @@ export class CheckUserAndHisPasswordInDB implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
 
-    const user = await this.userModel
-      .findOne({ login: request.body.login })
-      .lean();
+    let user: UserDBType | null = null;
+
+    const accountByEmail = await this.userModel.findOne({
+      email: request.body.loginOrEmail,
+    });
+    if (accountByEmail) {
+      user = accountByEmail;
+    }
+    const accountByLogin = await this.userModel.findOne({
+      login: request.body.loginOrEmail,
+    });
+    if (accountByLogin) {
+      user = accountByLogin;
+    }
+
     if (!user) throw new HttpException('', HttpStatus.UNAUTHORIZED);
 
     const passwordValid = await this.authService.isPasswordCorrect(
@@ -30,6 +42,8 @@ export class CheckUserAndHisPasswordInDB implements CanActivate {
       user.passwordHash,
     );
     if (!passwordValid) throw new HttpException('', HttpStatus.UNAUTHORIZED);
+
+    request.user = user;
 
     return true;
   }

@@ -28,6 +28,7 @@ import { JwtAuthGuard } from '../guards/JWT-auth.guard';
 import { InfoAboutMeType } from '../types/info-about-me-type';
 import { CheckDuplicatedLoginGuard } from '../guards/check-duplicated-login.guard';
 import { CheckUserAndHisPasswordInDB } from '../guards/checkUserAndHisPasswordInDB';
+import { UserDBType } from '../../../users/types/users.types';
 
 @Controller('auth')
 export class AuthController {
@@ -111,13 +112,14 @@ export class AuthController {
     //     req.cookies?.refreshToken,
     //   );
     // }
+    const user: UserDBType = req.user;
 
     const newAccessToken = await this.authService.createAccessToken(
-      inputModel.login,
+      user.login,
       '600000',
     );
     const newRefreshToken = await this.authService.createRefreshToken(
-      inputModel.login,
+      user.login,
       '200000',
     );
     await this.authService.saveDeviceInputInDB(

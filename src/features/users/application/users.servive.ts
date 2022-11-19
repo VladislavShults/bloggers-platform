@@ -69,4 +69,19 @@ export class UsersService {
   async findUserByEmail(email: string): Promise<UserDBType | null> {
     return await this.usersRepository.findUserByEmail(email);
   }
+
+  async findUserByLoginOrEmail(loginOrEmail: string) {
+    let user: UserDBType | null = null;
+    const accountByEmail = await this.usersRepository.findUserByEmail(
+      loginOrEmail,
+    );
+    if (accountByEmail) {
+      user = accountByEmail;
+    }
+    const accountByLogin = await this.usersRepository.findByLogin(loginOrEmail);
+    if (accountByLogin) {
+      user = accountByLogin;
+    }
+    return user;
+  }
 }
