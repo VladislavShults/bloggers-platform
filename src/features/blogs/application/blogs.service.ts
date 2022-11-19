@@ -14,19 +14,19 @@ export class BlogsService {
     const newBlog: BlogDBType = {
       _id: new ObjectId(),
       name: createBlogDTO.name,
-      youtubeUrl: createBlogDTO.youtubeUrl,
+      websiteUrl: createBlogDTO.websiteUrl,
       createdAt: new Date(),
     };
     await this.blogsRepository.createBlog(newBlog);
     return newBlog._id;
   }
 
-  async updateBlogById(blogId: string, name: string, youtubeUrl: string) {
+  async updateBlogById(blogId: string, name: string, websiteUrl: string) {
     if (blogId.length !== 24) return false;
     const blog = await this.blogsRepository.getBlogById(blogId);
     if (!blog) return false;
     blog.name = name;
-    blog.youtubeUrl = youtubeUrl;
+    blog.websiteUrl = websiteUrl;
     return await this.blogsRepository.updateBlog(blog);
   }
 

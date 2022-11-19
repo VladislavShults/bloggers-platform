@@ -7,5 +7,5 @@ export class CreateBlogDto {
 
   @IsUrl()
   @Length(0, 100)
-  youtubeUrl: string;
+  websiteUrl: string;
 }

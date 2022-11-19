@@ -70,7 +70,7 @@ export class BlogsController {
     const desiredBlogger: boolean = await this.blogsService.updateBlogById(
       params.blogId,
       updateBlogDTO.name,
-      updateBlogDTO.youtubeUrl,
+      updateBlogDTO.websiteUrl,
     );
     if (desiredBlogger) {
       return;

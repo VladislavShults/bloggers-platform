@@ -6,7 +6,7 @@ export const BlogSchema = new mongoose.Schema<BlogDBType>(
   {
     _id: ObjectId,
     name: String,
-    youtubeUrl: String,
+    websiteUrl: String,
     createdAt: Date,
   },
   {
