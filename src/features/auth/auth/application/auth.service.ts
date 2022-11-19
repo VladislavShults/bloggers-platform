@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   async generateHash(password: string) {
-    return await bcrypt.hash(password, process.env.JWT_SECRET);
+    return await bcrypt.hash(password, 10);
   }
 
   async isPasswordCorrect(password: string, hash: string) {
