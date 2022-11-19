@@ -215,7 +215,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async infoAboutMe(@Request() req): Promise<InfoAboutMeType> {
     const token: string = req.headers.authorization.split(' ')[1];
-
     const userId = await this.jwtService.extractUserIdFromToken(token);
     return await this.usersQueryRepository.returnInfoAboutMe(userId.toString());
   }
