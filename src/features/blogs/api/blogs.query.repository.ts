@@ -6,6 +6,7 @@ import {
   ViewBlogType,
 } from '../types/blogs.types';
 import { mapBlog } from '../helpers/mapBlogDBToViewModel';
+import { mapBlogById } from '../helpers/mapBlogByIdToViewModel';
 
 @Injectable()
 export class BlogsQueryRepository {
@@ -17,7 +18,7 @@ export class BlogsQueryRepository {
     if (blogId.length !== 24) return null;
     const blogDBType = await this.blogModel.findById(blogId);
     if (!blogDBType) return null;
-    return mapBlog(blogDBType);
+    return mapBlogById(blogDBType);
   }
 
   async getBlogs(

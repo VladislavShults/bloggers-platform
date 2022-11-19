@@ -13,6 +13,15 @@ export type ViewBlogType = {
   name: string;
   description: string;
   websiteUrl: string;
+  createdAt: Date;
+};
+
+export type ViewBlogByIdType = {
+  id: string;
+  name: string;
+  description: string;
+  websiteUrl: string;
+  createdAt: Date;
 };
 
 export type ViewBlogsTypeWithPagination = {

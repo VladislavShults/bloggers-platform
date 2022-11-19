@@ -1,6 +1,6 @@
-import { BlogDBType, ViewBlogType } from '../types/blogs.types';
+import { BlogDBType, ViewBlogByIdType } from '../types/blogs.types';
 
-export const mapBlog = (blog: BlogDBType): ViewBlogType => ({
+export const mapBlogById = (blog: BlogDBType): ViewBlogByIdType => ({
   id: blog._id.toString(),
   name: blog.name,
   description: blog.description,
