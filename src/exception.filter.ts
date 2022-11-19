@@ -39,6 +39,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       responseBody.message.forEach((m) => errorResponse.errorsMessages.push(m));
 
       response.status(status).json(errorResponse);
+    }
+
+    if (status === 204) {
+      response.status(status).send(exception.message);
     } else {
       response.sendStatus(status);
       // .json({
