@@ -81,13 +81,15 @@ export class AuthController {
   async registrationEmailResending(
     @Body() inputModel: RegistrationEmailResendingAuthDto,
   ): Promise<HttpStatus> {
-    const confirmationCode = await this.authService.refreshConfirmationCode(
-      inputModel.email,
-    );
     const accountIsConfirmed = await this.authService.accountIsConfirmed(
       inputModel.email,
     );
-    if (confirmationCode && accountIsConfirmed) {
+
+    const confirmationCode = await this.authService.refreshConfirmationCode(
+      inputModel.email,
+    );
+
+    if (confirmationCode && !accountIsConfirmed) {
       await this.emailService.sendEmailRecoveryCode(
         inputModel.email,
         confirmationCode,

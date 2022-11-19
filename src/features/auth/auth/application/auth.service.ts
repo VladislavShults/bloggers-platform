@@ -2,7 +2,6 @@ import { UsersRepository } from '../../../users/infrastructure/users.repository'
 import { Injectable } from '@nestjs/common';
 import { UserDBType } from '../../../users/types/users.types';
 import { v4 as uuidv4 } from 'uuid';
-import add from 'date-fns/add';
 import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
 import { extractUserIdFromRefreshToken } from '../helpers/extractUserIdFromRefreshToken';
 import { extractIssueAtFromRefreshToken } from '../helpers/extractIssueAtFromRefreshToken';
@@ -11,6 +10,7 @@ import { RefreshTokenDBType } from '../../refresh-token/types/refresh-token.type
 import { AuthRepository } from '../infrastrucrure/auth.repository';
 import { ObjectId } from 'mongodb';
 import * as bcrypt from 'bcrypt';
+import { add } from 'date-fns';
 
 @Injectable()
 export class AuthService {

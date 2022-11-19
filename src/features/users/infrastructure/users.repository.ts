@@ -56,7 +56,7 @@ export class UsersRepository {
   async accountIsConfirmed(email: string): Promise<boolean> {
     const account = await this.userModel.findOne({ email: email });
     if (!account) return true;
-    return !!account.emailConfirmation.isConfirmed;
+    return account.emailConfirmation.isConfirmed;
   }
 
   async findByLogin(login: string): Promise<UserDBType | null> {
