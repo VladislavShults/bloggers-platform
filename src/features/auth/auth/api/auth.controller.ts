@@ -97,7 +97,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(200)
-  // @UseGuards(CheckUserAndHisPasswordInDB)
+  @UseGuards(CheckUserAndHisPasswordInDB)
   async login(
     @Body() inputModel: LoginAuthDto,
     @Request() req,

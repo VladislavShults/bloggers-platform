@@ -25,12 +25,12 @@ export class AuthService {
   }
 
   async generateHash(password: string) {
-    return await bcrypt.hash(password, 10);
+    return await bcrypt.hash(password, process.env.JWT_SECRET);
   }
 
-  // async isPasswordCorrect(password: string, hash: string) {
-  //   return await bcrypt.compare(password, hash);
-  // }
+  async isPasswordCorrect(password: string, hash: string) {
+    return await bcrypt.compare(password, hash);
+  }
 
   async createAccessToken(userId: string, expirationTime: string) {
     return await this.jwtUtility.createJWT(userId, expirationTime);

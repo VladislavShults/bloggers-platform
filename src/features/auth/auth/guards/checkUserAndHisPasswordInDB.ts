@@ -20,16 +20,16 @@ export class CheckUserAndHisPasswordInDB implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
 
-    const user: UserDBType = await this.userModel
-      .find({ login: request.body.login })
+    const user = await this.userModel
+      .findOne({ login: request.body.login })
       .lean();
     if (!user) throw new HttpException('', HttpStatus.UNAUTHORIZED);
 
-    const passwordHash = await this.authService.generateHash(
+    const passwordValid = await this.authService.isPasswordCorrect(
       request.body.password,
+      user.passwordHash,
     );
-    if (user.passwordHash !== passwordHash)
-      throw new HttpException('', HttpStatus.UNAUTHORIZED);
+    if (!passwordValid) throw new HttpException('', HttpStatus.UNAUTHORIZED);
 
     return true;
   }
