@@ -20,7 +20,7 @@ export class EmailService {
       to: email,
       subject: 'Confirmation code',
       html:
-        "<a href='https://somesite.com/password-recovery?recoveryCode=" +
+        "<a href='https://some-front.com/confirm-registration?code=" +
         code +
         "'>recovery password</a>",
     });
