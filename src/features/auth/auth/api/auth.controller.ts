@@ -62,14 +62,14 @@ export class AuthController {
     const userByConfirmationCode =
       await this.authService.findAccountByConfirmationCode(inputModel.code);
     if (!userByConfirmationCode)
-      throw new BadRequestException(createErrorMessage('Code'));
+      throw new BadRequestException(createErrorMessage('code'));
     if (userByConfirmationCode.emailConfirmation.isConfirmed)
-      throw new BadRequestException(createErrorMessage('Code'));
+      throw new BadRequestException(createErrorMessage('code'));
     const verifiedAccount = await this.authService.confirmAccount(
       userByConfirmationCode._id.toString(),
     );
     if (!verifiedAccount) {
-      throw new BadRequestException(createErrorMessage('Code'));
+      throw new BadRequestException(createErrorMessage('code'));
     }
     return;
   }
@@ -85,13 +85,13 @@ export class AuthController {
     const accountIsConfirmed = await this.authService.accountIsConfirmed(
       inputModel.email,
     );
-    if (confirmationCode && !accountIsConfirmed) {
+    if (confirmationCode && accountIsConfirmed) {
       await this.emailService.sendEmailRecoveryCode(
         inputModel.email,
         confirmationCode,
       );
       return;
-    } else throw new BadRequestException(createErrorMessage('Email'));
+    } else throw new BadRequestException(createErrorMessage('email'));
   }
 
   @Post('login')

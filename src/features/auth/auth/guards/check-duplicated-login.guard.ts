@@ -21,7 +21,7 @@ export class CheckDuplicatedLoginGuard implements CanActivate {
       login: request.body.login,
     });
     if (duplicatedLogin.length > 0)
-      throw new BadRequestException(createErrorMessage('Login'));
+      throw new BadRequestException(createErrorMessage('login'));
     return true;
   }
 }

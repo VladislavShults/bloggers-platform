@@ -1,10 +1,10 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
   Param,
   Post,
@@ -54,9 +54,8 @@ export class UsersController {
   async deleteUserById(@Param() params: URIParamUserDto): Promise<HttpStatus> {
     const deletedUser = await this.usersService.deleteUserById(params.userId);
     if (!deletedUser)
-      throw new BadRequestException([
-        { message: 'Bad user id', field: 'userId' },
-      ]);
+      throw new HttpException('USER NOT FOUND', HttpStatus.NOT_FOUND);
+
     return;
   }
 

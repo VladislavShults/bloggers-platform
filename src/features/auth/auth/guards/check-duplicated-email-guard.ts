@@ -21,7 +21,7 @@ export class CheckDuplicatedEmailGuard implements CanActivate {
       email: request.body.email,
     });
     if (duplicatedEmail.length > 0)
-      throw new BadRequestException(createErrorMessage('Email'));
+      throw new BadRequestException(createErrorMessage('email'));
     return true;
   }
 }
