@@ -4,7 +4,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpException,
   HttpStatus,
   Post,
   Request,
@@ -43,7 +42,7 @@ export class AuthController {
   @Post('registration')
   @HttpCode(204)
   @UseGuards(CheckDuplicatedEmailGuard, CheckDuplicatedLoginGuard)
-  async registration(@Body() inputModel: CreateUserDto): Promise<string> {
+  async registration(@Body() inputModel: CreateUserDto): Promise<HttpStatus> {
     const newUserObjectId = await this.usersService.createUser(inputModel);
     const user = await this.usersQueryRepository.getUserByIdDBType(
       newUserObjectId.toString(),
@@ -53,7 +52,7 @@ export class AuthController {
       user.emailConfirmation.confirmationCode,
     );
 
-    throw new HttpException('No content', HttpStatus.NO_CONTENT);
+    return;
   }
 
   @Post('registration-confirmation')
