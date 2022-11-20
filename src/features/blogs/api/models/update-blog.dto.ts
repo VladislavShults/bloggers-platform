@@ -16,6 +16,8 @@ export class UpdateBlogDto {
 
   @IsString()
   @MaxLength(500)
+  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   description: string;
 
   @IsUrl()
