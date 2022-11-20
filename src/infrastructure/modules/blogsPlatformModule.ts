@@ -32,6 +32,7 @@ import { refreshTokenMongooseConnection } from '../../features/auth/refresh-toke
 import { AuthRepository } from '../../features/auth/auth/infrastrucrure/auth.repository';
 import { LikesService } from '../../features/likes/application/likes.service';
 import { LikesRepository } from '../../features/likes/infrastructure/likes.repository';
+import { BlogIdValidation } from '../../features/posts/validation/blogId-validation';
 
 @Module({
   imports: [DatabaseModule],
@@ -64,6 +65,7 @@ import { LikesRepository } from '../../features/likes/infrastructure/likes.repos
     EmailAdapter,
     LikesService,
     LikesRepository,
+    BlogIdValidation,
     ...blogsMongooseConnection,
     ...postMongooseConnection,
     ...commentsMongooseConnection,
