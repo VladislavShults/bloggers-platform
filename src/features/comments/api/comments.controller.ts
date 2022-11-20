@@ -49,31 +49,25 @@ export class CommentsController {
 
   @Delete(':commentId')
   @HttpCode(204)
-  @UseGuards(JwtAuthGuard, CheckOwnerComment)
+  @UseGuards(JwtAuthGuard, CheckCommentInDB, CheckOwnerComment)
   async deleteCommentById(
     @Param() params: URIParamCommentDto,
   ): Promise<HttpStatus> {
-    const deletedComment = await this.commentsService.deleteCommentById(
-      params.commentId,
-    );
-    if (!deletedComment)
-      throw new HttpException('COMMENT NOT FOUND', HttpStatus.NOT_FOUND);
+    await this.commentsService.deleteCommentById(params.commentId);
     return;
   }
 
   @Put(':commentId')
   @HttpCode(204)
-  @UseGuards(JwtAuthGuard, CheckOwnerComment)
+  @UseGuards(JwtAuthGuard, CheckCommentInDB, CheckOwnerComment)
   async updateCommentById(
     @Param() params: URIParamCommentDto,
     @Body() updateCommentDTO: UpdateCommentDto,
   ): Promise<HttpStatus> {
-    const updateComment = await this.commentsService.updateComment(
+    await this.commentsService.updateComment(
       params.commentId,
       updateCommentDTO.content,
     );
-    if (!updateComment)
-      throw new HttpException('COMMENT NOT FOUND', HttpStatus.NOT_FOUND);
     return;
   }
 
