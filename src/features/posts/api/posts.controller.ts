@@ -64,10 +64,10 @@ export class PostsController {
     @Param() params: URIParamPostDto,
     @Request() req,
   ): Promise<ViewPostWithoutLikesType> {
-    const userId = req.user._id;
+    const userId = req.user?._id;
     const post = await this.postsQueryRepository.getPostById(
       params.postId,
-      userId.toString(),
+      userId,
     );
     if (!post) throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
     else return post;
