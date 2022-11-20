@@ -1,4 +1,5 @@
 import { IsString, Length } from 'class-validator';
+import { BlogId } from '../../validation/blogId-validation';
 
 export class UpdatePostDto {
   @IsString()
@@ -14,6 +15,6 @@ export class UpdatePostDto {
   content: string;
 
   @IsString()
-  @Length(24, 24)
+  @BlogId()
   blogId: string;
 }
