@@ -21,6 +21,7 @@ import { LikeStatusCommentDto } from './models/like-status.comment.dto';
 import { JwtAuthGuard } from '../../auth/auth/guards/JWT-auth.guard';
 import { CheckCommentInDB } from '../guards/check-comment-in-DB';
 import { GetUserFromToken } from '../../auth/auth/guards/getUserFromToken.guard';
+import { CheckOwnerComment } from '../guards/check-owner-comment';
 
 @Controller('comments')
 export class CommentsController {
@@ -48,7 +49,7 @@ export class CommentsController {
 
   @Delete(':commentId')
   @HttpCode(204)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, CheckOwnerComment)
   async deleteCommentById(
     @Param() params: URIParamCommentDto,
   ): Promise<HttpStatus> {
@@ -62,7 +63,7 @@ export class CommentsController {
 
   @Put(':commentId')
   @HttpCode(204)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, CheckOwnerComment)
   async updateCommentById(
     @Param() params: URIParamCommentDto,
     @Body() updateCommentDTO: UpdateCommentDto,
@@ -85,11 +86,13 @@ export class CommentsController {
     @Request() req,
   ) {
     const user = req.user;
+
     await this.commentsService.makeLikeOrUnlike(
       params.commentId,
       user,
       inputModel.likeStatus,
     );
+
     return;
   }
 }

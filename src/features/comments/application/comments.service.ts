@@ -154,7 +154,7 @@ export class CommentsService {
 
   private async resetLike(commentId: string, user): Promise<boolean> {
     const comment = await this.commentsRepository.getCommentById(commentId);
-    const myLike = await this.likesService.findLikeByUserIdAndPostId(
+    const myLike = await this.likesService.findLikeByUserIdAndCommentId(
       user._id.toString(),
       commentId,
     );
