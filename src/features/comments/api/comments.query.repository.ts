@@ -8,6 +8,7 @@ import {
 import { mapComment } from '../helpers/mapCommentDBTypeToViewModel';
 import { QueryPostDto } from '../../posts/api/models/query-post.dto';
 import { LikeDBType } from '../../likes/types/likes.types';
+import { mapCommentWithLookup } from '../helpers/mapCommentLookupToView';
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -49,22 +50,42 @@ export class CommentsQueryRepository {
   async getCommentsByPostId(
     postId: string,
     query: QueryPostDto,
+    userId?: string,
   ): Promise<ViewCommentsTypeWithPagination> {
     const pageNumber: number = Number(query.pageNumber) || 1;
     const pageSize: number = Number(query.pageSize) || 10;
     const sortBy: string = query.sortBy || 'createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
 
-    const itemsDBType = await this.commentModel
-      .find({ postId: postId })
-      .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize)
-      .sort([[sortBy, sortDirection]])
-      .lean();
+    let sortDirectionToNumber: 1 | -1;
+    if (sortDirection === 'desc') sortDirectionToNumber = -1;
+    else sortDirectionToNumber = 1;
 
-    if (itemsDBType.length === 0) return null;
+    // const itemsDBType = await this.commentModel
+    //   .find({ postId: postId })
+    //   .skip((pageNumber - 1) * pageSize)
+    //   .limit(pageSize)
+    //   .sort([[sortBy, sortDirection]])
+    //   .lean();
 
-    const items = itemsDBType.map((i) => mapComment(i));
+    const itemsDBTypeWithLookup = await this.commentModel.aggregate([
+      { $match: { postId: postId } },
+      { $skip: (pageNumber - 1) * pageSize },
+      { $limit: pageSize },
+      { $sort: { [sortBy]: sortDirectionToNumber } },
+      {
+        $lookup: {
+          from: 'likes',
+          localField: 'userId',
+          foreignField: 'userId',
+          as: 'likes',
+        },
+      },
+    ]);
+
+    if (itemsDBTypeWithLookup.length === 0) return null;
+
+    const items = itemsDBTypeWithLookup.map((i) => mapCommentWithLookup(i));
 
     return {
       pagesCount: Math.ceil(

@@ -134,13 +134,17 @@ export class PostsController {
   }
 
   @Get(':postId/comments')
+  @UseGuards(GetUserFromToken)
   async getCommentsByPostId(
     @Param() params: URIParamPostDto,
     @Query() query: QueryPostDto,
+    @Request() req,
   ): Promise<ViewCommentsTypeWithPagination> {
+    const userId = req.user?._id;
     const comments = await this.commentsQueryRepository.getCommentsByPostId(
       params.postId,
       query,
+      userId.toString(),
     );
     if (!comments)
       throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
