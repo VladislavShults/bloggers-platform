@@ -36,10 +36,9 @@ export class AuthService {
     return await this.jwtUtility.createJWT(userId, expirationTime);
   }
 
-  async createRefreshToken(login: string, expirationTime: string) {
-    const user = await this.checkCredentials(login);
+  async createRefreshToken(userId: string, expirationTime: string) {
     return await this.jwtUtility.createRefreshJWT(
-      user._id.toString(),
+      userId,
       uuid().toString(),
       expirationTime,
     );

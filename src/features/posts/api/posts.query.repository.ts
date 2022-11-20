@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  NewestLikesType,
   PostDBType,
   ViewPostsTypeWithoutLikesWithPagination,
   ViewPostType,
@@ -8,19 +9,31 @@ import { Model } from 'mongoose';
 import { mapPost } from '../helpers/mapPostDBToViewModel';
 import { QueryGetPostsByBlogIdDto } from '../../blogs/api/models/query-getPostsByBlogId.dto';
 import { mapPostsDBToViewModelWithoutLikes } from '../helpers/mapPostsDBToViewModelWithoutLikes';
+import { LikeDBType } from '../../likes/types/likes.types';
 
 @Injectable()
 export class PostsQueryRepository {
   constructor(
     @Inject('POST_MODEL')
     private readonly postModel: Model<PostDBType>,
+    @Inject('LIKES_MODEL')
+    private readonly likesModel: Model<LikeDBType>,
   ) {}
 
   async getPostById(postId: string): Promise<ViewPostType | null> {
     if (postId.length !== 24) return null;
     const postDBType = await this.postModel.findById(postId);
     if (!postDBType) return null;
-    return mapPost(postDBType);
+    const post = mapPost(postDBType);
+    const threeNewestLikes: NewestLikesType = await this.likesModel
+      .find({ idObject: postId, postOrComment: 'post', status: 'Like' })
+      .sort({ addedAt: -1 })
+      .select('-_id -idObject -status -postOrComment')
+      .limit(3)
+      .lean();
+
+    post.extendedLikesInfo.newestLikes.push(threeNewestLikes);
+    return post;
   }
 
   async getPosts(

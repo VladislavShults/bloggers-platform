@@ -12,10 +12,10 @@ export type PostDBType = {
   dislikesCount: number;
 };
 
-type NewestLikesType = {
-  readonly addedAt: Date;
-  readonly userId: string;
-  readonly login: string;
+export type NewestLikesType = {
+  addedAt: Date;
+  userId: string;
+  login: string;
 };
 
 type ExtendedLikesInfoType = {

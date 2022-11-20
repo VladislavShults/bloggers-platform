@@ -115,11 +115,11 @@ export class AuthController {
     const user: UserDBType = req.user;
 
     const newAccessToken = await this.authService.createAccessToken(
-      user.login,
+      user._id.toString(),
       '600000',
     );
     const newRefreshToken = await this.authService.createRefreshToken(
-      user.login,
+      user._id.toString(),
       '200000',
     );
     await this.authService.saveDeviceInputInDB(
