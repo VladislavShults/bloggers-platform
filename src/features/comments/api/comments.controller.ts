@@ -19,6 +19,8 @@ import { ViewCommentType } from '../types/comments.types';
 import { UpdateCommentDto } from './models/update-comment.dto';
 import { LikeStatusCommentDto } from './models/like-status.comment.dto';
 import { JwtAuthGuard } from '../../auth/auth/guards/JWT-auth.guard';
+import { CheckCommentInDB } from '../guards/check-comment-in-DB';
+import { GetUserFromToken } from '../../auth/auth/guards/getUserFromToken.guard';
 
 @Controller('comments')
 export class CommentsController {
@@ -28,11 +30,16 @@ export class CommentsController {
     private readonly commentsQueryRepository: CommentsQueryRepository,
   ) {}
   @Get(':commentId')
+  @UseGuards(GetUserFromToken)
   async getCommentById(
     @Param() params: URIParamCommentDto,
+    @Request() req,
   ): Promise<ViewCommentType> {
+    const userId = req.user?._id;
+
     const comment = await this.commentsQueryRepository.getCommentById(
       params.commentId,
+      userId,
     );
     if (!comment)
       throw new HttpException('COMMENT NOT FOUND', HttpStatus.NOT_FOUND);
@@ -71,7 +78,7 @@ export class CommentsController {
 
   @Put(':commentId/like-status')
   @HttpCode(204)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, CheckCommentInDB)
   async makeLikeOrUnlike(
     @Param() params: URIParamCommentDto,
     @Body() inputModel: LikeStatusCommentDto,

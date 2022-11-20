@@ -120,12 +120,13 @@ export class PostsController {
   async createCommentByPost(
     @Param() params: URIParamPostDto,
     @Body() inputModel: CreateCommentDto,
+    @Request() req,
   ): Promise<ViewCommentType> {
-    // const post = await this.postsQueryRepository.getPostById(params.postId);
-    // if (!post) throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
+    const user = req.user;
     const commentObjectId = await this.commentsService.createCommentByPost(
       params.postId,
       inputModel,
+      user,
     );
     return await this.commentsQueryRepository.getCommentById(
       commentObjectId.toString(),

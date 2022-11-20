@@ -5,6 +5,7 @@ import { CommentDBType } from '../types/comments.types';
 import { ObjectId } from 'mongodb';
 import { LikeDBType, LikeType } from '../../likes/types/likes.types';
 import { LikesService } from '../../likes/application/likes.service';
+import { UserDBType } from '../../users/types/users.types';
 
 @Injectable()
 export class CommentsService {
@@ -16,11 +17,12 @@ export class CommentsService {
   async createCommentByPost(
     postId: string,
     inputModel: CreateCommentDto,
+    user: UserDBType,
   ): Promise<ObjectId> {
     const comment: Omit<CommentDBType, '_id'> = {
       content: inputModel.content,
-      userId: 'random',
-      userLogin: 'random',
+      userId: user._id.toString(),
+      userLogin: user.login,
       createdAt: new Date(),
       postId: postId,
       likesCount: 0,
