@@ -10,7 +10,7 @@ import { Model } from 'mongoose';
 import { UserDBType } from '../../../users/types/users.types';
 
 @Injectable()
-export class GetUserFromTokenGuard implements CanActivate {
+export class GetUserFromToken implements CanActivate {
   constructor(
     private readonly jwtUtility: JwtService,
     @Inject('USER_MODEL') private readonly userModel: Model<UserDBType>,

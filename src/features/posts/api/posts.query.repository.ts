@@ -20,19 +20,39 @@ export class PostsQueryRepository {
     private readonly likesModel: Model<LikeDBType>,
   ) {}
 
-  async getPostById(postId: string): Promise<ViewPostType | null> {
+  async getPostById(
+    postId: string,
+    userId?: string,
+  ): Promise<ViewPostType | null> {
     if (postId.length !== 24) return null;
     const postDBType = await this.postModel.findById(postId);
     if (!postDBType) return null;
     const post = mapPost(postDBType);
-    const threeNewestLikes: NewestLikesType = await this.likesModel
+
+    let myLikeOrDislike: LikeDBType | null = null;
+
+    const threeNewestLikes: NewestLikesType[] = await this.likesModel
       .find({ idObject: postId, postOrComment: 'post', status: 'Like' })
       .sort({ addedAt: -1 })
       .select('-_id -idObject -status -postOrComment')
       .limit(3)
       .lean();
 
-    post.extendedLikesInfo.newestLikes.push(threeNewestLikes);
+    if (threeNewestLikes.length > 0)
+      post.extendedLikesInfo.newestLikes = threeNewestLikes;
+
+    if (userId) {
+      myLikeOrDislike = await this.likesModel
+        .findOne({
+          idObject: postId,
+          postOrComment: 'post',
+          userId: userId,
+        })
+        .lean();
+    }
+    if (myLikeOrDislike)
+      post.extendedLikesInfo.myStatus = myLikeOrDislike.status;
+
     return post;
   }
 

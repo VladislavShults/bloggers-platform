@@ -33,6 +33,7 @@ import { LikeStatusPostDto } from './models/like-status.post.dto';
 import { BasicAuthGuard } from '../../auth/auth/guards/basic-auth.guard';
 import { JwtAuthGuard } from '../../auth/auth/guards/JWT-auth.guard';
 import { CheckPostInDBGuard } from '../guards/check-post-in-DB.post';
+import { GetUserFromToken } from '../../auth/auth/guards/getUserFromToken.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -58,10 +59,16 @@ export class PostsController {
   }
 
   @Get(':postId')
+  @UseGuards(GetUserFromToken)
   async getPostById(
     @Param() params: URIParamPostDto,
+    @Request() req,
   ): Promise<ViewPostWithoutLikesType> {
-    const post = await this.postsQueryRepository.getPostById(params.postId);
+    const userId = req.user._id;
+    const post = await this.postsQueryRepository.getPostById(
+      params.postId,
+      userId.toString(),
+    );
     if (!post) throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
     else return post;
   }
