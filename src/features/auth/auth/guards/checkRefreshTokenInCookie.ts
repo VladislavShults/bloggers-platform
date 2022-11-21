@@ -9,13 +9,13 @@ import { Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Request } from 'express';
 import { AuthService } from '../application/auth.service';
-import { RefreshTokenDBType } from '../../refresh-token/types/refresh-token.types';
+import { DevicesSecuritySessionType } from '../../refresh-token/types/refresh-token.types';
 
 @Injectable()
 export class CheckRefreshTokenInCookie implements CanActivate {
   constructor(
-    @Inject('REFRESH_TOKEN_MODEL')
-    private readonly refreshTokenModel: Model<RefreshTokenDBType>,
+    @Inject('DEVICE_SECURITY_MODEL')
+    private readonly deviceSecurityModel: Model<DevicesSecuritySessionType>,
     private readonly authService: AuthService,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {

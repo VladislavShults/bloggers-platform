@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 
-export type RefreshTokenDBType = {
+export type DevicesSecuritySessionType = {
   _id: ObjectId;
   issuedAt: string;
   deviceId: string;

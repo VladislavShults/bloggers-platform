@@ -6,12 +6,12 @@ import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
 import { extractUserIdFromRefreshToken } from '../helpers/extractUserIdFromRefreshToken';
 import { extractIssueAtFromRefreshToken } from '../helpers/extractIssueAtFromRefreshToken';
 import { extractExpiresDateFromRefreshToken } from '../helpers/extractExpiresDateFromRefreshToken';
-import { RefreshTokenDBType } from '../../refresh-token/types/refresh-token.types';
 import { AuthRepository } from '../infrastrucrure/auth.repository';
 import { ObjectId } from 'mongodb';
 import * as bcrypt from 'bcrypt';
 import { add } from 'date-fns';
 import { Model } from 'mongoose';
+import { DevicesSecuritySessionType } from '../../refresh-token/types/refresh-token.types';
 
 @Injectable()
 export class AuthService {
@@ -19,8 +19,8 @@ export class AuthService {
     private readonly usersRepository: UsersRepository,
     private readonly jwtUtility: JwtService,
     private readonly authRepository: AuthRepository,
-    @Inject('REFRESH_TOKEN_MODEL')
-    private readonly refreshTokenModel: Model<RefreshTokenDBType>,
+    @Inject('DEVICE_SECURITY_MODEL')
+    private readonly securityDevicesModel: Model<DevicesSecuritySessionType>,
   ) {}
 
   async generateHash(password: string) {
@@ -84,7 +84,7 @@ export class AuthService {
     const issueAt = extractIssueAtFromRefreshToken(refreshToken);
     const expiresAt = extractExpiresDateFromRefreshToken(refreshToken);
     if (userId && deviceId && issueAt && deviceName && expiresAt) {
-      const newInput: Omit<RefreshTokenDBType, '_id'> = {
+      const newInput: Omit<DevicesSecuritySessionType, '_id'> = {
         issuedAt: issueAt,
         deviceId: deviceId.toString(),
         ip: ip,
@@ -145,7 +145,7 @@ export class AuthService {
     const userIdFromToken = await this.jwtUtility.extractUserIdFromToken(
       refreshToken,
     );
-    const tokenInDB = await this.refreshTokenModel.findOne({
+    const tokenInDB = await this.securityDevicesModel.findOne({
       issuedAt: issueAtToken,
       userId: userIdFromToken,
     });

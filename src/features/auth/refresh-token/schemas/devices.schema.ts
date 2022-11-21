@@ -1,10 +1,10 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export type RefreshTokenSchema = HydratedDocument<Comment>;
+export type DevicesSchema = HydratedDocument<DeviceSession>;
 
 @Schema({ versionKey: false })
-export class Comment {
+export class DeviceSession {
   @Prop()
   issuedAt: string;
 
@@ -27,4 +27,5 @@ export class Comment {
   lastActiveDate: Date;
 }
 
-export const RefreshTokenSchema = SchemaFactory.createForClass(Comment);
+export const DevicesSecuritySchema =
+  SchemaFactory.createForClass(DeviceSession);

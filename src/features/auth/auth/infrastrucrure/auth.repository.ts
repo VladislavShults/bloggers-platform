@@ -1,19 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { RefreshTokenDBType } from '../../refresh-token/types/refresh-token.types';
 import { ObjectId } from 'mongodb';
+import { DevicesSecuritySessionType } from '../../refresh-token/types/refresh-token.types';
 
 @Injectable()
 export class AuthRepository {
   constructor(
-    @Inject('REFRESH_TOKEN_MODEL')
-    private readonly refreshTokenModel: Model<RefreshTokenDBType>,
+    @Inject('DEVICE_SECURITY_MODEL')
+    private readonly devicesSecurityModel: Model<DevicesSecuritySessionType>,
   ) {}
 
   async saveDeviceInputInDB(
-    newInput: Omit<RefreshTokenDBType, '_id'>,
+    newInput: Omit<DevicesSecuritySessionType, '_id'>,
   ): Promise<ObjectId> {
-    const result = await this.refreshTokenModel.create(newInput);
+    const result = await this.devicesSecurityModel.create(newInput);
     return result._id;
   }
 
@@ -21,7 +21,7 @@ export class AuthRepository {
     userIdOldToken: string,
     issuedAtOldToken: string,
   ) {
-    return this.refreshTokenModel.findOne({
+    return this.devicesSecurityModel.findOne({
       userId: userIdOldToken,
       issuedAt: issuedAtOldToken,
     });
@@ -32,7 +32,7 @@ export class AuthRepository {
   }
 
   async deleteRefreshToken(userId: string, issuedAtToken: string) {
-    await this.refreshTokenModel.deleteMany({
+    await this.devicesSecurityModel.deleteMany({
       userId: userId,
       issuedAt: issuedAtToken,
     });

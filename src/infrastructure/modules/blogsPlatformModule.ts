@@ -28,7 +28,7 @@ import { AuthService } from '../../features/auth/auth/application/auth.service';
 import { EmailService } from '../SMTP-adapter/email-service';
 import { EmailManager } from '../SMTP-adapter/email-manager';
 import { EmailAdapter } from '../SMTP-adapter/email-adapter';
-import { refreshTokenMongooseConnection } from '../../features/auth/refresh-token/refreshTokenMongooseConnection';
+import { devicesSecurityMongooseConnection } from '../../features/auth/refresh-token/devicesSecurityMongooseConnection';
 import { AuthRepository } from '../../features/auth/auth/infrastrucrure/auth.repository';
 import { LikesService } from '../../features/likes/application/likes.service';
 import { LikesRepository } from '../../features/likes/infrastructure/likes.repository';
@@ -72,7 +72,7 @@ import { ipRestrictionMongooseConnection } from '../ip-restriction/ipRestriction
     ...commentsMongooseConnection,
     ...usersMongooseConnection,
     ...likesMongooseConnection,
-    ...refreshTokenMongooseConnection,
+    ...devicesSecurityMongooseConnection,
     ...ipRestrictionMongooseConnection,
   ],
 })
