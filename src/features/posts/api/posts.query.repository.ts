@@ -65,6 +65,10 @@ export class PostsQueryRepository {
   ): Promise<ViewPostsTypeWithPagination> {
     let myLikeOrDislike: LikeDBType | null = null;
     let itemsDBType: PostDBType[];
+    let totalCount: number;
+
+    if (!blogId) totalCount = await this.postModel.count();
+    else totalCount = await this.postModel.count({ blogId: blogId });
 
     if (!blogId) {
       itemsDBType = await this.postModel
@@ -118,10 +122,10 @@ export class PostsQueryRepository {
     );
 
     return {
-      pagesCount: Math.ceil((await this.postModel.count()) / pageSize),
+      pagesCount: Math.ceil(totalCount / pageSize),
       page: pageNumber,
       pageSize: pageSize,
-      totalCount: await this.postModel.count(),
+      totalCount,
       items,
     };
   }
