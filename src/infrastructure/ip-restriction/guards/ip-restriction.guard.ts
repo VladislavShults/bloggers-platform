@@ -21,7 +21,7 @@ export class IpRestrictionGuard implements CanActivate {
     const request: Request = context.switchToHttp().getRequest();
 
     const url = request.url;
-    const ip = request.headers['x-forwarded-for'];
+    const ip = request.ip;
 
     const inputCount = await this.ipRestrictionModel.count({
       endpoint: url,
@@ -33,7 +33,7 @@ export class IpRestrictionGuard implements CanActivate {
 
     const input: IpRestrictionType = {
       endpoint: url,
-      currentIp: ip[0],
+      currentIp: ip,
       timeInput: +new Date(),
     };
     await this.ipRestrictionModel.create(input);
