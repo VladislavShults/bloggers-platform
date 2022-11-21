@@ -1,9 +1,9 @@
-import * as cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './main-app/app.module';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './exception.filter';
 import { useContainer } from 'class-validator';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const port = process.env.PORT || 5000;
