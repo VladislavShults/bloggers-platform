@@ -32,6 +32,8 @@ import { CheckUserAndHisPasswordInDB } from '../guards/checkUserAndHisPasswordIn
 import { UserDBType } from '../../../users/types/users.types';
 import { IpRestrictionGuard } from '../../../../infrastructure/ip-restriction/guards/ip-restriction.guard';
 import { Cookies } from '../../decorators/cookies.decorator';
+import { CheckRefreshTokenInCookie } from '../guards/checkRefreshTokenInCookie';
+import { GetUserFromToken } from '../guards/getUserFromToken.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -138,8 +140,8 @@ export class AuthController {
     );
     res
       .cookie('refreshToken', newRefreshToken, {
-        httpOnly: true,
-        secure: true,
+        httpOnly: false,
+        secure: false,
         maxAge: 20 * 1000,
       })
       .status(200)
@@ -147,24 +149,32 @@ export class AuthController {
   }
 
   @Post('refresh-token')
+  @UseGuards(GetUserFromToken, CheckRefreshTokenInCookie)
   async updateRefreshToken(
     @Body() inputModel: AccessTokenAuthDto,
-    @Request() req,
+    @Cookies('refreshToken') oldRefreshToken: string,
     @Response() res,
+    @Request() req,
   ) {
-    const oldRefreshToken = req.cookies?.refreshToken;
-    const userId = await this.jwtService.extractUserIdFromToken(
+    const userIdFromAccessToken = req.user?._id || null;
+
+    const userIdFromRefreshToken = await this.jwtService.extractUserIdFromToken(
       oldRefreshToken,
     );
+
+    if (userIdFromAccessToken !== userIdFromRefreshToken)
+      throw new HttpException('token', HttpStatus.UNAUTHORIZED);
+
     const deviceId = await this.jwtService.extractDeviceIdFromToken(
       oldRefreshToken,
     );
+
     const newAccessToken = await this.authService.createAccessToken(
-      userId.toString(),
+      userIdFromRefreshToken.toString(),
       '10000',
     );
     const newRefreshToken = await this.jwtService.createRefreshJWT(
-      userId.toString(),
+      userIdFromRefreshToken.toString(),
       deviceId.toString(),
       '20000',
     );
@@ -175,8 +185,8 @@ export class AuthController {
     );
     res
       .cookie('refreshToken', newRefreshToken, {
-        httpOnly: true,
-        secure: true,
+        httpOnly: false,
+        secure: false,
         maxAge: 20 * 1000,
       })
       .status(200)
@@ -218,16 +228,11 @@ export class AuthController {
   }
 
   @Post('logout')
+  @UseGuards(CheckRefreshTokenInCookie)
   @HttpCode(204)
   async logout(
     @Cookies('refreshToken') refreshToken: string,
   ): Promise<HttpStatus> {
-    const tokenIsValid = await this.authService.checkRefreshTokenForValid(
-      refreshToken,
-    );
-    if (!tokenIsValid)
-      throw new HttpException('Token invalid', HttpStatus.UNAUTHORIZED);
-
     await this.authService.deleteRefreshToken(refreshToken);
     return;
   }
