@@ -28,7 +28,7 @@ export class IpRestrictionGuard implements CanActivate {
       currentIp: ip,
       timeInput: { $gte: +new Date() - 10000 },
     });
-    if (inputCount >= 4)
+    if (inputCount >= 5)
       throw new HttpException('ip-restriction', HttpStatus.TOO_MANY_REQUESTS);
 
     const input: IpRestrictionType = {
