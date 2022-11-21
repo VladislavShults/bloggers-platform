@@ -1,5 +1,5 @@
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UserDBType } from '../../../users/types/users.types';
 import { v4 as uuid } from 'uuid';
 import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
@@ -11,6 +11,7 @@ import { AuthRepository } from '../infrastrucrure/auth.repository';
 import { ObjectId } from 'mongodb';
 import * as bcrypt from 'bcrypt';
 import { add } from 'date-fns';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class AuthService {
@@ -18,11 +19,9 @@ export class AuthService {
     private readonly usersRepository: UsersRepository,
     private readonly jwtUtility: JwtService,
     private readonly authRepository: AuthRepository,
+    @Inject('REFRESH_TOKEN_MODEL')
+    private readonly refreshTokenModel: Model<RefreshTokenDBType>,
   ) {}
-
-  async checkCredentials(login: string): Promise<UserDBType | null> {
-    return await this.usersRepository.findByLogin(login);
-  }
 
   async generateHash(password: string) {
     return await bcrypt.hash(password, 10);
@@ -72,14 +71,6 @@ export class AuthService {
   async accountIsConfirmed(email: string): Promise<boolean> {
     return await this.usersRepository.accountIsConfirmed(email);
   }
-
-  // async addRefreshTokenToBlackList(refreshToken: string) {
-  //   await this.usersRepository.addRefreshTokenToBlackList(refreshToken);
-  // }
-  //
-  // async findRefreshTokenInBlackList(refreshToken: string): Promise<boolean> {
-  //   return await this.usersRepository.findRefreshTokenInBlackList(refreshToken);
-  // }
 
   async saveDeviceInputInDB(
     refreshToken: string,
@@ -137,5 +128,30 @@ export class AuthService {
     const user = await this.usersRepository.getUser(userId);
     user.passwordHash = newPasswordHash;
     await this.usersRepository.updateUser(user);
+  }
+
+  async checkRefreshTokenForValid(
+    refreshToken: string | null,
+  ): Promise<boolean> {
+    if (!refreshToken) return false;
+
+    const tokenExpirationDate =
+      await this.jwtUtility.extractExpirationDateFromToken(refreshToken);
+    if (+new Date() > tokenExpirationDate) return false;
+
+    const issueAtToken = await this.jwtUtility.extractIssueAtFromToken(
+      refreshToken,
+    );
+    const userIdFromToken = await this.jwtUtility.extractUserIdFromToken(
+      refreshToken,
+    );
+    const tokenInDB = await this.refreshTokenModel.findOne({
+      issuedAt: issueAtToken,
+      userId: userIdFromToken,
+    });
+
+    if (!tokenInDB) return false;
+
+    return true;
   }
 }

@@ -35,4 +35,22 @@ export class JwtService {
       return null;
     }
   }
+
+  async extractExpirationDateFromToken(refreshToken: string): Promise<number> {
+    try {
+      const result: any = jwt.verify(refreshToken, process.env.JWT_SECRET);
+      return result.exp * 1000;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async extractIssueAtFromToken(refreshToken: string): Promise<number> {
+    try {
+      const result: any = jwt.verify(refreshToken, process.env.JWT_SECRET);
+      return result.iat;
+    } catch (error) {
+      return null;
+    }
+  }
 }

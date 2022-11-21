@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
   Post,
   Request,
@@ -30,6 +31,7 @@ import { CheckDuplicatedLoginGuard } from '../guards/check-duplicated-login.guar
 import { CheckUserAndHisPasswordInDB } from '../guards/checkUserAndHisPasswordInDB';
 import { UserDBType } from '../../../users/types/users.types';
 import { IpRestrictionGuard } from '../../../../infrastructure/ip-restriction/guards/ip-restriction.guard';
+import { Cookies } from '../../decorators/cookies.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -217,8 +219,15 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(204)
-  async logout(@Request() req): Promise<HttpStatus> {
-    const refreshToken = req.cookies?.refreshToken;
+  async logout(
+    @Cookies('refreshToken') refreshToken: string,
+  ): Promise<HttpStatus> {
+    const tokenIsValid = await this.authService.checkRefreshTokenForValid(
+      refreshToken,
+    );
+    if (!tokenIsValid)
+      throw new HttpException('Token invalid', HttpStatus.UNAUTHORIZED);
+
     await this.authService.deleteRefreshToken(refreshToken);
     return;
   }
