@@ -77,7 +77,7 @@ export class AuthService {
     ip: string,
     deviceName: string | undefined,
   ): Promise<ObjectId> {
-    const userId = extractUserIdFromRefreshToken(refreshToken);
+    const userId = await this.jwtUtility.extractUserIdFromToken(refreshToken);
     const deviceId = await this.jwtUtility.extractDeviceIdFromToken(
       refreshToken,
     );
@@ -89,7 +89,7 @@ export class AuthService {
         deviceId: deviceId.toString(),
         ip: ip,
         deviceName: deviceName,
-        userId: userId,
+        userId: userId.toString(),
         expiresAt: expiresAt,
         lastActiveDate: new Date(),
       };

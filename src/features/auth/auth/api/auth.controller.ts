@@ -118,11 +118,9 @@ export class AuthController {
     @Request() req,
     @Response() res,
   ) {
-    // if (req.cookies?.refreshToken) {
-    //   await this.authService.addRefreshTokenToBlackList(
-    //     req.cookies?.refreshToken,
-    //   );
-    // }
+    if (req.cookies?.refreshToken) {
+      await this.authService.deleteRefreshToken(req.cookies?.refreshToken);
+    }
     const user: UserDBType = req.user;
 
     const newAccessToken = await this.authService.createAccessToken(
