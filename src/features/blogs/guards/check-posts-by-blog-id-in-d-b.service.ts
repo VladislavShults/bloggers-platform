@@ -23,7 +23,8 @@ export class CheckPostsByBlogIdInDB implements CanActivate {
     if (params.blogId.length !== 24)
       throw new HttpException('POSTS NOT FOUND', HttpStatus.NOT_FOUND);
     const post = await this.postModel.find({ blogId: params.blogId });
-    if (!post) throw new HttpException('POSTS NOT FOUND', HttpStatus.NOT_FOUND);
+    if (post.length === 0)
+      throw new HttpException('POSTS NOT FOUND', HttpStatus.NOT_FOUND);
     return true;
   }
 }

@@ -118,15 +118,11 @@ export class BlogsController {
   ): Promise<ViewPostsTypeWithPagination> {
     const userId = req.user?._id.toString() || null;
 
-    const posts = await this.postsQueryRepository.getPostsByBlogId(
+    return await this.postsQueryRepository.getPostsByBlogId(
       params.blogId,
       query,
       userId,
     );
-
-    if (!posts)
-      throw new HttpException('POSTS NOT FOUND', HttpStatus.NOT_FOUND);
-    return posts;
   }
 
   @Post(':blogId/posts')
