@@ -74,17 +74,21 @@ export class PostsController {
   }
 
   @Get()
-  async getPosts(@Query() query: QueryPostDto) {
+  @UseGuards(GetUserFromToken)
+  async getPosts(@Query() query: QueryPostDto, @Request() req) {
     const pageNumber: number = Number(query.pageNumber) || 1;
     const pageSize: number = Number(query.pageSize) || 10;
     const sortBy: string = query.sortBy || 'createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
+
+    const userId = req.user?._id.toString() || null;
 
     return await this.postsQueryRepository.getPosts(
       pageNumber,
       pageSize,
       sortBy,
       sortDirection,
+      userId,
     );
   }
 

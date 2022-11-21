@@ -5,7 +5,7 @@ import {
   ValidatorConstraintInterface,
   ValidationArguments,
 } from 'class-validator';
-import { BlogsQueryRepository } from '../../blogs/api/blogs.query.repository';
+import { BlogsQueryRepository } from '../api/blogs.query.repository';
 import { Injectable } from '@nestjs/common';
 
 @ValidatorConstraint({ async: true })
@@ -14,8 +14,7 @@ export class BlogIdValidation implements ValidatorConstraintInterface {
   constructor(private readonly blogsQueryRepository: BlogsQueryRepository) {}
   async validate(blogId: any, args: ValidationArguments) {
     return this.blogsQueryRepository.findBlogById(blogId).then((blog) => {
-      if (blog) return true;
-      return false;
+      return !!blog;
     });
   }
 }

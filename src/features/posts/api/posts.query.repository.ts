@@ -2,13 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   NewestLikesType,
   PostDBType,
-  ViewPostsTypeWithoutLikesWithPagination,
+  ViewPostsTypeWithPagination,
   ViewPostType,
 } from '../types/posts.types';
 import { Model } from 'mongoose';
 import { mapPost } from '../helpers/mapPostDBToViewModel';
 import { QueryGetPostsByBlogIdDto } from '../../blogs/api/models/query-getPostsByBlogId.dto';
-import { mapPostsDBToViewModelWithoutLikes } from '../helpers/mapPostsDBToViewModelWithoutLikes';
 import { LikeDBType } from '../../likes/types/likes.types';
 
 @Injectable()
@@ -61,15 +60,62 @@ export class PostsQueryRepository {
     pageSize: number,
     sortBy: string,
     sortDirection: 'asc' | 'desc',
-  ): Promise<ViewPostsTypeWithoutLikesWithPagination> {
-    const itemsDBType = await this.postModel
-      .find()
-      .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize)
-      .sort([[sortBy, sortDirection]])
-      .lean();
+    userId: string,
+    blogId?: string,
+  ): Promise<ViewPostsTypeWithPagination> {
+    let myLikeOrDislike: LikeDBType | null = null;
+    let itemsDBType: PostDBType[];
 
-    const items = itemsDBType.map((i) => mapPost(i));
+    if (!blogId) {
+      itemsDBType = await this.postModel
+        .find()
+        .skip((pageNumber - 1) * pageSize)
+        .limit(pageSize)
+        .sort([[sortBy, sortDirection]])
+        .lean();
+    } else {
+      itemsDBType = await this.postModel
+        .find({ blogId: blogId })
+        .skip((pageNumber - 1) * pageSize)
+        .limit(pageSize)
+        .sort([[sortBy, sortDirection]])
+        .lean();
+    }
+
+    const itemsWithoutNewestLikesAndMyStatus = itemsDBType.map((i) =>
+      mapPost(i),
+    );
+
+    const items = await Promise.all(
+      itemsWithoutNewestLikesAndMyStatus.map(async (i) => {
+        const threeNewestLikes: NewestLikesType[] = await this.likesModel
+          .find({ idObject: i.id, postOrComment: 'post', status: 'Like' })
+          .sort({ addedAt: -1 })
+          .select('-_id -idObject -status -postOrComment')
+          .limit(3)
+          .lean();
+
+        if (threeNewestLikes.length > 0)
+          i.extendedLikesInfo.newestLikes = threeNewestLikes;
+
+        if (!userId) return i;
+
+        if (userId) {
+          myLikeOrDislike = await this.likesModel
+            .findOne({
+              idObject: i.id,
+              postOrComment: 'post',
+              userId: userId,
+            })
+            .lean();
+        }
+
+        if (myLikeOrDislike)
+          i.extendedLikesInfo.myStatus = myLikeOrDislike.status;
+
+        return i;
+      }),
+    );
 
     return {
       pagesCount: Math.ceil((await this.postModel.count()) / pageSize),
@@ -83,31 +129,20 @@ export class PostsQueryRepository {
   async getPostsByBlogId(
     blogId: string,
     query: QueryGetPostsByBlogIdDto,
-  ): Promise<ViewPostsTypeWithoutLikesWithPagination | null> {
+    userId: string,
+  ): Promise<ViewPostsTypeWithPagination | null> {
     const pageNumber: number = Number(query.pageNumber) || 1;
     const pageSize: number = Number(query.pageSize) || 10;
     const sortBy: string = query.sortBy || 'createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
 
-    const itemsDBType = await this.postModel
-      .find({ blogId: blogId })
-      .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize)
-      .sort([[sortBy, sortDirection]])
-      .lean();
-
-    if (itemsDBType.length === 0) return null;
-
-    const items = itemsDBType.map((i) => mapPostsDBToViewModelWithoutLikes(i));
-
-    return {
-      pagesCount: Math.ceil(
-        (await this.postModel.count({ blogId: blogId })) / pageSize,
-      ),
-      page: pageNumber,
-      pageSize: pageSize,
-      totalCount: await this.postModel.count({ blogId: blogId }),
-      items,
-    };
+    return await this.getPosts(
+      pageNumber,
+      pageSize,
+      sortBy,
+      sortDirection,
+      userId,
+      blogId,
+    );
   }
 }

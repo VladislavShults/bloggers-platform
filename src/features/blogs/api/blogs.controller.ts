@@ -10,6 +10,7 @@ import {
   Post,
   Put,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { CreateBlogDto } from './models/create-blog.dto';
@@ -22,13 +23,14 @@ import { UpdateBlogDto } from './models/update-blog.dto';
 import { QueryBlogDto } from './models/query-blog.dto';
 import { PostsService } from '../../posts/application/posts.service';
 import {
-  ViewPostsTypeWithoutLikesWithPagination,
+  ViewPostsTypeWithPagination,
   ViewPostWithoutLikesType,
 } from '../../posts/types/posts.types';
 import { PostsQueryRepository } from '../../posts/api/posts.query.repository';
 import { QueryGetPostsByBlogIdDto } from './models/query-getPostsByBlogId.dto';
 import { CreatePostBySpecificBlogDto } from './models/create-postBySpecificBlog.dto';
 import { BasicAuthGuard } from '../../auth/auth/guards/basic-auth.guard';
+import { GetUserFromToken } from '../../auth/auth/guards/getUserFromToken.guard';
 
 @Controller('blogs')
 export class BlogsController {
@@ -107,14 +109,20 @@ export class BlogsController {
   }
 
   @Get(':blogId/posts')
+  @UseGuards(GetUserFromToken)
   async getAllPostsByBlogId(
     @Param() params: URIParamBlogDto,
     @Query() query: QueryGetPostsByBlogIdDto,
-  ): Promise<ViewPostsTypeWithoutLikesWithPagination> {
+    @Request() req,
+  ): Promise<ViewPostsTypeWithPagination> {
+    const userId = req.user?._id.toString() || null;
+
     const posts = await this.postsQueryRepository.getPostsByBlogId(
       params.blogId,
       query,
+      userId,
     );
+
     if (!posts)
       throw new HttpException('POSTS NOT FOUND', HttpStatus.NOT_FOUND);
     return posts;

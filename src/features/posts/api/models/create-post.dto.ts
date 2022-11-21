@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, Length } from 'class-validator';
-import { BlogId } from '../../validation/blogId-validation';
+import { BlogId } from '../../../blogs/validation/blogId-validation';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreatePostDto {

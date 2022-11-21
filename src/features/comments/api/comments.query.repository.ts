@@ -70,9 +70,6 @@ export class CommentsQueryRepository {
 
     const itemsDBTypeWithLookup = await this.commentModel.aggregate([
       { $match: { postId: postId } },
-      { $skip: (pageNumber - 1) * pageSize },
-      { $limit: pageSize },
-      { $sort: { [sortBy]: sortDirectionToNumber } },
       {
         $lookup: {
           from: 'likes',
@@ -81,6 +78,9 @@ export class CommentsQueryRepository {
           as: 'likes',
         },
       },
+      { $skip: (pageNumber - 1) * pageSize },
+      { $limit: pageSize },
+      { $sort: { [sortBy]: sortDirectionToNumber } },
     ]);
 
     if (itemsDBTypeWithLookup.length === 0) return null;

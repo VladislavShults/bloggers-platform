@@ -32,7 +32,8 @@ import { refreshTokenMongooseConnection } from '../../features/auth/refresh-toke
 import { AuthRepository } from '../../features/auth/auth/infrastrucrure/auth.repository';
 import { LikesService } from '../../features/likes/application/likes.service';
 import { LikesRepository } from '../../features/likes/infrastructure/likes.repository';
-import { BlogIdValidation } from '../../features/posts/validation/blogId-validation';
+import { BlogIdValidation } from '../../features/blogs/validation/blogId-validation';
+import { ipRestrictionMongooseConnection } from '../ip-restriction/ipRestrictionMongooseConnection';
 
 @Module({
   imports: [DatabaseModule],
@@ -72,6 +73,7 @@ import { BlogIdValidation } from '../../features/posts/validation/blogId-validat
     ...usersMongooseConnection,
     ...likesMongooseConnection,
     ...refreshTokenMongooseConnection,
+    ...ipRestrictionMongooseConnection,
   ],
 })
 export class BlogsPlatformModule {}
