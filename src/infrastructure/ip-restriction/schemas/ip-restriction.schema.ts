@@ -12,7 +12,7 @@ export class IpRestriction {
   currentIp: string;
 
   @Prop()
-  timeInput: Date;
+  timeInput: number;
 }
 
 export const IpRestrictionSchema = SchemaFactory.createForClass(IpRestriction);
