@@ -19,10 +19,11 @@ export class CheckCommentInDB implements CanActivate {
     const params = request.params;
     if (params.commentId.length !== 24)
       throw new HttpException('COMMENT NOT FOUND', HttpStatus.NOT_FOUND);
-    const post = await this.commentsQueryRepository.getCommentById(
+    const comment = await this.commentsQueryRepository.getCommentById(
       params.commentId,
     );
-    if (!post) throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
+    if (!comment)
+      throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
     return true;
   }
 }

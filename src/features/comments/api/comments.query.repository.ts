@@ -8,7 +8,6 @@ import {
 import { mapComment } from '../helpers/mapCommentDBTypeToViewModel';
 import { QueryPostDto } from '../../posts/api/models/query-post.dto';
 import { LikeDBType } from '../../likes/types/likes.types';
-import { mapCommentWithLookup } from '../helpers/mapCommentLookupToView';
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -57,35 +56,38 @@ export class CommentsQueryRepository {
     const sortBy: string = query.sortBy || 'createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
 
-    let sortDirectionToNumber: 1 | -1;
-    if (sortDirection === 'desc') sortDirectionToNumber = -1;
-    else sortDirectionToNumber = 1;
+    let myLikeOrDislike: LikeDBType | null = null;
 
-    // const itemsDBType = await this.commentModel
-    //   .find({ postId: postId })
-    //   .skip((pageNumber - 1) * pageSize)
-    //   .limit(pageSize)
-    //   .sort([[sortBy, sortDirection]])
-    //   .lean();
+    const itemsDBType = await this.commentModel
+      .find({ postId: postId })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize)
+      .sort([[sortBy, sortDirection]])
+      .lean();
 
-    const itemsDBTypeWithLookup = await this.commentModel.aggregate([
-      { $match: { postId: postId } },
-      {
-        $lookup: {
-          from: 'likes',
-          localField: 'userId',
-          foreignField: 'userId',
-          as: 'likes',
-        },
-      },
-      { $skip: (pageNumber - 1) * pageSize },
-      { $limit: pageSize },
-      { $sort: { [sortBy]: sortDirectionToNumber } },
-    ]);
+    if (itemsDBType.length === 0) return null;
 
-    if (itemsDBTypeWithLookup.length === 0) return null;
+    const itemsWithoutMyLike = itemsDBType.map((i) => mapComment(i));
 
-    const items = itemsDBTypeWithLookup.map((i) => mapCommentWithLookup(i));
+    const items = await Promise.all(
+      itemsWithoutMyLike.map(async (i) => {
+        if (!userId) return i;
+
+        if (userId) {
+          myLikeOrDislike = await this.likesModel
+            .findOne({
+              idObject: i.id,
+              postOrComment: 'comment',
+              userId: userId,
+            })
+            .lean();
+        }
+
+        if (myLikeOrDislike) i.likesInfo.myStatus = myLikeOrDislike.status;
+
+        return i;
+      }),
+    );
 
     return {
       pagesCount: Math.ceil(

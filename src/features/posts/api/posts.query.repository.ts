@@ -136,6 +136,9 @@ export class PostsQueryRepository {
     const sortBy: string = query.sortBy || 'createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
 
+    const post = await this.postModel.find({ blogId: blogId });
+    if (!post) return null;
+
     return await this.getPosts(
       pageNumber,
       pageSize,

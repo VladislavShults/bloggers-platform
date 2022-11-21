@@ -144,11 +144,11 @@ export class PostsController {
     @Query() query: QueryPostDto,
     @Request() req,
   ): Promise<ViewCommentsTypeWithPagination> {
-    const userId = req.user?._id;
+    const userId = req.user?._id.toString() || null;
     const comments = await this.commentsQueryRepository.getCommentsByPostId(
       params.postId,
       query,
-      userId.toString(),
+      userId,
     );
     if (!comments)
       throw new HttpException('POST NOT FOUND', HttpStatus.NOT_FOUND);
