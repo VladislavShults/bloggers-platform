@@ -140,8 +140,8 @@ export class AuthController {
     );
     res
       .cookie('refreshToken', newRefreshToken, {
-        httpOnly: false,
-        secure: false,
+        httpOnly: true,
+        secure: true,
         maxAge: 20 * 1000,
       })
       .status(200)
@@ -185,8 +185,8 @@ export class AuthController {
     );
     res
       .cookie('refreshToken', newRefreshToken, {
-        httpOnly: false,
-        secure: false,
+        httpOnly: true,
+        secure: true,
         maxAge: 20 * 1000,
       })
       .status(200)
