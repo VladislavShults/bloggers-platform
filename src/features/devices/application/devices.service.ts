@@ -39,7 +39,7 @@ export class DevicesService {
       })
       .lean();
     if (sessionsByDeviceCount === 0) return null;
-    return await this.devicesSecurityModel
+    return this.devicesSecurityModel
       .find({
         deviceId: deviceId,
       })
