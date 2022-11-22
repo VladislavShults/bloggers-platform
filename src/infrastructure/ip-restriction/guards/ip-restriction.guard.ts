@@ -26,7 +26,7 @@ export class IpRestrictionGuard implements CanActivate {
     const inputCount = await this.ipRestrictionModel.count({
       endpoint: url,
       currentIp: ip,
-      timeInput: { $gt: +new Date() - 13000 },
+      timeInput: { $gt: +new Date() - 12500 },
     });
     if (inputCount >= 5)
       throw new HttpException('ip-restriction', HttpStatus.TOO_MANY_REQUESTS);
