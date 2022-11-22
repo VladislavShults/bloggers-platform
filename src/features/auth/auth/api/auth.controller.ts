@@ -33,7 +33,6 @@ import { UserDBType } from '../../../users/types/users.types';
 import { IpRestrictionGuard } from '../../../../infrastructure/ip-restriction/guards/ip-restriction.guard';
 import { Cookies } from '../../decorators/cookies.decorator';
 import { CheckRefreshTokenInCookie } from '../guards/checkRefreshTokenInCookie';
-import { GetUserFromToken } from '../guards/getUserFromToken.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -147,20 +146,22 @@ export class AuthController {
   }
 
   @Post('refresh-token')
-  @UseGuards(GetUserFromToken, CheckRefreshTokenInCookie)
+  @UseGuards(CheckRefreshTokenInCookie)
   async updateRefreshToken(
     @Body() inputModel: AccessTokenAuthDto,
     @Cookies('refreshToken') oldRefreshToken: string,
     @Response() res,
     @Request() req,
   ) {
-    const userIdFromAccessToken = req.user?._id || null;
+    const userIdFromBodyAccessToken =
+      (await this.jwtService.extractUserIdFromToken(inputModel.accessToken)) ||
+      null;
 
     const userIdFromRefreshToken = await this.jwtService.extractUserIdFromToken(
       oldRefreshToken,
     );
 
-    if (userIdFromAccessToken !== userIdFromRefreshToken)
+    if (userIdFromBodyAccessToken !== userIdFromRefreshToken)
       throw new HttpException('token', HttpStatus.UNAUTHORIZED);
 
     const deviceId = await this.jwtService.extractDeviceIdFromToken(
