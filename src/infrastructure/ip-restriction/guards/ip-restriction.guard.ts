@@ -37,9 +37,9 @@ export class IpRestrictionGuard implements CanActivate {
       timeInput: +new Date(),
     };
     await this.ipRestrictionModel.create(input);
-    await this.ipRestrictionModel.deleteMany({
-      timeInput: { $lt: +new Date() - 15000 },
-    });
+    // await this.ipRestrictionModel.deleteMany({
+    //   timeInput: { $lt: +new Date() - 15000 },
+    // });
     return true;
   }
 }

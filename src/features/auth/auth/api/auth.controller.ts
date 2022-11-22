@@ -161,8 +161,8 @@ export class AuthController {
       oldRefreshToken,
     );
 
-    if (userIdFromBodyAccessToken !== userIdFromRefreshToken)
-      throw new HttpException('token', HttpStatus.UNAUTHORIZED);
+    // if (userIdFromBodyAccessToken !== userIdFromRefreshToken)
+    //   throw new HttpException('token', HttpStatus.UNAUTHORIZED);
 
     const deviceId = await this.jwtService.extractDeviceIdFromToken(
       oldRefreshToken,
