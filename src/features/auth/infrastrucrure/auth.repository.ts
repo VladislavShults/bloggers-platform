@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
-import { DevicesSecuritySessionType } from '../../refresh-token/types/refresh-token.types';
+import { DevicesSecuritySessionType } from '../../devices/types/devices.types';
 
 @Injectable()
 export class AuthRepository {

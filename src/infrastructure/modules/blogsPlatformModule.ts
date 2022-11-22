@@ -22,18 +22,21 @@ import { UsersRepository } from '../../features/users/infrastructure/users.repos
 import { UsersQueryRepository } from '../../features/users/api/users.query.repository';
 import { UsersController } from '../../features/users/api/users.controller';
 import { likesMongooseConnection } from '../../features/likes/likesMongooseConnection';
-import { AuthController } from '../../features/auth/auth/api/auth.controller';
+import { AuthController } from '../../features/auth/api/auth.controller';
 import { JwtService } from '../JWT-utility/jwt-service';
-import { AuthService } from '../../features/auth/auth/application/auth.service';
+import { AuthService } from '../../features/auth/application/auth.service';
 import { EmailService } from '../SMTP-adapter/email-service';
 import { EmailManager } from '../SMTP-adapter/email-manager';
 import { EmailAdapter } from '../SMTP-adapter/email-adapter';
-import { devicesSecurityMongooseConnection } from '../../features/auth/refresh-token/devicesSecurityMongooseConnection';
-import { AuthRepository } from '../../features/auth/auth/infrastrucrure/auth.repository';
+import { devicesSecurityMongooseConnection } from '../../features/devices/devicesSecurityMongooseConnection';
+import { AuthRepository } from '../../features/auth/infrastrucrure/auth.repository';
 import { LikesService } from '../../features/likes/application/likes.service';
 import { LikesRepository } from '../../features/likes/infrastructure/likes.repository';
 import { BlogIdValidation } from '../../features/blogs/validation/blogId-validation';
 import { ipRestrictionMongooseConnection } from '../ip-restriction/ipRestrictionMongooseConnection';
+import { SecurityController } from '../../features/devices/api/devices.controller';
+import { DevicesService } from '../../features/devices/application/devices.service';
+import { DevicesQueryRepository } from '../../features/devices/api/devices.query.repository';
 
 @Module({
   imports: [DatabaseModule],
@@ -44,6 +47,7 @@ import { ipRestrictionMongooseConnection } from '../ip-restriction/ipRestriction
     UsersController,
     TestingController,
     AuthController,
+    SecurityController,
   ],
   providers: [
     PostsService,
@@ -67,6 +71,8 @@ import { ipRestrictionMongooseConnection } from '../ip-restriction/ipRestriction
     LikesService,
     LikesRepository,
     BlogIdValidation,
+    DevicesService,
+    DevicesQueryRepository,
     ...blogsMongooseConnection,
     ...postMongooseConnection,
     ...commentsMongooseConnection,

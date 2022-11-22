@@ -4,7 +4,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpException,
   HttpStatus,
   Post,
   Request,
@@ -12,26 +11,26 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
-import { EmailService } from '../../../../infrastructure/SMTP-adapter/email-service';
-import { UsersService } from '../../../users/application/users.servive';
-import { CreateUserDto } from '../../../users/api/models/create-user.dto';
-import { UsersQueryRepository } from '../../../users/api/users.query.repository';
+import { EmailService } from '../../../infrastructure/SMTP-adapter/email-service';
+import { UsersService } from '../../users/application/users.servive';
+import { CreateUserDto } from '../../users/api/models/create-user.dto';
+import { UsersQueryRepository } from '../../users/api/users.query.repository';
 import { CheckDuplicatedEmailGuard } from '../guards/check-duplicated-email-guard';
 import { RegistrationConfirmationAuthDto } from './models/registration-confirmation.auth.dto';
 import { createErrorMessage } from '../helpers/create-error-message';
 import { RegistrationEmailResendingAuthDto } from './models/registration-email-resending.auth.dto';
 import { LoginAuthDto } from './models/login.auth.dto';
 import { AccessTokenAuthDto } from './models/access-token-auth.dto';
-import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
+import { JwtService } from '../../../infrastructure/JWT-utility/jwt-service';
 import { EmailAuthDto } from './models/email-auth.dto';
 import { NewPasswordAuthDto } from './models/new-password.auth.dto';
 import { JwtAuthGuard } from '../guards/JWT-auth.guard';
 import { InfoAboutMeType } from '../types/info-about-me-type';
 import { CheckDuplicatedLoginGuard } from '../guards/check-duplicated-login.guard';
 import { CheckUserAndHisPasswordInDB } from '../guards/checkUserAndHisPasswordInDB';
-import { UserDBType } from '../../../users/types/users.types';
-import { IpRestrictionGuard } from '../../../../infrastructure/ip-restriction/guards/ip-restriction.guard';
-import { Cookies } from '../../decorators/cookies.decorator';
+import { UserDBType } from '../../users/types/users.types';
+import { IpRestrictionGuard } from '../../../infrastructure/ip-restriction/guards/ip-restriction.guard';
+import { Cookies } from '../decorators/cookies.decorator';
 import { CheckRefreshTokenInCookie } from '../guards/checkRefreshTokenInCookie';
 
 @Controller('auth')

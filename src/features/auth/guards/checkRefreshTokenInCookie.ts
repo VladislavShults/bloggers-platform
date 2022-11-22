@@ -9,7 +9,7 @@ import { Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Request } from 'express';
 import { AuthService } from '../application/auth.service';
-import { DevicesSecuritySessionType } from '../../refresh-token/types/refresh-token.types';
+import { DevicesSecuritySessionType } from '../../devices/types/devices.types';
 
 @Injectable()
 export class CheckRefreshTokenInCookie implements CanActivate {

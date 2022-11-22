@@ -7,7 +7,7 @@ import {
 } from '../types/users.types';
 import { QueryUserDto } from './models/query-user.dto';
 import { mapUserDBTypeToViewType } from '../helpers/mapUserDBTypeToViewType';
-import { InfoAboutMeType } from '../../auth/auth/types/info-about-me-type';
+import { InfoAboutMeType } from '../../auth/types/info-about-me-type';
 
 @Injectable()
 export class UsersQueryRepository {

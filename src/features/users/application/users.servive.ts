@@ -6,7 +6,7 @@ import { CreateUserDto } from '../api/models/create-user.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { UserDBType } from '../types/users.types';
 import { BanUserDto } from '../api/models/ban-user.dto';
-import { AuthService } from '../../auth/auth/application/auth.service';
+import { AuthService } from '../../auth/application/auth.service';
 
 @Injectable()
 export class UsersService {

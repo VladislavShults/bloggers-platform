@@ -10,3 +10,10 @@ export type DevicesSecuritySessionType = {
   expiresAt: string;
   lastActiveDate: Date;
 };
+
+export type DevicesResponseType = {
+  ip: string;
+  title: string;
+  lastActiveDate: Date;
+  deviceId: string;
+};

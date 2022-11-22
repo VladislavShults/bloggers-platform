@@ -30,10 +30,10 @@ import { CommentsService } from '../../comments/application/comments.service';
 import { CommentsQueryRepository } from '../../comments/api/comments.query.repository';
 import { QueryPostDto } from './models/query-post.dto';
 import { LikeStatusPostDto } from './models/like-status.post.dto';
-import { BasicAuthGuard } from '../../auth/auth/guards/basic-auth.guard';
-import { JwtAuthGuard } from '../../auth/auth/guards/JWT-auth.guard';
+import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/JWT-auth.guard';
 import { CheckPostInDBGuard } from '../guards/check-post-in-DB.post';
-import { GetUserFromToken } from '../../auth/auth/guards/getUserFromToken.guard';
+import { GetUserFromToken } from '../../auth/guards/getUserFromToken.guard';
 
 @Controller('posts')
 export class PostsController {

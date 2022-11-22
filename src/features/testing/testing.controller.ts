@@ -11,7 +11,7 @@ import { BlogDBType } from '../blogs/types/blogs.types';
 import { CommentDBType } from '../comments/types/comments.types';
 import { UserDBType } from '../users/types/users.types';
 import { LikeDBType } from '../likes/types/likes.types';
-import { DevicesSecuritySessionType } from '../auth/refresh-token/types/refresh-token.types';
+import { DevicesSecuritySessionType } from '../devices/types/devices.types';
 
 @Controller('testing')
 export class TestingController {

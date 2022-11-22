@@ -18,9 +18,9 @@ import { URIParamCommentDto } from './models/URIParam-comment.dto';
 import { ViewCommentType } from '../types/comments.types';
 import { UpdateCommentDto } from './models/update-comment.dto';
 import { LikeStatusCommentDto } from './models/like-status.comment.dto';
-import { JwtAuthGuard } from '../../auth/auth/guards/JWT-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/JWT-auth.guard';
 import { CheckCommentInDB } from '../guards/check-comment-in-DB';
-import { GetUserFromToken } from '../../auth/auth/guards/getUserFromToken.guard';
+import { GetUserFromToken } from '../../auth/guards/getUserFromToken.guard';
 import { CheckOwnerComment } from '../guards/check-owner-comment';
 
 @Controller('comments')

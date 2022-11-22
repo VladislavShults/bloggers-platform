@@ -6,22 +6,22 @@ import {
 } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { UserDBType } from '../../../users/types/users.types';
+import { UserDBType } from '../../users/types/users.types';
 import { Request } from 'express';
 import { createErrorMessage } from '../helpers/create-error-message';
 
 @Injectable()
-export class CheckDuplicatedEmailGuard implements CanActivate {
+export class CheckDuplicatedLoginGuard implements CanActivate {
   constructor(
     @Inject('USER_MODEL') private readonly userModel: Model<UserDBType>,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
-    const duplicatedEmail = await this.userModel.find({
-      email: request.body.email,
+    const duplicatedLogin = await this.userModel.find({
+      login: request.body.login,
     });
-    if (duplicatedEmail.length > 0)
-      throw new BadRequestException(createErrorMessage('email'));
+    if (duplicatedLogin.length > 0)
+      throw new BadRequestException(createErrorMessage('login'));
     return true;
   }
 }

@@ -1,8 +1,8 @@
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { Inject, Injectable } from '@nestjs/common';
-import { UserDBType } from '../../../users/types/users.types';
+import { UserDBType } from '../../users/types/users.types';
 import { v4 as uuid } from 'uuid';
-import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
+import { JwtService } from '../../../infrastructure/JWT-utility/jwt-service';
 import { extractUserIdFromRefreshToken } from '../helpers/extractUserIdFromRefreshToken';
 import { extractIssueAtFromRefreshToken } from '../helpers/extractIssueAtFromRefreshToken';
 import { extractExpiresDateFromRefreshToken } from '../helpers/extractExpiresDateFromRefreshToken';
@@ -11,7 +11,7 @@ import { ObjectId } from 'mongodb';
 import * as bcrypt from 'bcrypt';
 import { add } from 'date-fns';
 import { Model } from 'mongoose';
-import { DevicesSecuritySessionType } from '../../refresh-token/types/refresh-token.types';
+import { DevicesSecuritySessionType } from '../../devices/types/devices.types';
 
 @Injectable()
 export class AuthService {
