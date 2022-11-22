@@ -119,9 +119,14 @@ export class AuthService {
   }
 
   async deleteRefreshToken(refreshToken: string): Promise<void> {
-    const issuedAtToken = extractIssueAtFromRefreshToken(refreshToken);
-    const userId = extractUserIdFromRefreshToken(refreshToken);
-    await this.authRepository.deleteRefreshToken(userId, issuedAtToken);
+    const issuedAtToken = await this.jwtUtility.extractIssueAtFromToken(
+      refreshToken,
+    );
+    const userId = await this.jwtUtility.extractUserIdFromToken(refreshToken);
+    await this.authRepository.deleteRefreshToken(
+      userId.toString(),
+      issuedAtToken.toString(),
+    );
   }
 
   async changePassword(newPasswordHash: string, userId: string): Promise<void> {
