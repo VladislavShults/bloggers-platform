@@ -23,8 +23,8 @@ export class AuthService {
     private readonly securityDevicesModel: Model<DevicesSecuritySessionType>,
   ) {}
 
-  async generateHash(password: string) {
-    return await bcrypt.hash(password, 10);
+  generateHash(password: string) {
+    return bcrypt.hash(password, 10);
   }
 
   async isPasswordCorrect(password: string, hash: string) {

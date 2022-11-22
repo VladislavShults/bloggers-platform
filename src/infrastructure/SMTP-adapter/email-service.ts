@@ -5,7 +5,7 @@ import * as nodemailer from 'nodemailer';
 @Injectable()
 export class EmailService {
   constructor(private readonly emailManager: EmailManager) {}
-  async sendEmailRecoveryCode(email: string, code: string) {
+  sendEmailRecoveryCode(email: string, code: string) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       host: 'smtp.gmail.com',
@@ -15,7 +15,7 @@ export class EmailService {
       },
     });
 
-    const info = await transporter.sendMail({
+    const info = transporter.sendMail({
       from: '"Vladislav" <shvs1510@gmail.com>',
       to: email,
       subject: 'code',

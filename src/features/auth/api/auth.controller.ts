@@ -55,11 +55,10 @@ export class AuthController {
     const user = await this.usersQueryRepository.getUserByIdDBType(
       newUserObjectId.toString(),
     );
-    await this.emailService.sendEmailRecoveryCode(
+    this.emailService.sendEmailRecoveryCode(
       inputModel.email,
       user.emailConfirmation.confirmationCode,
     );
-
     return;
   }
 
@@ -100,7 +99,7 @@ export class AuthController {
     );
 
     if (confirmationCode && !accountIsConfirmed) {
-      await this.emailService.sendEmailRecoveryCode(
+      this.emailService.sendEmailRecoveryCode(
         inputModel.email,
         confirmationCode,
       );

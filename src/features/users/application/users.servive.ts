@@ -16,9 +16,7 @@ export class UsersService {
   ) {}
 
   async createUser(inputModel: CreateUserDto): Promise<ObjectId> {
-    const hash: string = await this.authService.generateHash(
-      inputModel.password,
-    );
+    const hash = await this.authService.generateHash(inputModel.password);
 
     const user: Omit<UserDBType, '_id'> = {
       login: inputModel.login,
