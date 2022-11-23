@@ -61,7 +61,7 @@ export class UsersService {
     if (!banModel.isBanned && user.banInfo.isBanned) {
       user.banInfo.isBanned = false;
       user.banInfo.banDate = null;
-      user.banInfo.banReason = banModel.banReason;
+      user.banInfo.banReason = null;
       await this.usersRepository.updateUser(user);
       return;
     }
