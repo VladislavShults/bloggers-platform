@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
   Post,
   Request,
@@ -12,9 +13,9 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { EmailService } from '../../../../infrastructure/SMTP-adapter/email-service';
-import { UsersService } from '../../users/application/users.servive';
-import { CreateUserDto } from '../../users/api/models/create-user.dto';
-import { UsersQueryRepository } from '../../users/api/users.query.repository';
+import { UsersService } from '../../../SA-API/users/application/users.servive';
+import { CreateUserDto } from '../../../SA-API/users/api/models/create-user.dto';
+import { UsersQueryRepository } from '../../../SA-API/users/api/users.query.repository';
 import { CheckDuplicatedEmailGuard } from '../guards/check-duplicated-email-guard';
 import { RegistrationConfirmationAuthDto } from './models/registration-confirmation.auth.dto';
 import { createErrorMessage } from '../helpers/create-error-message';
@@ -28,7 +29,7 @@ import { JwtAuthGuard } from '../guards/JWT-auth.guard';
 import { InfoAboutMeType } from '../types/info-about-me-type';
 import { CheckDuplicatedLoginGuard } from '../guards/check-duplicated-login.guard';
 import { CheckUserAndHisPasswordInDB } from '../guards/checkUserAndHisPasswordInDB';
-import { UserDBType } from '../../users/types/users.types';
+import { UserDBType } from '../../../SA-API/users/types/users.types';
 import { IpRestrictionGuard } from '../../../../infrastructure/ip-restriction/guards/ip-restriction.guard';
 import { Cookies } from '../decorators/cookies.decorator';
 import { CheckRefreshTokenInCookie } from '../guards/checkRefreshTokenInCookie';
@@ -119,6 +120,9 @@ export class AuthController {
       await this.authService.deleteRefreshToken(req.cookies?.refreshToken);
     }
     const user: UserDBType = req.user;
+
+    if (user.banInfo.isBanned)
+      throw new HttpException('Banned user', HttpStatus.UNAUTHORIZED);
 
     const newAccessToken = await this.authService.createAccessToken(
       user._id.toString(),

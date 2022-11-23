@@ -16,11 +16,11 @@ import { CommentsRepository } from '../../features/public-API/comments/infrastru
 import { CommentsQueryRepository } from '../../features/public-API/comments/api/comments.query.repository';
 import { CommentsController } from '../../features/public-API/comments/api/comments.controller';
 import { TestingController } from '../../features/public-API/testing/testing.controller';
-import { usersMongooseConnection } from '../../features/public-API/users/usersMongooseConnection';
-import { UsersService } from '../../features/public-API/users/application/users.servive';
-import { UsersRepository } from '../../features/public-API/users/infrastructure/users.repository';
-import { UsersQueryRepository } from '../../features/public-API/users/api/users.query.repository';
-import { UsersController } from '../../features/public-API/users/api/users.controller';
+import { usersMongooseConnection } from '../../features/SA-API/users/usersMongooseConnection';
+import { UsersService } from '../../features/SA-API/users/application/users.servive';
+import { UsersRepository } from '../../features/SA-API/users/infrastructure/users.repository';
+import { UsersQueryRepository } from '../../features/SA-API/users/api/users.query.repository';
+import { UsersController } from '../../features/SA-API/users/api/users.controller';
 import { likesMongooseConnection } from '../../features/public-API/likes/likesMongooseConnection';
 import { AuthController } from '../../features/public-API/auth/api/auth.controller';
 import { JwtService } from '../JWT-utility/jwt-service';

@@ -7,7 +7,7 @@ import {
 import { Request } from 'express';
 import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
 import { Model } from 'mongoose';
-import { UserDBType } from '../../users/types/users.types';
+import { UserDBType } from '../../../SA-API/users/types/users.types';
 
 @Injectable()
 export class GetUserFromToken implements CanActivate {

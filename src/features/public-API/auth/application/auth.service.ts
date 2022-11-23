@@ -1,6 +1,6 @@
-import { UsersRepository } from '../../users/infrastructure/users.repository';
+import { UsersRepository } from '../../../SA-API/users/infrastructure/users.repository';
 import { Inject, Injectable } from '@nestjs/common';
-import { UserDBType } from '../../users/types/users.types';
+import { UserDBType } from '../../../SA-API/users/types/users.types';
 import { v4 as uuid } from 'uuid';
 import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
 import { extractUserIdFromRefreshToken } from '../helpers/extractUserIdFromRefreshToken';

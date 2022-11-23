@@ -22,9 +22,9 @@ import { UsersQueryRepository } from './users.query.repository';
 import { QueryUserDto } from './models/query-user.dto';
 import { URIParamUserDto } from './models/URIParam-user.dto';
 import { BanUserDto } from './models/ban-user.dto';
-import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
+import { BasicAuthGuard } from '../../../public-API/auth/guards/basic-auth.guard';
 
-@Controller('users')
+@Controller('sa/users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,

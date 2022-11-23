@@ -9,7 +9,7 @@ import { Model } from 'mongoose';
 import { PostDBType } from '../posts/types/posts.types';
 import { BlogDBTypeWithoutBlogOwner } from '../blogs/types/blogs.types';
 import { CommentDBType } from '../comments/types/comments.types';
-import { UserDBType } from '../users/types/users.types';
+import { UserDBType } from '../../SA-API/users/types/users.types';
 import { LikeDBType } from '../likes/types/likes.types';
 import { DevicesSecuritySessionType } from '../devices/types/devices.types';
 

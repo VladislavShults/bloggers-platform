@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { UserDBType } from '../../users/types/users.types';
+import { UserDBType } from '../../../SA-API/users/types/users.types';
 import { Request } from 'express';
 import { createErrorMessage } from '../helpers/create-error-message';
 

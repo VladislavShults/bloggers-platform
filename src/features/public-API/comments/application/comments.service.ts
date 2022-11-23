@@ -5,7 +5,7 @@ import { CommentDBType } from '../types/comments.types';
 import { ObjectId } from 'mongodb';
 import { LikeDBType, LikeType } from '../../likes/types/likes.types';
 import { LikesService } from '../../likes/application/likes.service';
-import { UserDBType } from '../../users/types/users.types';
+import { UserDBType } from '../../../SA-API/users/types/users.types';
 
 @Injectable()
 export class CommentsService {

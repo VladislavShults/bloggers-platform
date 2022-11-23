@@ -45,4 +45,11 @@ export class DevicesService {
       })
       .lean();
   }
+
+  async terminateAllSessionByUserId(userId: string): Promise<boolean> {
+    const deleteSession = await this.devicesSecurityModel.deleteMany({
+      userId: userId,
+    });
+    return deleteSession.deletedCount > 0;
+  }
 }

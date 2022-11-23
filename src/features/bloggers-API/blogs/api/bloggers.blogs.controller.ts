@@ -15,12 +15,11 @@ import {
 } from '@nestjs/common';
 import { URIParamBlogDto } from '../../../public-API/blogs/api/models/URIParam-blog.dto';
 import { JwtAuthGuard } from '../../../public-API/auth/guards/JWT-auth.guard';
-import { BloggersBlogsService } from '../application/bloggers.blogs.service';
 import { CheckBlogInDBAndBlogOwnerGuard } from '../guards/chechBlogOwner.guard';
 import { UpdateBlogDto } from '../../../public-API/blogs/api/models/update-blog.dto';
 import { CreateBlogDto } from '../../../public-API/blogs/api/models/create-blog.dto';
 import { ViewBlogType } from '../../../public-API/blogs/types/blogs.types';
-import { UserDBType } from '../../../public-API/users/types/users.types';
+import { UserDBType } from '../../../SA-API/users/types/users.types';
 import { BloggersBlogsQueryRepository } from './bloggers.blogs.query.repository';
 import { QueryBlogDto } from '../../../public-API/blogs/api/models/query-blog.dto';
 import { CreatePostBySpecificBlogDto } from '../../../public-API/blogs/api/models/create-postBySpecificBlog.dto';
@@ -31,11 +30,12 @@ import { URIParamsUpdateDto } from './models/URI-params-update.dto';
 import { UpdatePostByBlogIdDto } from './models/update-postByBlogId.dto';
 import { CheckPostInDBGuard } from '../../../public-API/posts/guards/check-post-in-DB.post';
 import { URIParamsDeleteDto } from './models/URI-params-delete.dto';
+import { BlogsService } from '../../../public-API/blogs/application/blogs.service';
 
 @Controller('bloggers/blogs')
 export class BlogsController {
   constructor(
-    private readonly blogsService: BloggersBlogsService,
+    private readonly blogsService: BlogsService,
     private readonly postsService: PostsService,
     private readonly postsQueryRepository: PostsQueryRepository,
     private readonly blogsQueryRepository: BloggersBlogsQueryRepository,

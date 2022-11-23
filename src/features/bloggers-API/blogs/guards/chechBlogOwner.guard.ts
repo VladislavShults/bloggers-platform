@@ -9,7 +9,7 @@ import {
 import { Model } from 'mongoose';
 import { Request } from 'express';
 import { BlogDBType } from '../../../public-API/blogs/types/blogs.types';
-import { UserDBType } from '../../../public-API/users/types/users.types';
+import { UserDBType } from '../../../SA-API/users/types/users.types';
 
 @Injectable()
 export class CheckBlogInDBAndBlogOwnerGuard implements CanActivate {

@@ -11,7 +11,7 @@ import { Request } from 'express';
 import { CommentsQueryRepository } from '../api/comments.query.repository';
 import { JwtService } from '../../../../infrastructure/JWT-utility/jwt-service';
 import { Model } from 'mongoose';
-import { UserDBType } from '../../users/types/users.types';
+import { UserDBType } from '../../../SA-API/users/types/users.types';
 
 @Injectable()
 export class CheckOwnerComment implements CanActivate {
