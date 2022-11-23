@@ -47,7 +47,7 @@ export class AuthController {
   @Post('registration')
   @HttpCode(204)
   @UseGuards(
-    IpRestrictionGuard,
+    // IpRestrictionGuard,
     CheckDuplicatedEmailGuard,
     CheckDuplicatedLoginGuard,
   )
@@ -64,7 +64,7 @@ export class AuthController {
   }
 
   @Post('registration-confirmation')
-  @UseGuards(IpRestrictionGuard)
+  // @UseGuards(IpRestrictionGuard)
   @HttpCode(204)
   async registrationConfirmation(
     @Body()
@@ -86,7 +86,7 @@ export class AuthController {
   }
 
   @Post('registration-email-resending')
-  @UseGuards(IpRestrictionGuard)
+  // @UseGuards(IpRestrictionGuard)
   @HttpCode(204)
   async registrationEmailResending(
     @Body() inputModel: RegistrationEmailResendingAuthDto,
@@ -110,7 +110,10 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(200)
-  @UseGuards(IpRestrictionGuard, CheckUserAndHisPasswordInDB)
+  @UseGuards(
+    // IpRestrictionGuard,
+    CheckUserAndHisPasswordInDB,
+  )
   async login(
     @Body() inputModel: LoginAuthDto,
     @Request() req,
@@ -126,11 +129,11 @@ export class AuthController {
 
     const newAccessToken = await this.authService.createAccessToken(
       user._id.toString(),
-      '10000',
+      '300000',
     );
     const newRefreshToken = await this.authService.createRefreshToken(
       user._id.toString(),
-      '20000',
+      '300000',
     );
     await this.authService.saveDeviceInputInDB(
       newRefreshToken,
@@ -141,7 +144,7 @@ export class AuthController {
       .cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
         secure: true,
-        maxAge: 20 * 1000,
+        maxAge: 300 * 1000,
       })
       .status(200)
       .json({ accessToken: newAccessToken });
@@ -172,12 +175,12 @@ export class AuthController {
 
     const newAccessToken = await this.authService.createAccessToken(
       userIdFromRefreshToken.toString(),
-      '10000',
+      '300000',
     );
     const newRefreshToken = await this.jwtService.createRefreshJWT(
       userIdFromRefreshToken.toString(),
       deviceId.toString(),
-      '20000',
+      '300000',
     );
     await this.authService.updateRefreshToken(
       oldRefreshToken,
@@ -188,14 +191,14 @@ export class AuthController {
       .cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
         secure: true,
-        maxAge: 20 * 1000,
+        maxAge: 300 * 1000,
       })
       .status(200)
       .json({ accessToken: newAccessToken });
   }
 
   @Post('password-recovery')
-  @UseGuards(IpRestrictionGuard)
+  // @UseGuards(IpRestrictionGuard)
   @HttpCode(204)
   async passwordRecovery(@Body() inputModel: EmailAuthDto) {
     const email = inputModel.email;
@@ -209,7 +212,7 @@ export class AuthController {
   }
 
   @Post('new-password')
-  @UseGuards(IpRestrictionGuard)
+  // @UseGuards(IpRestrictionGuard)
   @HttpCode(204)
   async newPassword(@Body() inputModel: NewPasswordAuthDto) {
     const userByConfirmationCode =
