@@ -33,7 +33,7 @@ import { URIParamsDeleteDto } from './models/URI-params-delete.dto';
 import { BlogsService } from '../../../public-API/blogs/application/blogs.service';
 
 @Controller('bloggers/blogs')
-export class BlogsController {
+export class BloggersBlogsController {
   constructor(
     private readonly blogsService: BlogsService,
     private readonly postsService: PostsService,

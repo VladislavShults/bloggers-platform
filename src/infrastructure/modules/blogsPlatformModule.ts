@@ -37,11 +37,17 @@ import { ipRestrictionMongooseConnection } from '../ip-restriction/ipRestriction
 import { SecurityController } from '../../features/public-API/devices/api/devices.controller';
 import { DevicesService } from '../../features/public-API/devices/application/devices.service';
 import { DevicesQueryRepository } from '../../features/public-API/devices/api/devices.query.repository';
+import { BloggersBlogsController } from '../../features/bloggers-API/blogs/api/bloggers.blogs.controller';
+import { BloggersBlogsQueryRepository } from '../../features/bloggers-API/blogs/api/bloggers.blogs.query.repository';
+import { AdminBlogsController } from '../../features/SA-API/blogs/api/admin.blogs.controller';
+import { AdminBlogQueryRepository } from '../../features/SA-API/blogs/api/admin.blog.query.repository';
 
 @Module({
   imports: [DatabaseModule],
   controllers: [
     BlogsController,
+    BloggersBlogsController,
+    AdminBlogsController,
     PostsController,
     CommentsController,
     UsersController,
@@ -56,6 +62,8 @@ import { DevicesQueryRepository } from '../../features/public-API/devices/api/de
     BlogsService,
     BlogsRepository,
     BlogsQueryRepository,
+    BloggersBlogsQueryRepository,
+    AdminBlogQueryRepository,
     CommentsService,
     CommentsRepository,
     CommentsQueryRepository,
