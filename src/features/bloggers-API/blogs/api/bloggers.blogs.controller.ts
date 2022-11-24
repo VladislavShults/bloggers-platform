@@ -32,7 +32,7 @@ import { CheckPostInDBGuard } from '../../../public-API/posts/guards/check-post-
 import { URIParamsDeleteDto } from './models/URI-params-delete.dto';
 import { BlogsService } from '../../../public-API/blogs/application/blogs.service';
 
-@Controller('bloggers/blogs')
+@Controller('blogger/blogs')
 export class BloggersBlogsController {
   constructor(
     private readonly blogsService: BlogsService,
