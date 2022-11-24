@@ -63,6 +63,8 @@ export class UsersService {
       await this.usersRepository.updateUser(user);
       await this.devicesService.terminateAllSessionByUserId(userId);
       await this.postsService.banPosts(userId);
+      await this.likesService.banLikes(userId);
+      await this.commentsService.banComments(userId);
 
       const bannedLikesForPosts =
         await this.likesService.getBannedLikesForPostsByUser(userId);
@@ -74,8 +76,6 @@ export class UsersService {
         );
       }
 
-      await this.commentsService.banComments(userId);
-
       const bannedLikesForComments =
         await this.likesService.getBannedLikesForCommentsByUser(userId);
 
@@ -86,7 +86,6 @@ export class UsersService {
         );
       }
 
-      await this.likesService.banLikes(userId);
       return;
     }
     if (!banModel.isBanned && user.banInfo.isBanned) {

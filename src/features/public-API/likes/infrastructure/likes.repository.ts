@@ -78,7 +78,7 @@ export class LikesRepository {
           postOrComment: 'comment',
           isBanned: true,
         },
-        { status: 1 },
+        { status: 1, idObject: 1 },
       )
       .lean();
   }
