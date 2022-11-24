@@ -67,9 +67,9 @@ export class UsersService {
       const bannedLikesForPosts =
         await this.likesService.getBannedLikesForPostsByUser(userId);
 
-      for (const element of bannedLikesForPosts) {
+      for await (const element of bannedLikesForPosts) {
         await this.postsService.correctLikeAndDislikeCountersBan(
-          element._id,
+          element.idObject.toString(),
           element.status,
         );
       }
@@ -79,9 +79,9 @@ export class UsersService {
       const bannedLikesForComments =
         await this.likesService.getBannedLikesForCommentsByUser(userId);
 
-      for (const element of bannedLikesForComments) {
+      for await (const element of bannedLikesForComments) {
         await this.commentsService.correctLikeAndDislikeCountersBan(
-          element._id,
+          element.idObject.toString(),
           element.status,
         );
       }
@@ -100,7 +100,7 @@ export class UsersService {
 
       for (const element of bannedLikesForPosts) {
         await this.postsService.correctLikeAndDislikeCountersUnban(
-          element._id,
+          element.idObject.toString(),
           element.status,
         );
       }
@@ -112,7 +112,7 @@ export class UsersService {
 
       for (const element of bannedLikesForComments) {
         await this.commentsService.correctLikeAndDislikeCountersUnban(
-          element._id,
+          element.idObject.toString(),
           element.status,
         );
       }

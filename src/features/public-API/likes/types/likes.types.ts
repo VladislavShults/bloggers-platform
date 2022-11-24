@@ -16,4 +16,5 @@ export type LikeDBType = {
 export type BannedLikesOrDislikes = {
   _id: ObjectId;
   status: LikeType;
+  idObject: ObjectId;
 };

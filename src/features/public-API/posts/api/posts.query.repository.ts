@@ -113,7 +113,7 @@ export class PostsQueryRepository {
             isBanned: false,
           })
           .sort({ addedAt: -1 })
-          .select('-_id -idObject -status -postOrComment')
+          .select('-_id -idObject -status -postOrComment -isBanned')
           .limit(3)
           .lean();
 

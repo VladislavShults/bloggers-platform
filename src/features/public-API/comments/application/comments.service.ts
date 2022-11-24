@@ -193,10 +193,7 @@ export class CommentsService {
     await this.commentsRepository.unbanComments(userId);
   }
 
-  async correctLikeAndDislikeCountersBan(
-    commentId: ObjectId,
-    status: LikeType,
-  ) {
+  async correctLikeAndDislikeCountersBan(commentId: string, status: LikeType) {
     const comment = await this.commentsRepository.getCommentById(
       commentId.toString(),
     );
@@ -206,7 +203,7 @@ export class CommentsService {
   }
 
   async correctLikeAndDislikeCountersUnban(
-    commentId: ObjectId,
+    commentId: string,
     status: LikeType,
   ) {
     const comment = await this.commentsRepository.getCommentById(

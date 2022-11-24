@@ -56,26 +56,30 @@ export class LikesRepository {
   async getBannedLikesForPostsByUser(
     userId: string,
   ): Promise<BannedLikesOrDislikes[]> {
-    return this.likesModel.find(
-      {
-        userId: userId,
-        postOrComment: 'post',
-        isBanned: true,
-      },
-      { status: 1 },
-    );
+    return this.likesModel
+      .find(
+        {
+          userId: userId,
+          postOrComment: 'post',
+          isBanned: true,
+        },
+        { status: 1, idObject: 1 },
+      )
+      .lean();
   }
 
   async getBannedLikesForCommentsByUser(
     userId: string,
   ): Promise<BannedLikesOrDislikes[]> {
-    return this.likesModel.find(
-      {
-        userId: userId,
-        postOrComment: 'comment',
-        isBanned: true,
-      },
-      { status: 1 },
-    );
+    return this.likesModel
+      .find(
+        {
+          userId: userId,
+          postOrComment: 'comment',
+          isBanned: true,
+        },
+        { status: 1 },
+      )
+      .lean();
   }
 }
