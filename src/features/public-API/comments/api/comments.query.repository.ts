@@ -23,7 +23,10 @@ export class CommentsQueryRepository {
     userId?: string,
   ): Promise<ViewCommentType | null> {
     if (commentId.length !== 24) return null;
-    const commentDBType = await this.commentModel.findById(commentId);
+    const commentDBType = await this.commentModel.findOne({
+      _id: commentId,
+      isBanned: false,
+    });
     if (!commentDBType) return null;
 
     const commentViewType = mapComment(commentDBType);
@@ -36,6 +39,7 @@ export class CommentsQueryRepository {
           idObject: commentId,
           postOrComment: 'comment',
           userId: userId,
+          isBanned: false,
         })
         .lean();
     }
@@ -59,7 +63,7 @@ export class CommentsQueryRepository {
     let myLikeOrDislike: LikeDBType | null = null;
 
     const itemsDBType = await this.commentModel
-      .find({ postId: postId })
+      .find({ postId: postId, isBanned: false })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .sort([[sortBy, sortDirection]])
@@ -79,6 +83,7 @@ export class CommentsQueryRepository {
               idObject: i.id,
               postOrComment: 'comment',
               userId: userId,
+              isBanned: false,
             })
             .lean();
         }
@@ -89,13 +94,16 @@ export class CommentsQueryRepository {
       }),
     );
 
+    const totalCount = await this.commentModel.count({
+      postId: postId,
+      isBanned: false,
+    });
+
     return {
-      pagesCount: Math.ceil(
-        (await this.commentModel.count({ postId: postId })) / pageSize,
-      ),
+      pagesCount: Math.ceil(totalCount / pageSize),
       page: pageNumber,
       pageSize: pageSize,
-      totalCount: await this.commentModel.count({ postId: postId }),
+      totalCount,
       items,
     };
   }

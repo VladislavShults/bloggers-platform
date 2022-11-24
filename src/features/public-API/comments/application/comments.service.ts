@@ -27,6 +27,7 @@ export class CommentsService {
       postId: postId,
       likesCount: 0,
       dislikesCount: 0,
+      isBanned: false,
     };
 
     return await this.commentsRepository.createComment(comment);
@@ -91,6 +92,7 @@ export class CommentsService {
         addedAt: new Date(),
         status: 'Like',
         postOrComment: 'comment',
+        isBanned: false,
       };
       await this.commentsRepository.updateComment(comment);
       await this.likesService.saveLikeOrUnlike(like);
@@ -136,6 +138,7 @@ export class CommentsService {
         addedAt: new Date(),
         status: 'Dislike',
         postOrComment: 'comment',
+        isBanned: false,
       };
       await this.commentsRepository.updateComment(comment);
       await this.likesService.saveLikeOrUnlike(like);
@@ -180,5 +183,13 @@ export class CommentsService {
       return true;
     }
     return true;
+  }
+
+  async banComments(userId: string) {
+    await this.commentsRepository.banComments(userId);
+  }
+
+  async unbanComments(userId: string) {
+    await this.commentsRepository.unbanComments(userId);
   }
 }

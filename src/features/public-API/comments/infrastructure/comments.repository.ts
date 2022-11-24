@@ -29,4 +29,18 @@ export class CommentsRepository {
     const update = await comment.save();
     return update.modifiedPaths.length > 0;
   }
+
+  async banComments(userId: string) {
+    await this.commentModel.updateMany(
+      { userId: userId },
+      { $set: { isBanned: true } },
+    );
+  }
+
+  async unbanComments(userId: string) {
+    await this.commentModel.updateMany(
+      { userId: userId },
+      { $set: { isBanned: false } },
+    );
+  }
 }

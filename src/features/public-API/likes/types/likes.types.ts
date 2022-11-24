@@ -10,4 +10,5 @@ export type LikeDBType = {
   addedAt: Date;
   status: LikeType;
   postOrComment: string;
+  isBanned: boolean;
 };

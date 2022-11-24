@@ -11,6 +11,8 @@ export const PostSchema = new mongoose.Schema<Omit<PostDBType, '_id'>>(
     createdAt: Date,
     likesCount: Number,
     dislikesCount: Number,
+    userId: String,
+    isBanned: Boolean,
   },
   {
     versionKey: false,

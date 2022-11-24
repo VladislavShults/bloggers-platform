@@ -24,14 +24,22 @@ export class PostsQueryRepository {
     userId?: string,
   ): Promise<ViewPostType | null> {
     if (postId.length !== 24) return null;
-    const postDBType = await this.postModel.findById(postId);
+    const postDBType = await this.postModel.findOne({
+      _id: postId,
+      isBanned: false,
+    });
     if (!postDBType) return null;
     const post = mapPost(postDBType);
 
     let myLikeOrDislike: LikeDBType | null = null;
 
     const threeNewestLikes: NewestLikesType[] = await this.likesModel
-      .find({ idObject: postId, postOrComment: 'post', status: 'Like' })
+      .find({
+        idObject: postId,
+        postOrComment: 'post',
+        status: 'Like',
+        isBanned: false,
+      })
       .sort({ addedAt: -1 })
       .select('-_id -idObject -status -postOrComment')
       .limit(3)
@@ -46,6 +54,7 @@ export class PostsQueryRepository {
           idObject: postId,
           postOrComment: 'post',
           userId: userId,
+          isBanned: false,
         })
         .lean();
     }
@@ -67,19 +76,23 @@ export class PostsQueryRepository {
     let itemsDBType: PostDBType[];
     let totalCount: number;
 
-    if (!blogId) totalCount = await this.postModel.count();
-    else totalCount = await this.postModel.count({ blogId: blogId });
+    if (!blogId) totalCount = await this.postModel.count({ isBanned: false });
+    else
+      totalCount = await this.postModel.count({
+        blogId: blogId,
+        isBanned: false,
+      });
 
     if (!blogId) {
       itemsDBType = await this.postModel
-        .find()
+        .find({ isBanned: false })
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
         .sort([[sortBy, sortDirection]])
         .lean();
     } else {
       itemsDBType = await this.postModel
-        .find({ blogId: blogId })
+        .find({ blogId: blogId, isBanned: false })
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
         .sort([[sortBy, sortDirection]])
@@ -93,7 +106,12 @@ export class PostsQueryRepository {
     const items = await Promise.all(
       itemsWithoutNewestLikesAndMyStatus.map(async (i) => {
         const threeNewestLikes: NewestLikesType[] = await this.likesModel
-          .find({ idObject: i.id, postOrComment: 'post', status: 'Like' })
+          .find({
+            idObject: i.id,
+            postOrComment: 'post',
+            status: 'Like',
+            isBanned: false,
+          })
           .sort({ addedAt: -1 })
           .select('-_id -idObject -status -postOrComment')
           .limit(3)
@@ -110,6 +128,7 @@ export class PostsQueryRepository {
               idObject: i.id,
               postOrComment: 'post',
               userId: userId,
+              isBanned: false,
             })
             .lean();
         }

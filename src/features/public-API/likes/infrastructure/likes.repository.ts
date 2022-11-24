@@ -13,6 +13,7 @@ export class LikesRepository {
       idObject: postId,
       userId: userId,
       postOrComment: 'post',
+      isBanned: false,
     });
     if (!like) return null;
     return like;
@@ -31,8 +32,23 @@ export class LikesRepository {
       idObject: commentId,
       userId: userId,
       postOrComment: 'comment',
+      isBanned: false,
     });
     if (!like) return null;
     return like;
+  }
+
+  async banLikes(userId: string) {
+    await this.likesModel.updateMany(
+      { userId: userId },
+      { $set: { isBanned: true } },
+    );
+  }
+
+  async unbanLikes(userId: string) {
+    await this.likesModel.updateMany(
+      { userId: userId },
+      { $set: { isBanned: false } },
+    );
   }
 }

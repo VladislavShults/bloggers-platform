@@ -10,6 +10,8 @@ export type PostDBType = {
   createdAt: Date;
   likesCount: number;
   dislikesCount: number;
+  userId: string;
+  isBanned: boolean;
 };
 
 export type NewestLikesType = {

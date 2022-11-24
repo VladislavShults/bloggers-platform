@@ -24,4 +24,12 @@ export class LikesService {
       commentId,
     );
   }
+
+  async banLikes(userId: string) {
+    await this.likesRepository.banLikes(userId);
+  }
+
+  async unbanLikes(userId: string) {
+    await this.likesRepository.unbanLikes(userId);
+  }
 }

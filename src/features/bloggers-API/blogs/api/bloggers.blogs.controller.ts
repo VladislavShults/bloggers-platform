@@ -94,7 +94,12 @@ export class BloggersBlogsController {
       inputModel,
     );
 
-    const postObjectId = await this.postsService.createPost(createPostDTO);
+    const blog = await this.blogsService.findBlogById(params.blogId);
+
+    const postObjectId = await this.postsService.createPost(
+      createPostDTO,
+      blog.blogOwnerInfo.userId,
+    );
 
     return await this.postsQueryRepository.getPostById(postObjectId.toString());
   }

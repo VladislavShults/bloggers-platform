@@ -25,6 +25,9 @@ export class Comment {
 
   @Prop()
   dislikesCount: number;
+
+  @Prop()
+  isBanned: boolean;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

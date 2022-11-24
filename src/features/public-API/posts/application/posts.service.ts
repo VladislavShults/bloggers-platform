@@ -18,7 +18,10 @@ export class PostsService {
     private readonly blogsQueryRepository: BlogsQueryRepository,
   ) {}
 
-  async createPost(createPostDTO: CreatePostDto): Promise<ObjectId> {
+  async createPost(
+    createPostDTO: CreatePostDto,
+    userId: string,
+  ): Promise<ObjectId> {
     const post: Omit<PostDBType, '_id'> = {
       title: createPostDTO.title,
       shortDescription: createPostDTO.shortDescription,
@@ -30,6 +33,8 @@ export class PostsService {
       createdAt: new Date(),
       likesCount: 0,
       dislikesCount: 0,
+      isBanned: false,
+      userId: userId,
     };
     return await this.postsRepository.createPost(post);
   }
@@ -94,6 +99,7 @@ export class PostsService {
         addedAt: new Date(),
         status: 'Like',
         postOrComment: 'post',
+        isBanned: false,
       };
       await this.postsRepository.updatePost(post);
       await this.likesService.saveLikeOrUnlike(like);
@@ -139,6 +145,7 @@ export class PostsService {
         addedAt: new Date(),
         status: 'Dislike',
         postOrComment: 'post',
+        isBanned: false,
       };
       await this.postsRepository.updatePost(post);
       await this.likesService.saveLikeOrUnlike(like);
@@ -202,5 +209,13 @@ export class PostsService {
     blogId: string,
   ): Promise<boolean> {
     return this.postsRepository.deletePostByIdForBlogId(postId, blogId);
+  }
+
+  async banPosts(userId: string) {
+    await this.postsRepository.banPosts(userId);
+  }
+
+  async unbanPosts(userId: string) {
+    await this.postsRepository.unbanPosts(userId);
   }
 }

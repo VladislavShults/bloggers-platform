@@ -8,6 +8,9 @@ import { UserDBType } from '../types/users.types';
 import { BanUserDto } from '../api/models/ban-user.dto';
 import { AuthService } from '../../../public-API/auth/application/auth.service';
 import { DevicesService } from '../../../public-API/devices/application/devices.service';
+import { CommentsService } from '../../../public-API/comments/application/comments.service';
+import { PostsService } from '../../../public-API/posts/application/posts.service';
+import { LikesService } from '../../../public-API/likes/application/likes.service';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +18,9 @@ export class UsersService {
     private readonly authService: AuthService,
     private readonly usersRepository: UsersRepository,
     private readonly devicesService: DevicesService,
+    private readonly commentsService: CommentsService,
+    private readonly postsService: PostsService,
+    private readonly likesService: LikesService,
   ) {}
 
   async createUser(inputModel: CreateUserDto): Promise<ObjectId> {
@@ -56,6 +62,9 @@ export class UsersService {
       user.banInfo.banReason = banModel.banReason;
       await this.usersRepository.updateUser(user);
       await this.devicesService.terminateAllSessionByUserId(userId);
+      await this.postsService.banPosts(userId);
+      await this.commentsService.banComments(userId);
+      await this.likesService.banLikes(userId);
       return;
     }
     if (!banModel.isBanned && user.banInfo.isBanned) {
@@ -63,6 +72,9 @@ export class UsersService {
       user.banInfo.banDate = null;
       user.banInfo.banReason = null;
       await this.usersRepository.updateUser(user);
+      await this.postsService.unbanPosts(userId);
+      await this.commentsService.unbanComments(userId);
+      await this.likesService.unbanLikes(userId);
       return;
     }
   }

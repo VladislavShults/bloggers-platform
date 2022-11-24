@@ -35,4 +35,18 @@ export class PostsRepository {
     });
     return result.deletedCount > 0;
   }
+
+  async banPosts(userId: string) {
+    await this.postModel.updateMany(
+      { userId: userId },
+      { $set: { isBanned: true } },
+    );
+  }
+
+  async unbanPosts(userId: string) {
+    await this.postModel.updateMany(
+      { userId: userId },
+      { $set: { isBanned: false } },
+    );
+  }
 }

@@ -10,6 +10,7 @@ export const LikesSchema = new mongoose.Schema<Omit<LikeDBType, '_id'>>(
     login: String,
     status: String,
     postOrComment: String,
+    isBanned: Boolean,
   },
   {
     versionKey: false,

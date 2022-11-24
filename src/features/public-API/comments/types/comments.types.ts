@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { LikeDBType, LikeType } from '../../likes/types/likes.types';
+import { LikeType } from '../../likes/types/likes.types';
 
 export type CommentDBType = {
   _id: ObjectId;
@@ -10,6 +10,7 @@ export type CommentDBType = {
   postId: string;
   likesCount: number;
   dislikesCount: number;
+  isBanned: boolean;
 };
 
 export type ViewCommentType = {
@@ -24,12 +25,6 @@ export type ViewCommentType = {
     myStatus: LikeType;
   };
 };
-
-type CommentLookupType = {
-  likes: LikeDBType;
-};
-
-export type CommentDBTypeWithLookup = CommentDBType & CommentLookupType;
 
 export type ViewCommentsTypeWithPagination = {
   pagesCount: number;
