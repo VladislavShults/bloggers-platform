@@ -218,4 +218,18 @@ export class PostsService {
   async unbanPosts(userId: string) {
     await this.postsRepository.unbanPosts(userId);
   }
+
+  async correctLikeAndDislikeCountersBan(postId: ObjectId, status: LikeType) {
+    const post = await this.postsRepository.getPostById(postId.toString());
+    if (status === 'Like') post.likesCount -= 1;
+    if (status === 'Dislike') post.dislikesCount -= 1;
+    await this.postsRepository.updatePost(post);
+  }
+
+  async correctLikeAndDislikeCountersUnban(postId: ObjectId, status: LikeType) {
+    const post = await this.postsRepository.getPostById(postId.toString());
+    if (status === 'Like') post.likesCount += 1;
+    if (status === 'Dislike') post.dislikesCount += 1;
+    await this.postsRepository.updatePost(post);
+  }
 }

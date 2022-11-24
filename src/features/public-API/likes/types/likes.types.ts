@@ -12,3 +12,8 @@ export type LikeDBType = {
   postOrComment: string;
   isBanned: boolean;
 };
+
+export type BannedLikesOrDislikes = {
+  _id: ObjectId;
+  status: LikeType;
+};

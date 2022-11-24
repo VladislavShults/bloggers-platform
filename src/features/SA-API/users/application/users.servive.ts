@@ -63,7 +63,29 @@ export class UsersService {
       await this.usersRepository.updateUser(user);
       await this.devicesService.terminateAllSessionByUserId(userId);
       await this.postsService.banPosts(userId);
+
+      const bannedLikesForPosts =
+        await this.likesService.getBannedLikesForPostsByUser(userId);
+
+      for (const element of bannedLikesForPosts) {
+        await this.postsService.correctLikeAndDislikeCountersBan(
+          element._id,
+          element.status,
+        );
+      }
+
       await this.commentsService.banComments(userId);
+
+      const bannedLikesForComments =
+        await this.likesService.getBannedLikesForCommentsByUser(userId);
+
+      for (const element of bannedLikesForComments) {
+        await this.commentsService.correctLikeAndDislikeCountersBan(
+          element._id,
+          element.status,
+        );
+      }
+
       await this.likesService.banLikes(userId);
       return;
     }
@@ -72,7 +94,29 @@ export class UsersService {
       user.banInfo.banDate = null;
       user.banInfo.banReason = null;
       await this.usersRepository.updateUser(user);
+
+      const bannedLikesForPosts =
+        await this.likesService.getBannedLikesForPostsByUser(userId);
+
+      for (const element of bannedLikesForPosts) {
+        await this.postsService.correctLikeAndDislikeCountersUnban(
+          element._id,
+          element.status,
+        );
+      }
+
       await this.postsService.unbanPosts(userId);
+
+      const bannedLikesForComments =
+        await this.likesService.getBannedLikesForCommentsByUser(userId);
+
+      for (const element of bannedLikesForComments) {
+        await this.commentsService.correctLikeAndDislikeCountersUnban(
+          element._id,
+          element.status,
+        );
+      }
+
       await this.commentsService.unbanComments(userId);
       await this.likesService.unbanLikes(userId);
       return;

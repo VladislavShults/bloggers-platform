@@ -32,4 +32,12 @@ export class LikesService {
   async unbanLikes(userId: string) {
     await this.likesRepository.unbanLikes(userId);
   }
+
+  async getBannedLikesForPostsByUser(userId: string) {
+    return this.likesRepository.getBannedLikesForPostsByUser(userId);
+  }
+
+  async getBannedLikesForCommentsByUser(userId: string) {
+    return this.likesRepository.getBannedLikesForCommentsByUser(userId);
+  }
 }

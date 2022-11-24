@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { LikeDBType } from '../types/likes.types';
+import { BannedLikesOrDislikes, LikeDBType } from '../types/likes.types';
 
 @Injectable()
 export class LikesRepository {
@@ -8,6 +8,7 @@ export class LikesRepository {
     @Inject('LIKES_MODEL')
     private readonly likesModel: Model<LikeDBType>,
   ) {}
+
   async findLikeByUserIdAndPostId(userId: string, postId: string) {
     const like = await this.likesModel.findOne({
       idObject: postId,
@@ -49,6 +50,32 @@ export class LikesRepository {
     await this.likesModel.updateMany(
       { userId: userId },
       { $set: { isBanned: false } },
+    );
+  }
+
+  async getBannedLikesForPostsByUser(
+    userId: string,
+  ): Promise<BannedLikesOrDislikes[]> {
+    return this.likesModel.find(
+      {
+        userId: userId,
+        postOrComment: 'post',
+        isBanned: true,
+      },
+      { status: 1 },
+    );
+  }
+
+  async getBannedLikesForCommentsByUser(
+    userId: string,
+  ): Promise<BannedLikesOrDislikes[]> {
+    return this.likesModel.find(
+      {
+        userId: userId,
+        postOrComment: 'comment',
+        isBanned: true,
+      },
+      { status: 1 },
     );
   }
 }

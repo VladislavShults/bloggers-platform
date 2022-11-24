@@ -21,7 +21,6 @@ export class CommentsRepository {
   }
 
   async getCommentById(commentId: string) {
-    if (commentId.length !== 24) return false;
     return this.commentModel.findById(commentId);
   }
 

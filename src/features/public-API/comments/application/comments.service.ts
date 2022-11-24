@@ -192,4 +192,28 @@ export class CommentsService {
   async unbanComments(userId: string) {
     await this.commentsRepository.unbanComments(userId);
   }
+
+  async correctLikeAndDislikeCountersBan(
+    commentId: ObjectId,
+    status: LikeType,
+  ) {
+    const comment = await this.commentsRepository.getCommentById(
+      commentId.toString(),
+    );
+    if (status === 'Like') comment.likesCount -= 1;
+    if (status === 'Dislike') comment.dislikesCount -= 1;
+    await this.commentsRepository.updateComment(comment);
+  }
+
+  async correctLikeAndDislikeCountersUnban(
+    commentId: ObjectId,
+    status: LikeType,
+  ) {
+    const comment = await this.commentsRepository.getCommentById(
+      commentId.toString(),
+    );
+    if (status === 'Like') comment.likesCount += 1;
+    if (status === 'Dislike') comment.dislikesCount += 1;
+    await this.commentsRepository.updateComment(comment);
+  }
 }
