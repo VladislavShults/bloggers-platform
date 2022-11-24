@@ -36,7 +36,7 @@ export class BloggersBlogsQueryRepository {
 
     const itemsDBType: BlogDBTypeWithoutBlogOwner[] = await this.blogModel
       .find({
-        'blogOwnerInfo.useId': userId,
+        'blogOwnerInfo.userId': userId,
         name: { $regex: searchNameTerm, $options: 'i' },
       })
       .skip((pageNumber - 1) * pageSize)
@@ -49,14 +49,14 @@ export class BloggersBlogsQueryRepository {
     return {
       pagesCount: Math.ceil(
         (await this.blogModel.count({
-          'blogOwnerInfo.useId': userId,
+          'blogOwnerInfo.userId': userId,
           name: { $regex: searchNameTerm, $options: 'i' },
         })) / pageSize,
       ),
       page: pageNumber,
       pageSize: pageSize,
       totalCount: await this.blogModel.count({
-        'blogOwnerInfo.useId': userId,
+        'blogOwnerInfo.userId': userId,
         name: { $regex: searchNameTerm, $options: 'i' },
       }),
       items,
