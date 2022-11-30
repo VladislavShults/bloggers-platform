@@ -27,7 +27,7 @@ export class AdminBlogsQueryRepository {
     const itemsDBType: BlogDBType[] = await this.blogModel
       .find({
         isBanned: false,
-        name: { $regex: searchNameTerm },
+        name: { $regex: searchNameTerm, $options: 'i' },
       })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
@@ -40,7 +40,7 @@ export class AdminBlogsQueryRepository {
 
     const totalCount = await this.blogModel.count({
       isBanned: false,
-      name: { $regex: searchNameTerm },
+      name: { $regex: searchNameTerm, $options: 'i' },
     });
 
     return {

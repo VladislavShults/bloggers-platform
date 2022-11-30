@@ -7,7 +7,10 @@ import {
 } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { PostDBType } from '../posts/types/posts.types';
-import { BlogDBTypeWithoutBlogOwner } from '../blogs/types/blogs.types';
+import {
+  BannedUsersForBlogType,
+  BlogDBTypeWithoutBlogOwner,
+} from '../blogs/types/blogs.types';
 import { CommentDBType } from '../comments/types/comments.types';
 import { UserDBType } from '../../SA-API/users/types/users.types';
 import { LikeDBType } from '../likes/types/likes.types';
@@ -28,6 +31,8 @@ export class TestingController {
     private readonly devicesSecurityModel: Model<DevicesSecuritySessionType>,
     @Inject('LIKES_MODEL')
     private readonly likesModel: Model<LikeDBType>,
+    @Inject('BANNED_USER_FOR_BLOG_MODEL')
+    private readonly bannedUserForBlogModel: Model<BannedUsersForBlogType>,
   ) {}
   @Delete('all-data')
   @HttpCode(204)
@@ -38,6 +43,7 @@ export class TestingController {
     await this.userModel.deleteMany({});
     await this.devicesSecurityModel.deleteMany({});
     await this.likesModel.deleteMany({});
+    await this.bannedUserForBlogModel.deleteMany({});
     return;
   }
 }
