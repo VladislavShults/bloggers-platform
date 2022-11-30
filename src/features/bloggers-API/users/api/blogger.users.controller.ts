@@ -54,7 +54,14 @@ export class BloggerUsersController {
   async getAllPostsByBlogId(
     @Param() params: URIParamBlogDto,
     @Query() query: QueryBannedUsersDto,
+    @Request() req,
   ): Promise<ViewBannedUsersForBlogWithPaginationType> {
+    const blog = await this.blogsService.findBlogById(params.blogId);
+    if (!blog) throw new HttpException('blog not found', HttpStatus.NOT_FOUND);
+
+    if (blog.blogOwnerInfo.userId !== req.user._id.toString())
+      throw new HttpException('user not owner blog', HttpStatus.FORBIDDEN);
+
     return await this.blogsQueryRepository.getAllBannedUserForBlog(
       params.blogId,
       query,
