@@ -9,6 +9,7 @@ import { LikeDBType, LikeType } from '../../likes/types/likes.types';
 import { URIParamsUpdateDto } from '../../../bloggers-API/blogs/api/models/URI-params-update.dto';
 import { UpdatePostByBlogIdDto } from '../../../bloggers-API/blogs/api/models/update-postByBlogId.dto';
 import { BlogsQueryRepository } from '../../blogs/api/blogs.query.repository';
+import { BlogsRepository } from '../../blogs/infrastructure/blogs.repository';
 
 @Injectable()
 export class PostsService {
@@ -16,6 +17,7 @@ export class PostsService {
     private readonly postsRepository: PostsRepository,
     private readonly likesService: LikesService,
     private readonly blogsQueryRepository: BlogsQueryRepository,
+    private readonly blogsRepository: BlogsRepository,
   ) {}
 
   async createPost(
@@ -239,5 +241,12 @@ export class PostsService {
 
   async banAndUnbanPostsByBlog(blogId: string, banStatus: boolean) {
     await this.postsRepository.banAndUnbanPostsByBlog(blogId, banStatus);
+  }
+
+  async checkUserForBan(userId: string, postId: string): Promise<boolean> {
+    const post = await this.postsRepository.getPostById(postId);
+    const blog = await this.blogsRepository.getBlogById(post.blogId);
+    const userInBannedUsers = blog.bannedUsers.find((u) => u === userId);
+    return !!userInBannedUsers;
   }
 }

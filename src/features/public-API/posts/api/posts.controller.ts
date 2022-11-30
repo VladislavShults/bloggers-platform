@@ -83,6 +83,14 @@ export class PostsController {
     @Request() req,
   ): Promise<ViewCommentType> {
     const user = req.user;
+
+    const userBannedForBlog = await this.postsService.checkUserForBan(
+      user._id.toString(),
+      params.postId,
+    );
+    if (userBannedForBlog)
+      throw new HttpException('user', HttpStatus.FORBIDDEN);
+
     const commentObjectId = await this.commentsService.createCommentByPost(
       params.postId,
       inputModel,

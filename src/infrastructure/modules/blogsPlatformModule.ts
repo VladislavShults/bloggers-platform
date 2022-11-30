@@ -83,7 +83,6 @@ import { CheckBlogInDBAndBlogOwnerGuard } from '../../features/bloggers-API/blog
     LikesService,
     LikesRepository,
     BlogIdValidation,
-    CheckBlogInDBAndBlogOwnerGuard,
     DevicesService,
     DevicesQueryRepository,
     ...blogsMongooseConnection,
