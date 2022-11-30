@@ -116,6 +116,9 @@ export class BlogsService {
 
   async banAndUnbanBlog(blogId: string, banStatus: boolean) {
     const blog = await this.blogsRepository.getBlogById(blogId);
+
+    if (blog.isBanned === banStatus) return;
+
     blog.isBanned = banStatus;
     await this.blogsRepository.updateBlog(blog);
 

@@ -36,23 +36,26 @@ export class BlogsQueryRepository {
     sortDirection: 'asc' | 'desc',
   ): Promise<ViewBlogsTypeWithPagination> {
     const itemsDBType: BlogDBTypeWithoutBlogOwner[] = await this.blogModel
-      .find({ name: { $regex: searchNameTerm, $options: 'i' } })
+      .find({
+        isBanned: false,
+        name: { $regex: searchNameTerm, $options: 'i' },
+      })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .sort([[sortBy, sortDirection]])
       .lean();
     const items: ViewBlogType[] = itemsDBType.map((i) => mapBlog(i));
+
+    const totalCount = await this.blogModel.count({
+      isBanned: false,
+      name: { $regex: searchNameTerm, $options: 'i' },
+    });
+
     return {
-      pagesCount: Math.ceil(
-        (await this.blogModel.count({
-          name: { $regex: searchNameTerm, $options: 'i' },
-        })) / pageSize,
-      ),
+      pagesCount: Math.ceil(totalCount / pageSize),
       page: pageNumber,
       pageSize: pageSize,
-      totalCount: await this.blogModel.count({
-        name: { $regex: searchNameTerm, $options: 'i' },
-      }),
+      totalCount,
       items,
     };
   }

@@ -55,9 +55,6 @@ export class AdminBlogsController {
     @Param() params: URIParamBlogDto,
     @Body() inputModel: BanBlogDto,
   ) {
-    // if (typeof isBanned !== 'boolean') {
-    //   throw new BadRequestException(createErrorMessage('isBanned'));
-    // }
     await this.blogsService.banAndUnbanBlog(params.blogId, inputModel.isBanned);
     return;
   }
