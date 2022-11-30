@@ -26,6 +26,7 @@ export class AdminBlogsQueryRepository {
 
     const itemsDBType: BlogDBType[] = await this.blogModel
       .find({
+        isBanned: false,
         name: { $regex: searchNameTerm, $options: 'i' },
       })
       .skip((pageNumber - 1) * pageSize)
