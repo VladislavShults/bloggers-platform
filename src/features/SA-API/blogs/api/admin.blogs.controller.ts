@@ -17,6 +17,7 @@ import { BlogsService } from '../../../public-API/blogs/application/blogs.servic
 import { QueryBlogDto } from '../../../public-API/blogs/api/models/query-blog.dto';
 import { AdminBlogsQueryRepository } from './admin.blogs.query.repository';
 import { URIParamBlogDto } from '../../../public-API/blogs/api/models/URIParam-blog.dto';
+import { BanBlogDto } from './models/ban-blog.dto';
 
 @Controller('sa/blogs')
 export class AdminBlogsController {
@@ -52,12 +53,12 @@ export class AdminBlogsController {
   @UseGuards(BasicAuthGuard)
   async banAndUnbanBlog(
     @Param() params: URIParamBlogDto,
-    @Body('isBanned') isBanned,
+    @Body() inputModel: BanBlogDto,
   ) {
-    if (typeof isBanned !== 'boolean') {
-      throw new BadRequestException(createErrorMessage('isBanned'));
-    }
-    await this.blogsService.banAndUnbanBlog(params.blogId, isBanned);
+    // if (typeof isBanned !== 'boolean') {
+    //   throw new BadRequestException(createErrorMessage('isBanned'));
+    // }
+    await this.blogsService.banAndUnbanBlog(params.blogId, inputModel.isBanned);
     return;
   }
 }
