@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -20,7 +19,6 @@ import { URIParamBlogDto } from '../../../public-API/blogs/api/models/URIParam-b
 import { BlogsQueryRepository } from '../../../public-API/blogs/api/blogs.query.repository';
 import { ViewBannedUsersForBlogWithPaginationType } from '../../../public-API/blogs/types/blogs.types';
 import { UsersService } from '../../../SA-API/users/application/users.servive';
-import { createErrorMessage } from '../../../public-API/auth/helpers/create-error-message';
 import { QueryBannedUsersDto } from './models/query-banned-users.dto';
 
 @Controller('blogger/users')
@@ -39,7 +37,7 @@ export class BloggerUsersController {
     @Request() req,
   ): Promise<HttpStatus> {
     const user = await this.usersService.findUserById(params.userId);
-    if (!user) throw new BadRequestException(createErrorMessage('userId'));
+    if (!user) throw new HttpException('user not found', HttpStatus.NOT_FOUND);
 
     const blog = await this.blogsService.findBlogById(inputModel.blogId);
     if (!blog) throw new HttpException('blog not found', HttpStatus.NOT_FOUND);
