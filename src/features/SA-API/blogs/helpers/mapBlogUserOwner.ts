@@ -13,4 +13,8 @@ export const mapBlogUserOwner = (
     userId: blog.blogOwnerInfo.userId,
     userLogin: blog.blogOwnerInfo.userLogin,
   },
+  banInfo: {
+    isBanned: blog.isBanned,
+    banDate: blog.banDate,
+  },
 });

@@ -8,6 +8,10 @@ export type ViewBlogWithUserOwnerType = {
     userId: string;
     userLogin: string;
   };
+  banInfo: {
+    isBanned: boolean;
+    banDate: Date | null;
+  };
 };
 
 export type ViewBlogsTypeWithUserOwnerPagination = {

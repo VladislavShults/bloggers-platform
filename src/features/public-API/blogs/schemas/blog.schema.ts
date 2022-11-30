@@ -12,6 +12,7 @@ export const BlogSchema = new mongoose.Schema<Omit<BlogDBType, '_id'>>(
       userLogin: String,
     },
     isBanned: Boolean,
+    banDate: Date,
     bannedUsers: [String],
   },
   {

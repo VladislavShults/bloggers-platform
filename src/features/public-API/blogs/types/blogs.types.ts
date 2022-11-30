@@ -30,6 +30,7 @@ export type BlogDBType = {
     userLogin: string;
   };
   isBanned: boolean;
+  banDate: Date;
   bannedUsers: string[];
 };
 

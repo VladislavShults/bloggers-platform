@@ -44,6 +44,7 @@ export class BlogsService {
         userLogin: user.login,
       },
       isBanned: false,
+      banDate: null,
       bannedUsers: [],
     };
     return this.blogsRepository.createBlog(newBlog);
