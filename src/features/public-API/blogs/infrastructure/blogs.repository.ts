@@ -31,7 +31,17 @@ export class BlogsRepository {
     await this.bannedUserForBlogModel.create(bannedUser);
   }
 
-  async removeUserIdFromBannedUsers(userId: string, blogId: string) {
+  async removeUserIdFromBannedUsersInBannedModel(
+    userId: string,
+    blogId: string,
+  ) {
     await this.bannedUserForBlogModel.deleteOne({ id: userId, blogId: blogId });
+  }
+
+  async deleteUserIdFromBannedUsersInBlog(blogId: string, userId: string) {
+    await this.blogModel.updateOne(
+      { _id: blogId },
+      { $pull: { bannedUsers: userId } },
+    );
   }
 }

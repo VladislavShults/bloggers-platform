@@ -14,7 +14,6 @@ export const BannedUserForBlogSchema =
       blogId: String,
     },
     {
-      _id: false,
       versionKey: false,
     },
   );

@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   Param,
-  ParseBoolPipe,
   Put,
   Query,
   UseGuards,
@@ -53,8 +52,11 @@ export class AdminBlogsController {
   @UseGuards(BasicAuthGuard)
   async banAndUnbanBlog(
     @Param() params: URIParamBlogDto,
-    @Body('isBanned', ParseBoolPipe) isBanned: boolean,
+    @Body('isBanned') isBanned,
   ) {
+    if (typeof isBanned !== 'boolean') {
+      throw new BadRequestException(createErrorMessage('isBanned'));
+    }
     await this.blogsService.banAndUnbanBlog(params.blogId, isBanned);
     return;
   }

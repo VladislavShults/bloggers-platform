@@ -100,10 +100,12 @@ export class BlogsService {
     }
 
     if (!inputModel.isBanned && userIdIsBanned) {
-      blog.bannedUsers.filter((u) => u !== userId);
-      await this.blogsRepository.updateBlog(blog);
+      await this.blogsRepository.deleteUserIdFromBannedUsersInBlog(
+        blog._id.toString(),
+        userIdIsBanned,
+      );
 
-      await this.blogsRepository.removeUserIdFromBannedUsers(
+      await this.blogsRepository.removeUserIdFromBannedUsersInBannedModel(
         userId,
         blog._id.toString(),
       );

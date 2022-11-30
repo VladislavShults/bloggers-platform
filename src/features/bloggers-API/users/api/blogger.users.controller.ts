@@ -17,7 +17,6 @@ import { BanUserForBlogDto } from './models/ban-user-for-blog.dto';
 import { URIParamBlogDto } from '../../../public-API/blogs/api/models/URIParam-blog.dto';
 import { BlogsQueryRepository } from '../../../public-API/blogs/api/blogs.query.repository';
 import { ViewBannedUsersForBlogWithPaginationType } from '../../../public-API/blogs/types/blogs.types';
-import { CheckBlogInDBAndBlogOwnerGuard } from '../../blogs/guards/chechBlogOwner.guard';
 import { UsersService } from '../../../SA-API/users/application/users.servive';
 import { createErrorMessage } from '../../../public-API/auth/helpers/create-error-message';
 import { QueryBannedUsersDto } from './models/query-banned-users.dto';
@@ -31,7 +30,7 @@ export class BloggerUsersController {
   ) {}
   @Put(':userId/ban')
   @HttpCode(204)
-  @UseGuards(JwtAuthGuard, CheckBlogInDBAndBlogOwnerGuard)
+  @UseGuards(JwtAuthGuard)
   async banAndUnbanUser(
     @Param() params: URIParamUserDto,
     @Body() inputModel: BanUserForBlogDto,

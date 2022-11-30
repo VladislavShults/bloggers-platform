@@ -43,6 +43,7 @@ import { AdminBlogsController } from '../../features/SA-API/blogs/api/admin.blog
 import { AdminBlogsQueryRepository } from '../../features/SA-API/blogs/api/admin.blogs.query.repository';
 import { bannedUsersForBlogMongooseConnection } from '../../features/bloggers-API/users/bannedUsersForBlogMongooseConnection';
 import { BloggerUsersController } from '../../features/bloggers-API/users/api/blogger.users.controller';
+import { CheckBlogInDBAndBlogOwnerGuard } from '../../features/bloggers-API/blogs/guards/chechBlogOwner.guard';
 
 @Module({
   imports: [DatabaseModule],
@@ -82,6 +83,7 @@ import { BloggerUsersController } from '../../features/bloggers-API/users/api/bl
     LikesService,
     LikesRepository,
     BlogIdValidation,
+    CheckBlogInDBAndBlogOwnerGuard,
     DevicesService,
     DevicesQueryRepository,
     ...blogsMongooseConnection,

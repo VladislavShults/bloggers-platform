@@ -2,7 +2,7 @@ import { IsBoolean, IsString, Length, Validate } from 'class-validator';
 import { BlogId } from '../../../../public-API/blogs/validation/blogId-validation';
 
 export class BanUserForBlogDto {
-  // @IsBoolean()
+  @IsBoolean()
   isBanned: boolean;
 
   @IsString()
