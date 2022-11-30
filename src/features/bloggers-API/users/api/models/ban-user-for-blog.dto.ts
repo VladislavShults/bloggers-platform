@@ -9,6 +9,6 @@ export class BanUserForBlogDto {
   @Length(20, 150)
   banReason: string;
 
-  @Validate(BlogId)
+  @IsString()
   blogId: string;
 }
