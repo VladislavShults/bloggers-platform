@@ -4,10 +4,12 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
   Param,
   Put,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from '../../../public-API/blogs/application/blogs.service';
@@ -34,9 +36,16 @@ export class BloggerUsersController {
   async banAndUnbanUser(
     @Param() params: URIParamUserDto,
     @Body() inputModel: BanUserForBlogDto,
+    @Request() req,
   ): Promise<HttpStatus> {
     const user = await this.usersService.findUserById(params.userId);
     if (!user) throw new BadRequestException(createErrorMessage('userId'));
+
+    const blog = await this.blogsService.findBlogById(inputModel.blogId);
+    if (!blog) throw new HttpException('blog not found', HttpStatus.NOT_FOUND);
+
+    if (blog.blogOwnerInfo.userId !== req.user._id.toString())
+      throw new HttpException('created by another user', HttpStatus.FORBIDDEN);
 
     await this.blogsService.banAndUnbanUserByBlog(params.userId, inputModel);
     return;
