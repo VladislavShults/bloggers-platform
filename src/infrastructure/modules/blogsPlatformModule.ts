@@ -40,7 +40,9 @@ import { DevicesQueryRepository } from '../../features/public-API/devices/api/de
 import { BloggersBlogsController } from '../../features/bloggers-API/blogs/api/bloggers.blogs.controller';
 import { BloggersBlogsQueryRepository } from '../../features/bloggers-API/blogs/api/bloggers.blogs.query.repository';
 import { AdminBlogsController } from '../../features/SA-API/blogs/api/admin.blogs.controller';
-import { AdminBlogQueryRepository } from '../../features/SA-API/blogs/api/admin.blog.query.repository';
+import { AdminBlogsQueryRepository } from '../../features/SA-API/blogs/api/admin.blogs.query.repository';
+import { bannedUsersForBlogMongooseConnection } from '../../features/bloggers-API/users/bannedUsersForBlogMongooseConnection';
+import { BloggerUsersController } from '../../features/bloggers-API/users/api/blogger.users.controller';
 
 @Module({
   imports: [DatabaseModule],
@@ -51,6 +53,7 @@ import { AdminBlogQueryRepository } from '../../features/SA-API/blogs/api/admin.
     PostsController,
     CommentsController,
     UsersController,
+    BloggerUsersController,
     TestingController,
     AuthController,
     SecurityController,
@@ -63,7 +66,7 @@ import { AdminBlogQueryRepository } from '../../features/SA-API/blogs/api/admin.
     BlogsRepository,
     BlogsQueryRepository,
     BloggersBlogsQueryRepository,
-    AdminBlogQueryRepository,
+    AdminBlogsQueryRepository,
     CommentsService,
     CommentsRepository,
     CommentsQueryRepository,
@@ -88,6 +91,7 @@ import { AdminBlogQueryRepository } from '../../features/SA-API/blogs/api/admin.
     ...likesMongooseConnection,
     ...devicesSecurityMongooseConnection,
     ...ipRestrictionMongooseConnection,
+    ...bannedUsersForBlogMongooseConnection,
   ],
 })
 export class BlogsPlatformModule {}

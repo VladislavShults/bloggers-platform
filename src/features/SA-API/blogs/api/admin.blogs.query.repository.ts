@@ -9,7 +9,7 @@ import {
 import { mapBlogUserOwner } from '../helpers/mapBlogUserOwner';
 
 @Injectable()
-export class AdminBlogQueryRepository {
+export class AdminBlogsQueryRepository {
   constructor(
     @Inject('BLOG_MODEL')
     private readonly blogModel: Model<BlogDBType>,

@@ -4,6 +4,23 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 export type CommentSchema = HydratedDocument<Comment>;
 
 @Schema({ versionKey: false })
+class PostInfo {
+  @Prop()
+  id: string;
+
+  @Prop()
+  title: string;
+
+  @Prop()
+  blogId: string;
+
+  @Prop()
+  blogName: string;
+
+  @Prop()
+  postOwnerUserId: string;
+}
+
 export class Comment {
   @Prop()
   content: string;
@@ -28,6 +45,9 @@ export class Comment {
 
   @Prop()
   isBanned: boolean;
+
+  @Prop()
+  postInfo: PostInfo;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

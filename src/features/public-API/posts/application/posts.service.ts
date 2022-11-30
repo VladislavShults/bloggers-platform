@@ -232,4 +232,12 @@ export class PostsService {
     if (status === 'Dislike') post.dislikesCount += 1;
     await this.postsRepository.updatePost(post);
   }
+
+  async getPostById(postId: string) {
+    return this.postsRepository.getPostById(postId);
+  }
+
+  async banAndUnbanPostsByBlog(blogId: string, banStatus: boolean) {
+    await this.postsRepository.banAndUnbanPostsByBlog(blogId, banStatus);
+  }
 }

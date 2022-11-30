@@ -49,4 +49,11 @@ export class PostsRepository {
       { $set: { isBanned: false } },
     );
   }
+
+  async banAndUnbanPostsByBlog(blogId: string, banStatus: boolean) {
+    await this.postModel.updateMany(
+      { blogId: blogId },
+      { $set: { isBanned: banStatus } },
+    );
+  }
 }

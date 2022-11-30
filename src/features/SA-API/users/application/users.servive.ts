@@ -61,6 +61,7 @@ export class UsersService {
       user.banInfo.banDate = new Date();
       user.banInfo.banReason = banModel.banReason;
       await this.usersRepository.updateUser(user);
+
       await this.devicesService.terminateAllSessionByUserId(userId);
       await this.postsService.banPosts(userId);
       await this.likesService.banLikes(userId);
@@ -126,20 +127,20 @@ export class UsersService {
     return await this.usersRepository.findUserByEmail(email);
   }
 
-  async findUserByLoginOrEmail(loginOrEmail: string) {
-    let user: UserDBType | null = null;
-    const accountByEmail = await this.usersRepository.findUserByEmail(
-      loginOrEmail,
-    );
-    if (accountByEmail) {
-      user = accountByEmail;
-    }
-    const accountByLogin = await this.usersRepository.findByLogin(loginOrEmail);
-    if (accountByLogin) {
-      user = accountByLogin;
-    }
-    return user;
-  }
+  // async findUserByLoginOrEmail(loginOrEmail: string) {
+  //   let user: UserDBType | null = null;
+  //   const accountByEmail = await this.usersRepository.findUserByEmail(
+  //     loginOrEmail,
+  //   );
+  //   if (accountByEmail) {
+  //     user = accountByEmail;
+  //   }
+  //   const accountByLogin = await this.usersRepository.findByLogin(loginOrEmail);
+  //   if (accountByLogin) {
+  //     user = accountByLogin;
+  //   }
+  //   return user;
+  // }
 
   async findUserById(userId: string) {
     return this.usersRepository.getUser(userId);

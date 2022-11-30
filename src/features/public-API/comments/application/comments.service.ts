@@ -6,12 +6,14 @@ import { ObjectId } from 'mongodb';
 import { LikeDBType, LikeType } from '../../likes/types/likes.types';
 import { LikesService } from '../../likes/application/likes.service';
 import { UserDBType } from '../../../SA-API/users/types/users.types';
+import { PostsService } from '../../posts/application/posts.service';
 
 @Injectable()
 export class CommentsService {
   constructor(
     private readonly commentsRepository: CommentsRepository,
     private readonly likesService: LikesService,
+    private readonly postsService: PostsService,
   ) {}
 
   async createCommentByPost(
@@ -19,6 +21,8 @@ export class CommentsService {
     inputModel: CreateCommentDto,
     user: UserDBType,
   ): Promise<ObjectId> {
+    const post = await this.postsService.getPostById(postId);
+
     const comment: Omit<CommentDBType, '_id'> = {
       content: inputModel.content,
       userId: user._id.toString(),
@@ -28,6 +32,13 @@ export class CommentsService {
       likesCount: 0,
       dislikesCount: 0,
       isBanned: false,
+      postInfo: {
+        id: post._id.toString(),
+        title: post.title,
+        blogId: post.blogId,
+        blogName: post.blogName,
+        postOwnerUserId: post.userId,
+      },
     };
 
     return await this.commentsRepository.createComment(comment);

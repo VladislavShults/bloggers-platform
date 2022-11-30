@@ -31,6 +31,8 @@ import { UpdatePostByBlogIdDto } from './models/update-postByBlogId.dto';
 import { CheckPostInDBGuard } from '../../../public-API/posts/guards/check-post-in-DB.post';
 import { URIParamsDeleteDto } from './models/URI-params-delete.dto';
 import { BlogsService } from '../../../public-API/blogs/application/blogs.service';
+import { CommentsQueryRepository } from '../../../public-API/comments/api/comments.query.repository';
+import { ViewAllCommentsForAllPostsWithPaginationType } from '../../../public-API/comments/types/comments.types';
 
 @Controller('blogger/blogs')
 export class BloggersBlogsController {
@@ -39,6 +41,7 @@ export class BloggersBlogsController {
     private readonly postsService: PostsService,
     private readonly postsQueryRepository: PostsQueryRepository,
     private readonly blogsQueryRepository: BloggersBlogsQueryRepository,
+    private readonly commentsQueryRepository: CommentsQueryRepository,
   ) {}
   @Delete(':blogId')
   @HttpCode(204)
@@ -129,5 +132,18 @@ export class BloggersBlogsController {
     if (!result)
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     return;
+  }
+
+  @Get('comments')
+  @UseGuards(JwtAuthGuard)
+  async getAllCommentsForAllPostsCurrentUser(
+    @Query() query: QueryBlogDto,
+    @Request() req,
+  ): Promise<ViewAllCommentsForAllPostsWithPaginationType> {
+    const userId: string = req.user._id.toString();
+    return await this.commentsQueryRepository.getAllCommentsForAllPostsCurrentUser(
+      query,
+      userId,
+    );
   }
 }

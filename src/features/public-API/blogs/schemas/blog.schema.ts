@@ -11,6 +11,8 @@ export const BlogSchema = new mongoose.Schema<Omit<BlogDBType, '_id'>>(
       userId: String,
       userLogin: String,
     },
+    isBanned: Boolean,
+    bannedUsers: [String],
   },
   {
     versionKey: false,

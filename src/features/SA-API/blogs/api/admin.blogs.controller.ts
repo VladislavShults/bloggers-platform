@@ -1,9 +1,11 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   HttpCode,
   Param,
+  ParseBoolPipe,
   Put,
   Query,
   UseGuards,
@@ -14,14 +16,15 @@ import { UsersService } from '../../users/application/users.servive';
 import { createErrorMessage } from '../../../public-API/auth/helpers/create-error-message';
 import { BlogsService } from '../../../public-API/blogs/application/blogs.service';
 import { QueryBlogDto } from '../../../public-API/blogs/api/models/query-blog.dto';
-import { AdminBlogQueryRepository } from './admin.blog.query.repository';
+import { AdminBlogsQueryRepository } from './admin.blogs.query.repository';
+import { URIParamBlogDto } from '../../../public-API/blogs/api/models/URIParam-blog.dto';
 
 @Controller('sa/blogs')
 export class AdminBlogsController {
   constructor(
     private readonly usersService: UsersService,
     private readonly blogsService: BlogsService,
-    private readonly adminBlogQueryRepository: AdminBlogQueryRepository,
+    private readonly adminBlogQueryRepository: AdminBlogsQueryRepository,
   ) {}
 
   @Put(':blogId/bind-with-user/:userId')
@@ -43,5 +46,16 @@ export class AdminBlogsController {
   @UseGuards(BasicAuthGuard)
   async getBlogs(@Query() query: QueryBlogDto) {
     return await this.adminBlogQueryRepository.getBlogs(query);
+  }
+
+  @Put(':blogId/ban')
+  @HttpCode(204)
+  @UseGuards(BasicAuthGuard)
+  async banAndUnbanBlog(
+    @Param() params: URIParamBlogDto,
+    @Body('isBanned', ParseBoolPipe) isBanned: boolean,
+  ) {
+    await this.blogsService.banAndUnbanBlog(params.blogId, isBanned);
+    return;
   }
 }

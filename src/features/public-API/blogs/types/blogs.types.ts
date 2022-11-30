@@ -8,6 +8,17 @@ export type BlogDBTypeWithoutBlogOwner = {
   createdAt: Date;
 };
 
+export type BannedUsersForBlogType = {
+  id: string;
+  login: string;
+  banInfo: {
+    isBanned: boolean;
+    banDate: Date;
+    banReason: string;
+  };
+  blogId: string;
+};
+
 export type BlogDBType = {
   _id: ObjectId;
   name: string;
@@ -18,6 +29,8 @@ export type BlogDBType = {
     userId: string;
     userLogin: string;
   };
+  isBanned: boolean;
+  bannedUsers: string[];
 };
 
 export type ViewBlogType = {
@@ -42,4 +55,12 @@ export type ViewBlogsTypeWithPagination = {
   pageSize: number;
   totalCount: number;
   items: ViewBlogType[];
+};
+
+export type ViewBannedUsersForBlogWithPaginationType = {
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: Omit<BannedUsersForBlogType, 'blogId'>[];
 };

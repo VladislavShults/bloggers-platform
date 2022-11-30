@@ -11,6 +11,19 @@ export type CommentDBType = {
   likesCount: number;
   dislikesCount: number;
   isBanned: boolean;
+  postInfo: {
+    id: string;
+    title: string;
+    blogId: string;
+    blogName: string;
+    postOwnerUserId: string;
+  };
+};
+
+type LikesInfoType = {
+  likesCount: number;
+  dislikesCount: number;
+  myStatus: LikeType;
 };
 
 export type ViewCommentType = {
@@ -19,17 +32,43 @@ export type ViewCommentType = {
   userId: string;
   userLogin: string;
   createdAt: Date;
-  likesInfo: {
-    likesCount: number;
-    dislikesCount: number;
-    myStatus: LikeType;
-  };
+  likesInfo: LikesInfoType;
 };
 
-export type ViewCommentsTypeWithPagination = {
+type PaginationType = {
   pagesCount: number;
   page: number;
   pageSize: number;
   totalCount: number;
+};
+
+type ItemsForViewCommentType = {
   items: ViewCommentType[];
 };
+
+export type ViewCommentsTypeWithPagination = PaginationType &
+  ItemsForViewCommentType;
+
+export type AllCommentsForAllPostType = {
+  id: string;
+  content: string;
+  createdAt: Date;
+  likesInfo: LikesInfoType;
+  commentatorInfo: {
+    userId: string;
+    userLogin: string;
+  };
+  postInfo: {
+    id: string;
+    title: string;
+    blogId: string;
+    blogName: string;
+  };
+};
+
+type ItemsAllCommentForAllPosts = {
+  items: AllCommentsForAllPostType[];
+};
+
+export type ViewAllCommentsForAllPostsWithPaginationType = PaginationType &
+  ItemsAllCommentForAllPosts;
