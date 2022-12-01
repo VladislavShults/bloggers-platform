@@ -16,6 +16,7 @@ export class BlogsService {
     private readonly blogsRepository: BlogsRepository,
     private readonly usersService: UsersService,
     private readonly postsService: PostsService,
+    e,
   ) {}
 
   async deleteBlogById(blogId: string) {

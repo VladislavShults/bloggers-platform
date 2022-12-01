@@ -28,6 +28,7 @@ export class BloggerUsersController {
     private readonly blogsQueryRepository: BlogsQueryRepository,
     private readonly usersService: UsersService,
   ) {}
+
   @Put(':userId/ban')
   @HttpCode(204)
   @UseGuards(JwtAuthGuard)

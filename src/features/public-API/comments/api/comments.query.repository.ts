@@ -11,6 +11,7 @@ import { QueryPostDto } from '../../posts/api/models/query-post.dto';
 import { LikeDBType } from '../../likes/types/likes.types';
 import { QueryBlogDto } from '../../blogs/api/models/query-blog.dto';
 import { mapCommentDBTypeToAllCommentForAllPosts } from '../helpers/mapCommentDBTypeToAllCommentForAllPosts';
+import { QueryCommentDto } from './models/query-comment.dto';
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -112,7 +113,7 @@ export class CommentsQueryRepository {
   }
 
   async getAllCommentsForAllPostsCurrentUser(
-    query: QueryBlogDto,
+    query: QueryCommentDto,
     userId: string,
   ): Promise<ViewAllCommentsForAllPostsWithPaginationType> {
     const pageNumber: number = Number(query.pageNumber) || 1;

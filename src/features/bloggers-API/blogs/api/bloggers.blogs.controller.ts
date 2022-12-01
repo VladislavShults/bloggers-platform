@@ -33,6 +33,7 @@ import { URIParamsDeleteDto } from './models/URI-params-delete.dto';
 import { BlogsService } from '../../../public-API/blogs/application/blogs.service';
 import { CommentsQueryRepository } from '../../../public-API/comments/api/comments.query.repository';
 import { ViewAllCommentsForAllPostsWithPaginationType } from '../../../public-API/comments/types/comments.types';
+import { QueryCommentDto } from '../../../public-API/comments/api/models/query-comment.dto';
 
 @Controller('blogger/blogs')
 export class BloggersBlogsController {
@@ -137,7 +138,7 @@ export class BloggersBlogsController {
   @Get('comments')
   @UseGuards(JwtAuthGuard)
   async getAllCommentsForAllPostsCurrentUser(
-    @Query() query: QueryBlogDto,
+    @Query() query: QueryCommentDto,
     @Request() req,
   ): Promise<ViewAllCommentsForAllPostsWithPaginationType> {
     const userId: string = req.user._id.toString();
