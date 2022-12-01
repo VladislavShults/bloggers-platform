@@ -23,7 +23,10 @@ export class BlogsQueryRepository {
 
   async findBlogById(blogId: string): Promise<ViewBlogType | null> {
     if (blogId.length !== 24) return null;
-    const blogDBType = await this.blogModel.findById(blogId);
+    const blogDBType = await this.blogModel.findOne({
+      _id: blogId,
+      isBanned: false,
+    });
     if (!blogDBType) return null;
     return mapBlogById(blogDBType);
   }
