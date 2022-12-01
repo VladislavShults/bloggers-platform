@@ -134,7 +134,7 @@ export class CommentsQueryRepository {
       .find({
         'postInfo.postOwnerUserId': userId,
         isBanned: false,
-        blogId: { $nin: bannedIdsBlogs },
+        // blogId: { $nin: bannedIdsBlogs },
       })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
