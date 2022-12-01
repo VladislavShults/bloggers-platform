@@ -130,5 +130,6 @@ export class BlogsService {
     }
 
     await this.postsService.banAndUnbanPostsByBlog(blogId, banStatus);
+    return;
   }
 }
