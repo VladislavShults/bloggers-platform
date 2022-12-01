@@ -121,7 +121,7 @@ export class CommentsQueryRepository {
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
 
     const itemsDBType = await this.commentModel
-      .find({ 'postInfo.postOwnerUserId': userId })
+      .find({ 'postInfo.postOwnerUserId': userId, isBanned: false })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .sort([[sortBy, sortDirection]])
@@ -157,6 +157,7 @@ export class CommentsQueryRepository {
 
     const totalCount = await this.commentModel.count({
       'postInfo.postOwnerUserId': userId,
+      isBanned: false,
     });
 
     return {
