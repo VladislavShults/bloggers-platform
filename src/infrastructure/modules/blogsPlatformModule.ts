@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from '../../database/database.module';
+import { DatabaseModule } from '../database/database.module';
 import { BlogsController } from '../../features/public-API/blogs/api/blogs.controller';
 import { blogsMongooseConnection } from '../../features/public-API/blogs/blogsMongooseConnection';
 import { BlogsService } from '../../features/public-API/blogs/application/blogs.service';
@@ -43,7 +43,6 @@ import { AdminBlogsController } from '../../features/SA-API/blogs/api/admin.blog
 import { AdminBlogsQueryRepository } from '../../features/SA-API/blogs/api/admin.blogs.query.repository';
 import { bannedUsersForBlogMongooseConnection } from '../../features/bloggers-API/users/bannedUsersForBlogMongooseConnection';
 import { BloggerUsersController } from '../../features/bloggers-API/users/api/blogger.users.controller';
-import { CheckBlogInDBAndBlogOwnerGuard } from '../../features/bloggers-API/blogs/guards/chechBlogOwner.guard';
 
 @Module({
   imports: [DatabaseModule],
