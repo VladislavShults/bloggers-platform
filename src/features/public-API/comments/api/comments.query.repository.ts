@@ -9,7 +9,6 @@ import {
 import { mapComment } from '../helpers/mapCommentDBTypeToViewModel';
 import { QueryPostDto } from '../../posts/api/models/query-post.dto';
 import { LikeDBType } from '../../likes/types/likes.types';
-import { QueryBlogDto } from '../../blogs/api/models/query-blog.dto';
 import { mapCommentDBTypeToAllCommentForAllPosts } from '../helpers/mapCommentDBTypeToAllCommentForAllPosts';
 import { QueryCommentDto } from './models/query-comment.dto';
 import { BannedUsersForBlogType } from '../../blogs/types/blogs.types';
