@@ -119,8 +119,15 @@ export class BlogsService {
 
     if (blog.isBanned === banStatus) return;
 
-    blog.isBanned = banStatus;
-    await this.blogsRepository.updateBlog(blog);
+    if (banStatus === true) {
+      blog.isBanned = banStatus;
+      blog.banDate = new Date();
+      await this.blogsRepository.updateBlog(blog);
+    } else {
+      blog.isBanned = banStatus;
+      blog.banDate = null;
+      await this.blogsRepository.updateBlog(blog);
+    }
 
     await this.postsService.banAndUnbanPostsByBlog(blogId, banStatus);
   }
