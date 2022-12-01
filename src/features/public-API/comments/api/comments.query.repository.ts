@@ -12,6 +12,7 @@ import { LikeDBType } from '../../likes/types/likes.types';
 import { QueryBlogDto } from '../../blogs/api/models/query-blog.dto';
 import { mapCommentDBTypeToAllCommentForAllPosts } from '../helpers/mapCommentDBTypeToAllCommentForAllPosts';
 import { QueryCommentDto } from './models/query-comment.dto';
+import { BannedUsersForBlogType } from '../../blogs/types/blogs.types';
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -20,6 +21,8 @@ export class CommentsQueryRepository {
     private readonly commentModel: Model<CommentDBType>,
     @Inject('LIKES_MODEL')
     private readonly likesModel: Model<LikeDBType>,
+    @Inject('BANNED_USER_FOR_BLOG_MODEL')
+    private readonly bannedUserForBlogModel: Model<BannedUsersForBlogType>,
   ) {}
 
   async getCommentById(
@@ -121,8 +124,19 @@ export class CommentsQueryRepository {
     const sortBy: string = query.sortBy || 'createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
 
+    const bannedIdsBlogs = await this.bannedUserForBlogModel.find(
+      {
+        id: userId,
+      },
+      { _id: false, blogId: true },
+    );
+
     const itemsDBType = await this.commentModel
-      .find({ 'postInfo.postOwnerUserId': userId, isBanned: false })
+      .find({
+        'postInfo.postOwnerUserId': userId,
+        isBanned: false,
+        blogId: { $nin: bannedIdsBlogs },
+      })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
       .sort([[sortBy, sortDirection]])

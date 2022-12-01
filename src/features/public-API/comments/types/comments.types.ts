@@ -11,6 +11,7 @@ export type CommentDBType = {
   likesCount: number;
   dislikesCount: number;
   isBanned: boolean;
+  blogId: string;
   postInfo: {
     id: string;
     title: string;

@@ -47,6 +47,9 @@ export class Comment {
   isBanned: boolean;
 
   @Prop()
+  blogId: string;
+
+  @Prop()
   postInfo: PostInfo;
 }
 

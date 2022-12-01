@@ -32,6 +32,7 @@ export class CommentsService {
       likesCount: 0,
       dislikesCount: 0,
       isBanned: false,
+      blogId: post.blogId,
       postInfo: {
         id: post._id.toString(),
         title: post.title,
