@@ -1,26 +1,10 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { PostInfo } from './postInfo.schema';
 
 export type CommentSchema = HydratedDocument<Comment>;
 
 @Schema({ versionKey: false })
-class PostInfo {
-  @Prop()
-  id: string;
-
-  @Prop()
-  title: string;
-
-  @Prop()
-  blogId: string;
-
-  @Prop()
-  blogName: string;
-
-  @Prop()
-  postOwnerUserId: string;
-}
-
 export class Comment {
   @Prop()
   content: string;
