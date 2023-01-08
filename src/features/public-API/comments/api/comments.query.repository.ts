@@ -123,7 +123,7 @@ export class CommentsQueryRepository {
     const sortBy: string = query.sortBy || 'createdAt';
     const sortDirection: 'asc' | 'desc' = query.sortDirection || 'desc';
 
-    const bannedIdsBlogs = await this.bannedUserForBlogModel.find(
+    const idsBannedBlogs = await this.bannedUserForBlogModel.find(
       {
         id: userId,
       },
@@ -134,7 +134,7 @@ export class CommentsQueryRepository {
       .find({
         'postInfo.postOwnerUserId': userId,
         isBanned: false,
-        // blogId: { $nin: bannedIdsBlogs },
+        blogId: { $nin: idsBannedBlogs },
       })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
